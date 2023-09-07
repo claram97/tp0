@@ -7,6 +7,7 @@ use obstaculo::Obstaculo;
 use enemigo::Enemigo;
 use bomba::Bomba;
 use desvio::Desvio;
+use coordenada::Coordenada;
 pub struct Juego {
     dimension_x: i8,
     dimension_y: i8,
@@ -17,15 +18,15 @@ pub struct Juego {
 }
 
 impl Juego {
-    fn inicializar_enemigo() {
+    fn inicializar_enemigo(coordenada: Coordenada) {
 
     }
 
-    fn inicializar_obstaculo() {
+    fn inicializar_obstaculo(coordenada: Coordenada) {
 
     }
 
-    fn inicializar_bomba() {
+    fn inicializar_bomba(coordenada: Coordenada) {
 
     }
 
