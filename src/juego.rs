@@ -1,9 +1,10 @@
-mod coordenada;
+pub mod coordenada;
 mod enemigo;
 mod obstaculo;
 mod bomba;
 mod desvio;
 use obstaculo::Obstaculo;
+use obstaculo::TipoDeObstaculo;
 use enemigo::Enemigo;
 use bomba::Bomba;
 use desvio::Desvio;
@@ -18,16 +19,33 @@ pub struct Juego {
 }
 
 impl Juego {
-    fn inicializar_enemigo(coordenada: Coordenada) {
-
+    pub fn new() -> Juego {
+        Juego {
+            dimension_x: 0,
+            dimension_y: 0,
+            enemigos: Vec::new(),
+            obstaculos: Vec::new(),
+            bombas: Vec::new(),
+            desvios: Vec::new(),
+        }
     }
 
-    fn inicializar_obstaculo(coordenada: Coordenada) {
-
+    pub fn inicializar_enemigo(&mut self, coordenada: Coordenada) {
+        println!("inicializar enemigo");
     }
 
-    fn inicializar_bomba(coordenada: Coordenada) {
+    pub fn inicializar_roca(&mut self, coordenada: Coordenada) {
+        println!("inicializar roca");
+    }
 
+    pub fn inicializar_bomba(&mut self, coordenada: Coordenada) {
+        println!("inicializar bomba");
+    }
+
+    pub fn inicializar_pared(&mut self, coordenada: Coordenada) {
+        println!("inicializar pared");
+        let pared: Obstaculo = Obstaculo::new(obstaculo::TipoDeObstaculo::Pared,coordenada);
+        self.obstaculos.push(pared);
     }
 
     fn imprimir_tablero(dimension_x: i8, dimension_y: i8, output_path: String) {

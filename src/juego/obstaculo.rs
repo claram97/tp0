@@ -1,6 +1,6 @@
 use crate::juego::coordenada::Coordenada;
 
-enum TipoDeObstaculo {
+pub enum TipoDeObstaculo {
     Pared,
     Roca
 }
@@ -8,4 +8,13 @@ enum TipoDeObstaculo {
 pub struct Obstaculo {
     coordenada: Coordenada,
     tipo: TipoDeObstaculo
+}
+
+impl Obstaculo {
+    pub fn new(tipo: TipoDeObstaculo, coordenada: Coordenada) -> Obstaculo {
+        Obstaculo {
+            tipo,
+            coordenada,
+        }
+    }
 }
