@@ -1,6 +1,7 @@
 use crate::juego::coordenada::Coordenada;
 
-enum TipoDeBomba {
+#[derive(Debug, PartialEq, Eq)]
+pub enum TipoDeBomba {
     Normal,
     Traspaso 
 }
@@ -9,11 +10,24 @@ pub struct Bomba {
     id: char,
     alcance: i8,
     tipo: TipoDeBomba,
-    coordenada: Coordenada,
+    pub coordenada: Coordenada,
 }
 
 impl Bomba {
-    fn detonar() {
-        println!("Bomba detonada");
+
+    pub fn new(coordenada: Coordenada, alcance: i8, tipo: TipoDeBomba) -> Bomba {
+        let id = if tipo == TipoDeBomba::Normal {
+            'B'
+        } else {
+            'S'
+        };
+    
+        Bomba {
+            id,
+            alcance,
+            tipo,
+            coordenada,
+        }
     }
+    
 }

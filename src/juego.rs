@@ -1,10 +1,9 @@
 pub mod coordenada;
-mod enemigo;
-mod obstaculo;
-mod bomba;
-mod desvio;
+pub mod enemigo;
+pub mod obstaculo;
+pub mod bomba;
+pub mod desvio;
 use obstaculo::Obstaculo;
-use obstaculo::TipoDeObstaculo;
 use enemigo::Enemigo;
 use bomba::Bomba;
 use desvio::Desvio;
@@ -30,16 +29,33 @@ impl Juego {
         }
     }
 
-    pub fn inicializar_enemigo(&mut self, coordenada: Coordenada) {
-        println!("inicializar enemigo");
+    pub fn inicializar_dimension(&mut self,dimension: i8) {
+        self.dimension_x = dimension;
+        self.dimension_y = dimension;
+    }
+
+    pub fn inicializar_desvio(&mut self,coordenada: Coordenada, direccion: char) {
+        println!("Inicializar desvío hacia la {}",direccion);
+        let desvio: Desvio = Desvio::new(coordenada, direccion);
+        self.desvios.push(desvio);
+    }
+    
+    pub fn inicializar_enemigo(&mut self, coordenada: Coordenada,vida: i8) {
+        println!("inicializar enemigo con vida {}",vida);
+        let enemigo: Enemigo = Enemigo::new(coordenada,vida);
+        self.enemigos.push(enemigo);
     }
 
     pub fn inicializar_roca(&mut self, coordenada: Coordenada) {
         println!("inicializar roca");
+        let roca: Obstaculo = Obstaculo::new(obstaculo::TipoDeObstaculo::Roca,coordenada);
+        self.obstaculos.push(roca);
     }
 
-    pub fn inicializar_bomba(&mut self, coordenada: Coordenada) {
+    pub fn inicializar_bomba(&mut self, coordenada: Coordenada,alcance: i8,tipo: bomba::TipoDeBomba) {
         println!("inicializar bomba");
+        let bomba: Bomba = Bomba::new(coordenada,alcance,tipo);
+        self.bombas.push(bomba);
     }
 
     pub fn inicializar_pared(&mut self, coordenada: Coordenada) {
@@ -48,7 +64,7 @@ impl Juego {
         self.obstaculos.push(pared);
     }
 
-    fn imprimir_tablero(dimension_x: i8, dimension_y: i8, output_path: String) {
+    /*fn imprimir_tablero(dimension_x: i8, dimension_y: i8, output_path: String) {
         let tablero: Vec<Vec<char>> = vec![vec![' '; dimension_y as usize]; dimension_x as usize];
         for row in &tablero {
             for &element in row {
@@ -57,14 +73,40 @@ impl Juego {
             println!();
         }
         println!("output path: {}",output_path);
+    }*/
+
+    fn eliminar_enemigo(&mut self,coordenada: Coordenada) -> bool {
+        println!("Eliminar enemigo");
+        let mut i: usize = self.enemigos.len();
+        let mut found: bool = false;
+        while i > 0 && !found {
+            if self.enemigos[i].coordenada.is_equal_to(&coordenada) {
+                if self.enemigos[i].vida > 0 {
+                    self.enemigos[i].vida -= 1;
+                    if self.enemigos[i].vida == 0 {
+                        return true;
+                    }
+                }
+                found = true;
+            }
+            i -= 1;
+        }
+        false
     }
 
-    fn eliminar_enemigo() {
-        println!("Enemigo muerto");
-    }
-
-    fn detonar_bomba() {
+    fn detonar_bomba(&mut self,coordenada: Coordenada) -> bool {
         println!("Bomba detonada");
+        let mut i: usize = self.bombas.len();
+        let mut found: bool = false;
+        while i > 0 && !found {
+            if self.bombas[i].coordenada.is_equal_to(&coordenada) {
+                //Implementar funcionalidad de la bomba
+                found = true;
+                return true;
+            }
+            i -= 1;
+        }
+        false
     }
 
 }

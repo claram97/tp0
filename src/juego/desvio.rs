@@ -6,5 +6,11 @@ pub struct Desvio {
 }
 
 impl Desvio {
-    
+    pub fn new(coordenada: Coordenada, direccion: char) -> Desvio {
+        Desvio {
+            direccion,
+            coordenada,
+        }
+    }
+
 }

@@ -3,12 +3,21 @@ use crate::juego::coordenada::Coordenada;
 
 pub struct Enemigo {
     id: char,
-    vida: i8,
-    coordenada: Coordenada,
+    pub vida: i8,
+    pub coordenada: Coordenada,
 }
 
 impl Enemigo {
-    fn impactar_con_rafaga() {
+    pub fn impactar_con_rafaga() {
         println!("Usted ha impactado al enemigo!");
     }
+
+    pub fn new(coordenada: Coordenada, vida: i8) -> Enemigo {
+        Enemigo {
+            id: 'F',
+            vida,
+            coordenada,
+        }
+    }
+
 }
