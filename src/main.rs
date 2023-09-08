@@ -8,8 +8,8 @@ use crate::juego::coordenada::Coordenada;
 
 const DESVIO: char = 'D';
 const ENEMIGO: char = 'F';
-const BOMBA_DE_TRANSPASO: char = 'D';
-const BOMBA_NORMAL: char = 'F';
+const BOMBA_DE_TRANSPASO: char = 'S';
+const BOMBA_NORMAL: char = 'B';
 const PARED: &str = "W";
 const ROCA: &str = "R";
 
@@ -157,7 +157,7 @@ fn main() -> io::Result<()> {
 
     if let Ok(arg) = args[3].parse::<i8>() {
         // Intenta convertir el argumento en i8
-        let x: i8 = arg;
+        let _x: i8 = arg;
     }
     else {
         return Err(io::Error::new(
@@ -167,7 +167,7 @@ fn main() -> io::Result<()> {
     }
     if let Ok(arg) = args[4].parse::<i8>() {
         // Intenta convertir el argumento en i8
-        let y: i8 = arg;
+        let _y: i8 = arg;
     }
     else {
         return Err(io::Error::new(
