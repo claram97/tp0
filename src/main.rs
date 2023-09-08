@@ -5,6 +5,7 @@ use std::io::{self, BufRead};
 mod juego;
 use juego::Juego;
 use crate::juego::coordenada::Coordenada;
+use crate::juego::bomba::TipoDeBomba;
 
 const DESVIO: char = 'D';
 const ENEMIGO: char = 'F';
@@ -12,6 +13,7 @@ const BOMBA_DE_TRANSPASO: char = 'S';
 const BOMBA_NORMAL: char = 'B';
 const PARED: &str = "W";
 const ROCA: &str = "R";
+const VACIO: &str = "_";
 
 
 fn chequear_argumentos(args: &Vec<String>) -> io::Result<()> {
@@ -23,6 +25,171 @@ fn chequear_argumentos(args: &Vec<String>) -> io::Result<()> {
     }
     Ok(())
 }
+
+fn funcion(l: &String,mut filas: i8,mut coordenada_y: i8){
+    let mut juego: Juego = Juego::new();
+    //que me devuelva filas
+    //funcion(&l,filas,coordenada_y);
+    let palabras: Vec<&str> = l.split_whitespace().collect();
+    for palabra in palabras {
+        //print!("posición {}: ",coordenada_y);
+        //print!("{} ",palabra); 
+        let punto = Coordenada::new(filas, coordenada_y);
+        if palabra == PARED {
+            juego.inicializar_pared(punto);
+        }
+        else if palabra == ROCA {
+            juego.inicializar_roca(punto);
+        }
+        else if palabra.starts_with(BOMBA_DE_TRANSPASO) {
+            if let Some(segundo_caracter) = palabra.chars().nth(1) {
+                if let Some(digito) = segundo_caracter.to_digit(10) {
+                    let alcance = digito as i8;
+                    juego.inicializar_bomba(punto,alcance,juego::bomba::TipoDeBomba::Traspaso);
+                }
+                else {
+                    //return Err(io::Error::new(io::ErrorKind::InvalidData, "Error al intentar inicializar la bomba con el número de alcance dado.",));
+                }
+            }
+            else {
+                //return Err(io::Error::new(io::ErrorKind::InvalidInput,"No se pudo determinar el alcance de la bomba.",));
+            }
+        }
+        else if palabra.starts_with(BOMBA_NORMAL) {
+            if let Some(segundo_caracter) = palabra.chars().nth(1) {
+                if let Some(digito) = segundo_caracter.to_digit(10) {
+                    let alcance = digito as i8;
+                    juego.inicializar_bomba(punto,alcance,juego::bomba::TipoDeBomba::Normal);
+                }
+                else {
+                    //return Err(io::Error::new(io::ErrorKind::InvalidData, "Error al intentar inicializar la bomba con el número de alcance dado.",));
+                }
+            }
+            else {
+                //return Err(io::Error::new( io::ErrorKind::InvalidInput,"No se pudo determinar el alcance de la bomba.",));
+            }
+        }  
+        else if palabra.starts_with(ENEMIGO) {
+            if let Some(segundo_caracter) = palabra.chars().nth(1) {
+                if let Some(digito) = segundo_caracter.to_digit(10) {
+                    let vida = digito as i8;
+                    juego.inicializar_enemigo(punto,vida);
+                }
+                else {
+                    //return Err(io::Error::new(io::ErrorKind::InvalidData,"Error al intentar inicializar el enemigo con el puntaje de vida dado.",));
+                }
+            }
+            else {
+                    //return Err(io::Error::new(io::ErrorKind::InvalidInput,"No se pudo determinar la vida del enemigo."));
+            }
+        }
+        else if palabra.starts_with(DESVIO) {
+            if let Some(segundo_caracter) = palabra.chars().nth(1) {
+                let direccion = segundo_caracter;
+                juego.inicializar_desvio(punto, direccion);
+            }
+            else {
+                //return Err(io::Error::new(io::ErrorKind::InvalidData,"Error al intentar inicializar el desvío en la dirección dada."));
+            }
+        }
+        coordenada_y += 1;
+    }
+    //println!();
+    //println!("Linea {} leída!",filas);
+    filas += 1;
+    coordenada_y = 0;
+}
+
+use std::error::Error;
+use std::fmt;
+
+// Define un tipo de error personalizado que implementa std::error::Error.
+#[derive(Debug)]
+struct CustomError(String);
+
+impl fmt::Display for CustomError {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "Custom error: {}", self.0)
+    }
+}
+
+impl Error for CustomError {}
+
+fn procesar_linea_de_configuracion(l: &str, filas: &mut i8, coordenada_y: &mut i8,juego: &mut Juego) -> Result<(), CustomError> {
+    let mut errores: Vec<String> = Vec::new();
+
+    let palabras: Vec<&str> = l.split_whitespace().collect();
+    for palabra in palabras {
+        let punto = Coordenada::new(*filas, *coordenada_y);
+
+        match palabra {
+            VACIO => {},
+            PARED => juego.inicializar_pared(punto),
+            ROCA => juego.inicializar_roca(punto),
+            _ => {
+                if palabra.starts_with(BOMBA_DE_TRANSPASO) {
+                    if let Some(segundo_caracter) = palabra.chars().nth(1) {
+                        if let Some(digito) = segundo_caracter.to_digit(10) {
+                            let alcance = digito as i8;
+                            juego.inicializar_bomba(punto, alcance, TipoDeBomba::Traspaso);
+                        } else {
+                            errores.push("Error al intentar inicializar la bomba con el número de alcance dado.".to_string());
+                        }
+                    } else {
+                        errores.push("No se pudo determinar el alcance de la bomba.".to_string());
+                    }
+                } else if palabra.starts_with(BOMBA_NORMAL) {
+                    if let Some(segundo_caracter) = palabra.chars().nth(1) {
+                        if let Some(digito) = segundo_caracter.to_digit(10) {
+                            let alcance = digito as i8;
+                            juego.inicializar_bomba(punto, alcance, TipoDeBomba::Normal);
+                        } else {
+                            errores.push("Error al intentar inicializar la bomba normal con el número de alcance dado.".to_string());
+                        }
+                    } else {
+                        errores.push("No se pudo determinar el alcance de la bomba normal.".to_string());
+                    }
+                } else if palabra.starts_with(ENEMIGO) {
+                    if let Some(segundo_caracter) = palabra.chars().nth(1) {
+                        if let Some(digito) = segundo_caracter.to_digit(10) {
+                            let vida = digito as i8;
+                            juego.inicializar_enemigo(punto, vida);
+                        } else {
+                            errores.push("Error al intentar inicializar el enemigo con el puntaje de vida dado.".to_string());
+                        }
+                    } else {
+                        errores.push("No se pudo determinar la vida del enemigo.".to_string());
+                    }
+                } else if palabra.starts_with(DESVIO) {
+                    if let Some(segundo_caracter) = palabra.chars().nth(1) {
+                        let direccion = segundo_caracter;
+                        juego.inicializar_desvio(punto, direccion);
+                    } else {
+                        errores.push("Error al intentar inicializar el desvío en la dirección dada.".to_string());
+                    }
+                } else {
+                    errores.push(format!("Palabra desconocida: {}", palabra));
+                }
+            }
+        }
+
+        *coordenada_y += 1;
+    }
+
+    // Incrementamos filas y reiniciamos coordenada_y al final de cada línea
+    *filas += 1;
+    *coordenada_y = 0;
+
+    // Comprobar errores y devolverlos si los hay
+    let result = if errores.is_empty() {
+        Ok(())
+    } else {
+        Err(CustomError(errores.join("\n")))
+    };
+
+    result
+}
+
 
 fn main() -> io::Result<()> {
     let args: Vec<String> = env::args().collect();
@@ -54,7 +221,21 @@ fn main() -> io::Result<()> {
     for linea in reader.lines() {
         match linea {
             Ok(l) => {
-                let palabras: Vec<&str> = l.split_whitespace().collect();
+                let resultado = procesar_linea_de_configuracion(&l, &mut filas, &mut coordenada_y,&mut juego);
+                match resultado {
+                    Ok(_) => {
+                
+                    }
+                    Err(err) => {
+                        return Err(io::Error::new(
+                            io::ErrorKind::Other,
+                            err.to_string(),
+                        ));
+                    }
+                }
+                //que me devuelva filas
+                //funcion(&l,filas,coordenada_y);
+                /*let palabras: Vec<&str> = l.split_whitespace().collect();
                 for palabra in palabras {
                     //print!("posición {}: ",coordenada_y);
                     //print!("{} ",palabra); 
@@ -143,9 +324,12 @@ fn main() -> io::Result<()> {
                 //println!("Linea {} leída!",filas);
                 filas += 1;
                 coordenada_y = 0;
-            }
-            Err(e) => {
-                eprintln!("Error al leer línea: {}", e);
+*/          }
+            Err(_e) => {
+                return Err(io::Error::new(
+                    io::ErrorKind::UnexpectedEof,
+                    "Error al leer línea:",
+                ));
             }
         }
     }
