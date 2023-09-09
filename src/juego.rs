@@ -125,10 +125,6 @@ impl Juego {
         output_path: &String,
         coordenada: Coordenada,
     ) -> io::Result<()> {
-        /*let mut tablero: Vec<Vec<char>> =
-            vec![vec!['_'; self.dimension as usize]; self.dimension as usize];
-        self.posicionar_elementos_en_tablero(&mut tablero);
-        */
         let mut tablero = self.posicionar_elementos_en_tablero();
 
         self.detonar_bomba(&mut tablero, coordenada);
@@ -211,7 +207,7 @@ impl Juego {
                         _ => {} // Otros casos
                     }
                 } else {
-                    break; // Detenerse si se sale del tablero
+                    break;
                 }
 
                 incremento += 1;
@@ -224,7 +220,6 @@ impl Juego {
     fn detonar_bomba(&mut self, tablero: &mut Vec<Vec<char>>, coordenada: Coordenada) {
         let mut bomba_index: Option<usize> = None;
 
-        // Encuentra la bomba correspondiente
         for (i, bomba) in self.bombas.iter().enumerate().rev() {
             if bomba.coordenada.is_equal_to(&coordenada) {
                 bomba_index = Some(i);
@@ -233,15 +228,12 @@ impl Juego {
         }
 
         if let Some(i) = bomba_index {
-            // Hacer una copia mutable de la bomba
             if !self.bombas[i].detonada {
                 self.bombas[i].detonar();
                 let bomba = self.bombas[i].clone();
 
-                // Llama a la función para detonar la bomba
                 self.funcion_bomba(&self.bombas[i].clone(), tablero);
 
-                // Actualiza la bomba en self.bombas
                 self.bombas[i] = bomba;
 
                 println!(
