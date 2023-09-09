@@ -1,8 +1,8 @@
 use crate::juego::coordenada::Coordenada;
 
 pub struct Desvio {
-    coordenada: Coordenada,
-    direccion: char,
+    pub coordenada: Coordenada,
+    pub direccion: char,
 }
 
 impl Desvio {
