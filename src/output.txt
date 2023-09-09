@@ -1,7 +1,7 @@
-B R R _ F _ _
-_ W R W _ W _
-B _ _ _ B _ _
-_ W _ W _ W _
 _ _ _ _ _ _ _
+_ W _ W _ W _
+S R R R F _ _
+_ W _ W _ W _
+B _ B _ U _ _
 _ W _ W _ W _
 _ _ _ _ _ _ _

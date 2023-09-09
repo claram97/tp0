@@ -101,11 +101,14 @@ impl Juego {
         }
     }
 
-    fn posicionar_elementos_en_tablero(&self, tablero: &mut [Vec<char>]) {
-        self.posicionar_enemigos(tablero);
-        self.posicionar_bombas(tablero);
-        self.posicionar_desvios(tablero);
-        self.posicionar_obstaculos(tablero);
+    fn posicionar_elementos_en_tablero(&self) -> Vec<Vec<char>> {
+        let mut tablero: Vec<Vec<char>> =
+            vec![vec!['_'; self.dimension as usize]; self.dimension as usize];
+        self.posicionar_enemigos(&mut tablero);
+        self.posicionar_bombas(&mut tablero);
+        self.posicionar_desvios(&mut tablero);
+        self.posicionar_obstaculos(&mut tablero);
+        tablero
     }
 
     pub fn imprimir_tablero(&self, tablero: &Vec<Vec<char>>) {
@@ -122,17 +125,19 @@ impl Juego {
         output_path: &String,
         coordenada: Coordenada,
     ) -> io::Result<()> {
-        let mut tablero: Vec<Vec<char>> =
+        /*let mut tablero: Vec<Vec<char>> =
             vec![vec!['_'; self.dimension as usize]; self.dimension as usize];
         self.posicionar_elementos_en_tablero(&mut tablero);
+        */
+        let mut tablero = self.posicionar_elementos_en_tablero();
 
         self.detonar_bomba(&mut tablero, coordenada);
         println!("Tablero inicial: ");
         self.imprimir_tablero(&tablero);
 
-        self.posicionar_elementos_en_tablero(&mut tablero);
+        let tablero_final = self.posicionar_elementos_en_tablero();
         println!("Tablero final: ");
-        self.imprimir_tablero(&tablero);
+        self.imprimir_tablero(&tablero_final);
 
         let mut output_file = File::create(output_path)?;
 
@@ -156,7 +161,9 @@ impl Juego {
             .position(|enemigo| enemigo.coordenada.is_equal_to(&coordenada))
         {
             if self.enemigos[i].vida > 0 {
+                println!("Vida inicial: {}",self.enemigos[i].vida);
                 self.enemigos[i].vida -= 1;
+                println!("Vida actual: {}",self.enemigos[i].vida);
                 if self.enemigos[i].vida == 0 {
                     self.enemigos.swap_remove(i);
                     return true;
@@ -193,10 +200,12 @@ impl Juego {
                         }
                         ROCA => {
                             if bomba.tipo == TipoDeBomba::Normal {
+                                println!("Las bombas normales no pueden atravesar rocas.");
                                 break; // Detenerse si es una roca y la bomba es normal
                             }
                         }
                         PARED => {
+                            println!("Ninguna pared puede ser atravesada.");
                             break; // Detenerse si es una pared
                         }
                         _ => {} // Otros casos
