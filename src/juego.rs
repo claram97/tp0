@@ -88,20 +88,23 @@ impl Juego {
 
     fn posicionar_obstaculos(&self, tablero: &mut [Vec<String>]) {
         for obstaculo in &self.obstaculos {
+            let id: String = "".to_string() + &obstaculo.id;
             tablero[obstaculo.coordenada.x as usize][obstaculo.coordenada.y as usize] =
-                obstaculo.id.clone();
+            id;
         }
     }
 
     fn posicionar_bombas(&self, tablero: &mut [Vec<String>]) {
         for bomba in &self.bombas {
-            tablero[bomba.coordenada.x as usize][bomba.coordenada.y as usize] = bomba.id.clone();
+            let id: String = "".to_string() + &bomba.id;
+            tablero[bomba.coordenada.x as usize][bomba.coordenada.y as usize] = id;
         }
     }
 
     fn posicionar_desvios(&self, tablero: &mut [Vec<String>]) {
         for desvio in &self.desvios {
-            tablero[desvio.coordenada.x as usize][desvio.coordenada.y as usize] = desvio.id.clone();
+            let id: String = "".to_string() + &desvio.id;
+            tablero[desvio.coordenada.x as usize][desvio.coordenada.y as usize] = id;
         }
     }
 
