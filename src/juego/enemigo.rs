@@ -10,7 +10,7 @@ impl Enemigo {
     pub fn new(coordenada: Coordenada, vida: i8) -> Enemigo {
         let id : String = "F".to_string();
         Enemigo {
-            id : id,
+            id,
             vida,
             coordenada,
         }
