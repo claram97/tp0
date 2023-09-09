@@ -16,11 +16,12 @@ use obstaculo::Obstaculo;
 
 use self::bomba::TipoDeBomba;
 
-const ENEMIGO: char = 'F';
-const BOMBA_DE_TRANSPASO: char = 'S';
-const BOMBA_NORMAL: char = 'B';
-const PARED: char = 'W';
-const ROCA: char = 'R';
+const ENEMIGO: &str = "F";
+const BOMBA_DE_TRANSPASO: &str = "S";
+const BOMBA_NORMAL: &str = "B";
+const PARED: &str = "W";
+const ROCA: &str = "R";
+const DESVIO: &str = "D";
 
 pub struct Juego {
     dimension: i8,
@@ -45,13 +46,13 @@ impl Juego {
         self.dimension = dimension;
     }
 
-    pub fn inicializar_desvio(&mut self, coordenada: Coordenada, direccion: char) {
-        let desvio: Desvio = Desvio::new(coordenada, direccion);
+    pub fn inicializar_desvio(&mut self, coordenada: Coordenada, direccion: String, id : String) {
+        let desvio: Desvio = Desvio::new(coordenada, direccion, id);
         self.desvios.push(desvio);
     }
 
-    pub fn inicializar_enemigo(&mut self, coordenada: Coordenada, vida: i8) {
-        let enemigo: Enemigo = Enemigo::new(coordenada, vida);
+    pub fn inicializar_enemigo(&mut self, coordenada: Coordenada, vida: i8, id : String) {
+        let enemigo: Enemigo = Enemigo::new(coordenada, vida, id);
         self.enemigos.push(enemigo);
     }
 
@@ -64,10 +65,10 @@ impl Juego {
         &mut self,
         coordenada: Coordenada,
         alcance: i8,
-        tipo: bomba::TipoDeBomba,
+        tipo: bomba::TipoDeBomba, id : String
     ) {
         println!("Inicializar bomba en: ({},{})", coordenada.x, coordenada.y);
-        let bomba: Bomba = Bomba::new(coordenada, alcance, tipo);
+        let bomba: Bomba = Bomba::new(coordenada, alcance, tipo, id);
         self.bombas.push(bomba);
     }
 
@@ -76,34 +77,33 @@ impl Juego {
         self.obstaculos.push(pared);
     }
 
-    fn posicionar_enemigos(&self, tablero: &mut [Vec<char>]) {
+    fn posicionar_enemigos(&self, tablero: &mut [Vec<String>]) {
         for enemigo in &self.enemigos {
-            tablero[enemigo.coordenada.x as usize][enemigo.coordenada.y as usize] = enemigo.id;
+            tablero[enemigo.coordenada.x as usize][enemigo.coordenada.y as usize] = enemigo.id.clone();
         }
     }
 
-    fn posicionar_obstaculos(&self, tablero: &mut [Vec<char>]) {
+    fn posicionar_obstaculos(&self, tablero: &mut [Vec<String>]) {
         for obstaculo in &self.obstaculos {
-            tablero[obstaculo.coordenada.x as usize][obstaculo.coordenada.y as usize] =
-                obstaculo.id;
+            tablero[obstaculo.coordenada.x as usize][obstaculo.coordenada.y as usize] = obstaculo.id.clone();
         }
     }
 
-    fn posicionar_bombas(&self, tablero: &mut [Vec<char>]) {
+    fn posicionar_bombas(&self, tablero: &mut [Vec<String>]) {
         for bomba in &self.bombas {
-            tablero[bomba.coordenada.x as usize][bomba.coordenada.y as usize] = bomba.id;
+            tablero[bomba.coordenada.x as usize][bomba.coordenada.y as usize] = bomba.id.clone();
         }
     }
 
-    fn posicionar_desvios(&self, tablero: &mut [Vec<char>]) {
+    fn posicionar_desvios(&self, tablero: &mut [Vec<String>]) {
         for desvio in &self.desvios {
-            tablero[desvio.coordenada.x as usize][desvio.coordenada.y as usize] = desvio.direccion;
+            tablero[desvio.coordenada.x as usize][desvio.coordenada.y as usize] = desvio.id.clone();
         }
     }
 
-    fn posicionar_elementos_en_tablero(&self) -> Vec<Vec<char>> {
-        let mut tablero: Vec<Vec<char>> =
-            vec![vec!['_'; self.dimension as usize]; self.dimension as usize];
+    fn posicionar_elementos_en_tablero(&self) -> Vec<Vec<String>> {
+        let mut tablero: Vec<Vec<String>> =
+            vec![vec!["_".to_string(); self.dimension as usize]; self.dimension as usize];
         self.posicionar_enemigos(&mut tablero);
         self.posicionar_bombas(&mut tablero);
         self.posicionar_desvios(&mut tablero);
@@ -111,9 +111,9 @@ impl Juego {
         tablero
     }
 
-    pub fn imprimir_tablero(&self, tablero: &Vec<Vec<char>>) {
+    pub fn imprimir_tablero(&self, tablero: &Vec<Vec<String>>) {
         for row in tablero {
-            for &element in row {
+            for element in row {
                 print!("{} ", element);
             }
             println!();
@@ -125,7 +125,7 @@ impl Juego {
         output_path: &String,
         coordenada: Coordenada,
     ) -> io::Result<()> {
-        let mut tablero = self.posicionar_elementos_en_tablero();
+        let mut tablero: Vec<Vec<String>> = self.posicionar_elementos_en_tablero();
 
         self.detonar_bomba(&mut tablero, coordenada);
         println!("Tablero inicial: ");
@@ -140,7 +140,9 @@ impl Juego {
         for row in &tablero {
             let row_str: String = row
                 .iter()
-                .map(|&c| c.to_string())
+                .map(|c| {
+                    c.to_string()
+                })
                 .collect::<Vec<_>>()
                 .join(" ");
             writeln!(output_file, "{}", row_str)?;
@@ -170,7 +172,7 @@ impl Juego {
         false
     }
 
-    fn funcion_bomba(&mut self, bomba: &Bomba, tablero: &mut Vec<Vec<char>>) {
+    fn funcion_bomba(&mut self, bomba: &Bomba, tablero: &mut Vec<Vec<String>>) {
         let alcance = bomba.alcance;
         let coordenada = bomba.coordenada;
 
@@ -183,24 +185,27 @@ impl Juego {
 
             while incremento <= alcance {
                 if x >= 0 && y >= 0 && x < tablero.len() as i8 && y < tablero[0].len() as i8 {
-                    let casilla = tablero[x as usize][y as usize];
+                    let casilla = &tablero[x as usize][y as usize];
 
                     match casilla {
-                        ENEMIGO => {
+                        a if a.starts_with(&ENEMIGO) => {
                             let coordenada_enemigo = Coordenada::new(x, y);
                             self.eliminar_enemigo(coordenada_enemigo);
                         }
-                        BOMBA_DE_TRANSPASO | BOMBA_NORMAL => {
+                        b if b.starts_with(&BOMBA_DE_TRANSPASO) || b.starts_with(&BOMBA_NORMAL) => {
                             let coordenada_bomba = Coordenada::new(x, y);
                             self.detonar_bomba(tablero, coordenada_bomba);
                         }
-                        ROCA => {
+                        c if c.starts_with(&DESVIO) => {
+                            //Not yet implemented
+                        }
+                        d if d.starts_with(&ROCA) => {
                             if bomba.tipo == TipoDeBomba::Normal {
                                 println!("Las bombas normales no pueden atravesar rocas.");
                                 break; // Detenerse si es una roca y la bomba es normal
                             }
                         }
-                        PARED => {
+                        e if e.starts_with(&PARED) => {
                             println!("Ninguna pared puede ser atravesada.");
                             break; // Detenerse si es una pared
                         }
@@ -217,7 +222,7 @@ impl Juego {
         }
     }
 
-    fn detonar_bomba(&mut self, tablero: &mut Vec<Vec<char>>, coordenada: Coordenada) {
+    fn detonar_bomba(&mut self, tablero: &mut Vec<Vec<String>>, coordenada: Coordenada) {
         let mut bomba_index: Option<usize> = None;
 
         for (i, bomba) in self.bombas.iter().enumerate().rev() {

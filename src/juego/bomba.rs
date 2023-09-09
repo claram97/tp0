@@ -1,6 +1,4 @@
 use crate::juego::coordenada::Coordenada;
-const BOMBA_NORMAL: char = 'B';
-const BOMBA_DE_TRANSPASO: char = 'S';
 
 #[derive(Debug, PartialEq, Eq, Clone)]
 pub enum TipoDeBomba {
@@ -8,8 +6,9 @@ pub enum TipoDeBomba {
     Traspaso,
 }
 
+#[derive(Clone)]
 pub struct Bomba {
-    pub id: char,
+    pub id: String,
     pub alcance: i8,
     pub tipo: TipoDeBomba,
     pub coordenada: Coordenada,
@@ -17,12 +16,7 @@ pub struct Bomba {
 }
 
 impl Bomba {
-    pub fn new(coordenada: Coordenada, alcance: i8, tipo: TipoDeBomba) -> Bomba {
-        let id = if tipo == TipoDeBomba::Normal {
-            BOMBA_NORMAL
-        } else {
-            BOMBA_DE_TRANSPASO
-        };
+    pub fn new(coordenada: Coordenada, alcance: i8, tipo: TipoDeBomba, id : String) -> Bomba {
         let detonada: bool = false;
         Bomba {
             detonada,
@@ -37,7 +31,7 @@ impl Bomba {
         self.detonada = true;
     }
 }
-
+/*
 impl Clone for Bomba {
     fn clone(&self) -> Self {
         Bomba {
@@ -48,4 +42,4 @@ impl Clone for Bomba {
             coordenada: self.coordenada, // Clonar el campo coordenada si es clonable
         }
     }
-}
+} */

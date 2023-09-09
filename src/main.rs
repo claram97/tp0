@@ -42,7 +42,7 @@ fn procesar_bomba(palabra: &str, punto: Coordenada, juego: &mut Juego) -> io::Re
             } else {
                 TipoDeBomba::Normal
             };
-            juego.inicializar_bomba(punto, alcance, tipo);
+            juego.inicializar_bomba(punto, alcance, tipo, palabra.to_string());
         } else {
             return Err(io::Error::new(
                 io::ErrorKind::InvalidData,
@@ -62,7 +62,7 @@ fn procesar_enemigo(palabra: &str, punto: Coordenada, juego: &mut Juego) -> io::
     if let Some(segundo_caracter) = palabra.chars().nth(1) {
         if let Some(digito) = segundo_caracter.to_digit(10) {
             let vida = digito as i8;
-            juego.inicializar_enemigo(punto, vida);
+            juego.inicializar_enemigo(punto, vida, palabra.to_string());
         } else {
             return Err(io::Error::new(
                 io::ErrorKind::InvalidData,
@@ -81,7 +81,7 @@ fn procesar_enemigo(palabra: &str, punto: Coordenada, juego: &mut Juego) -> io::
 fn procesar_desvio(palabra: &str, punto: Coordenada, juego: &mut Juego) -> io::Result<()> {
     if let Some(segundo_caracter) = palabra.chars().nth(1) {
         let direccion = segundo_caracter;
-        juego.inicializar_desvio(punto, direccion);
+        juego.inicializar_desvio(punto, direccion.to_string(), palabra.to_string());
     } else {
         return Err(io::Error::new(
             io::ErrorKind::InvalidData,

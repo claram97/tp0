@@ -1,6 +1,4 @@
 use crate::juego::coordenada::Coordenada;
-const PARED: char = 'W';
-const ROCA: char = 'R';
 
 #[derive(Debug, PartialEq, Eq)]
 pub enum TipoDeObstaculo {
@@ -11,15 +9,15 @@ pub enum TipoDeObstaculo {
 pub struct Obstaculo {
     pub coordenada: Coordenada,
     pub tipo: TipoDeObstaculo,
-    pub id: char,
+    pub id: String,
 }
 
 impl Obstaculo {
     pub fn new(tipo: TipoDeObstaculo, coordenada: Coordenada) -> Obstaculo {
         let id = if tipo == TipoDeObstaculo::Pared {
-            PARED
+            "W".to_string()
         } else {
-            ROCA
+            "R".to_string()
         };
         Obstaculo {
             id,
