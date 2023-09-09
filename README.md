@@ -5,3 +5,4 @@
 * Revisar la funcionalidad de las bombas
 * Intentar reemplazar el clone por algún puntero
 * Documentación
+* Test's
