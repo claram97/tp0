@@ -62,7 +62,7 @@ fn procesar_enemigo(palabra: &str, punto: Coordenada, juego: &mut Juego) -> io::
     if let Some(segundo_caracter) = palabra.chars().nth(1) {
         if let Some(digito) = segundo_caracter.to_digit(10) {
             let vida = digito as i8;
-            juego.inicializar_enemigo(punto, vida, palabra.to_string());
+            juego.inicializar_enemigo(punto, vida);
         } else {
             return Err(io::Error::new(
                 io::ErrorKind::InvalidData,

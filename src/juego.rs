@@ -51,8 +51,8 @@ impl Juego {
         self.desvios.push(desvio);
     }
 
-    pub fn inicializar_enemigo(&mut self, coordenada: Coordenada, vida: i8, id: String) {
-        let enemigo: Enemigo = Enemigo::new(coordenada, vida, id);
+    pub fn inicializar_enemigo(&mut self, coordenada: Coordenada, vida: i8) {
+        let enemigo: Enemigo = Enemigo::new(coordenada, vida);
         self.enemigos.push(enemigo);
     }
 
@@ -80,8 +80,9 @@ impl Juego {
 
     fn posicionar_enemigos(&self, tablero: &mut [Vec<String>]) {
         for enemigo in &self.enemigos {
+            let id = "F".to_string() + &enemigo.vida.to_string(); 
             tablero[enemigo.coordenada.x as usize][enemigo.coordenada.y as usize] =
-                enemigo.id.clone();
+                id;
         }
     }
 
