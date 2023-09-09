@@ -7,7 +7,7 @@ pub struct Desvio {
 }
 
 impl Desvio {
-    pub fn new(coordenada: Coordenada, direccion: String, id : String) -> Desvio {
+    pub fn new(coordenada: Coordenada, direccion: String, id: String) -> Desvio {
         Desvio {
             id,
             direccion,

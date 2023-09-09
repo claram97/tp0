@@ -16,7 +16,7 @@ pub struct Bomba {
 }
 
 impl Bomba {
-    pub fn new(coordenada: Coordenada, alcance: i8, tipo: TipoDeBomba, id : String) -> Bomba {
+    pub fn new(coordenada: Coordenada, alcance: i8, tipo: TipoDeBomba, id: String) -> Bomba {
         let detonada: bool = false;
         Bomba {
             detonada,

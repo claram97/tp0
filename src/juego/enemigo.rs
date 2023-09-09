@@ -7,7 +7,7 @@ pub struct Enemigo {
 }
 
 impl Enemigo {
-    pub fn new(coordenada: Coordenada, vida: i8, id : String) -> Enemigo {
+    pub fn new(coordenada: Coordenada, vida: i8, id: String) -> Enemigo {
         Enemigo {
             id,
             vida,

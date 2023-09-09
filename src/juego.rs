@@ -46,12 +46,12 @@ impl Juego {
         self.dimension = dimension;
     }
 
-    pub fn inicializar_desvio(&mut self, coordenada: Coordenada, direccion: String, id : String) {
+    pub fn inicializar_desvio(&mut self, coordenada: Coordenada, direccion: String, id: String) {
         let desvio: Desvio = Desvio::new(coordenada, direccion, id);
         self.desvios.push(desvio);
     }
 
-    pub fn inicializar_enemigo(&mut self, coordenada: Coordenada, vida: i8, id : String) {
+    pub fn inicializar_enemigo(&mut self, coordenada: Coordenada, vida: i8, id: String) {
         let enemigo: Enemigo = Enemigo::new(coordenada, vida, id);
         self.enemigos.push(enemigo);
     }
@@ -65,7 +65,8 @@ impl Juego {
         &mut self,
         coordenada: Coordenada,
         alcance: i8,
-        tipo: bomba::TipoDeBomba, id : String
+        tipo: bomba::TipoDeBomba,
+        id: String,
     ) {
         println!("Inicializar bomba en: ({},{})", coordenada.x, coordenada.y);
         let bomba: Bomba = Bomba::new(coordenada, alcance, tipo, id);
@@ -79,13 +80,15 @@ impl Juego {
 
     fn posicionar_enemigos(&self, tablero: &mut [Vec<String>]) {
         for enemigo in &self.enemigos {
-            tablero[enemigo.coordenada.x as usize][enemigo.coordenada.y as usize] = enemigo.id.clone();
+            tablero[enemigo.coordenada.x as usize][enemigo.coordenada.y as usize] =
+                enemigo.id.clone();
         }
     }
 
     fn posicionar_obstaculos(&self, tablero: &mut [Vec<String>]) {
         for obstaculo in &self.obstaculos {
-            tablero[obstaculo.coordenada.x as usize][obstaculo.coordenada.y as usize] = obstaculo.id.clone();
+            tablero[obstaculo.coordenada.x as usize][obstaculo.coordenada.y as usize] =
+                obstaculo.id.clone();
         }
     }
 
@@ -140,9 +143,7 @@ impl Juego {
         for row in &tablero_final {
             let row_str: String = row
                 .iter()
-                .map(|c| {
-                    c.to_string()
-                })
+                .map(|c| c.to_string())
                 .collect::<Vec<_>>()
                 .join(" ");
             writeln!(output_file, "{}", row_str)?;
@@ -159,9 +160,9 @@ impl Juego {
             .position(|enemigo| enemigo.coordenada.is_equal_to(&coordenada))
         {
             if self.enemigos[i].vida > 0 {
-                println!("Vida inicial: {}",self.enemigos[i].vida);
+                println!("Vida inicial: {}", self.enemigos[i].vida);
                 self.enemigos[i].vida -= 1;
-                println!("Vida actual: {}",self.enemigos[i].vida);
+                println!("Vida actual: {}", self.enemigos[i].vida);
                 if self.enemigos[i].vida == 0 {
                     self.enemigos.swap_remove(i);
                     return true;
@@ -188,24 +189,24 @@ impl Juego {
                     let casilla = &tablero[x as usize][y as usize];
 
                     match casilla {
-                        a if a.starts_with(&ENEMIGO) => {
+                        a if a.starts_with(ENEMIGO) => {
                             let coordenada_enemigo = Coordenada::new(x, y);
                             self.eliminar_enemigo(coordenada_enemigo);
                         }
-                        b if b.starts_with(&BOMBA_DE_TRANSPASO) || b.starts_with(&BOMBA_NORMAL) => {
+                        b if b.starts_with(BOMBA_DE_TRANSPASO) || b.starts_with(BOMBA_NORMAL) => {
                             let coordenada_bomba = Coordenada::new(x, y);
                             self.detonar_bomba(tablero, coordenada_bomba);
                         }
-                        c if c.starts_with(&DESVIO) => {
+                        c if c.starts_with(DESVIO) => {
                             //Not yet implemented
                         }
-                        d if d.starts_with(&ROCA) => {
+                        d if d.starts_with(ROCA) => {
                             if bomba.tipo == TipoDeBomba::Normal {
                                 println!("Las bombas normales no pueden atravesar rocas.");
                                 break; // Detenerse si es una roca y la bomba es normal
                             }
                         }
-                        e if e.starts_with(&PARED) => {
+                        e if e.starts_with(PARED) => {
                             println!("Ninguna pared puede ser atravesada.");
                             break; // Detenerse si es una pared
                         }
