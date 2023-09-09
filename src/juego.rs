@@ -3,6 +3,8 @@ pub mod enemigo;
 pub mod obstaculo;
 pub mod bomba;
 pub mod desvio;
+use std::{fs::File, io::{Write, self}};
+
 use obstaculo::Obstaculo;
 use enemigo::Enemigo;
 use bomba::Bomba;
@@ -106,7 +108,7 @@ impl Juego {
         }
     }
     
-    pub fn realizar_jugada(&mut self,output_path: &String,coordenada: Coordenada) {
+    pub fn realizar_jugada(&mut self,output_path: &String,coordenada: Coordenada) -> io::Result<()> {
         let mut tablero: Vec<Vec<char>> = vec![vec!['_'; self.dimension as usize]; self.dimension as usize];
         self.posicionar_elementos_en_tablero(&mut tablero);
 
@@ -118,7 +120,14 @@ impl Juego {
         println!("Tablero final: ");
         self.imprimir_tablero(&tablero);
 
-        println!("output path: {}",output_path);
+        let mut output_file = File::create(output_path)?;
+
+        for row in &tablero {
+            let row_str: String = row.iter().map(|&c| c.to_string()).collect::<Vec<_>>().join(" ");
+            writeln!(output_file, "{}", row_str)?;
+        }
+
+        Ok(())
     }
 
     fn eliminar_enemigo(&mut self, coordenada: Coordenada) -> bool {

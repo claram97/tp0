@@ -1,6 +1,5 @@
 use std::env;
 use std::fs::File;
-//use std::io::{self, BufRead, Write};
 use std::io::{self, BufRead};
 mod juego;
 use juego::Juego;
@@ -147,6 +146,34 @@ fn procesar_linea_de_configuracion(l: &str, filas: &mut i8, coordenada_y: &mut i
     *coordenada_y = 0;
     Ok(())
 }
+
+fn inicializar_coordenada_de_la_bomba(args : &[String],coordenada_bomba : &mut Coordenada) -> io::Result<()> {
+    let x: i8;
+    let y: i8;
+
+    if let Ok(arg) = args[3].parse::<i8>() {
+        x = arg;
+    }
+    else {
+        return Err(io::Error::new(
+            io::ErrorKind::InvalidData,
+            "Error en coordenada x.",
+        ));
+    }
+    if let Ok(arg) = args[4].parse::<i8>() {
+        y = arg;
+    }
+    else {
+        return Err(io::Error::new(
+            io::ErrorKind::InvalidData,
+            "Error en coordenada y.",
+        ));
+    }
+
+    *coordenada_bomba = Coordenada::new(x,y);
+    Ok(())
+}
+
 fn main() -> io::Result<()> {
     let args: Vec<String> = env::args().collect();
     match chequear_argumentos(&args) {
@@ -199,32 +226,17 @@ fn main() -> io::Result<()> {
 
     juego.inicializar_dimension(filas);
 
-    let x: i8;
-    let y: i8;
-
-    if let Ok(arg) = args[3].parse::<i8>() {
-        x = arg;
+    let mut coordenada_bomba : Coordenada = Coordenada::new(0,0);
+    let mut resultado = inicializar_coordenada_de_la_bomba(&args, &mut coordenada_bomba);
+    match resultado {
+        Ok(()) => {},
+        Err(e) => {return Err(e)} 
     }
-    else {
-        return Err(io::Error::new(
-            io::ErrorKind::InvalidData,
-            "Error en coordenada x.",
-        ));
+    resultado = juego.realizar_jugada(output_file_name,coordenada_bomba);
+    match resultado {
+        Ok(()) => {},
+        Err(e) => {return Err(e)} 
     }
-    if let Ok(arg) = args[4].parse::<i8>() {
-        // Intenta convertir el argumento en i8
-        y = arg;
-    }
-    else {
-        return Err(io::Error::new(
-            io::ErrorKind::InvalidData,
-            "Error en coordenada y.",
-        ));
-    }
-
-    let coordenada_bomba : Coordenada = Coordenada::new(x,y);
-
-    juego.realizar_jugada(output_file_name,coordenada_bomba);
 
     Ok(())   
 }
