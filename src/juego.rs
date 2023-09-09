@@ -66,31 +66,31 @@ impl Juego {
         self.obstaculos.push(pared);
     }
 
-    fn posicionar_enemigos(&self,tablero : &mut Vec<Vec<char>>) {
+    fn posicionar_enemigos(&self,tablero : &mut [Vec<char>]) {
         for enemigo in &self.enemigos {
             tablero[enemigo.coordenada.x as usize][enemigo.coordenada.y as usize] = enemigo.id;
         }
     }
 
-    fn posicionar_obstaculos(&self,tablero : &mut Vec<Vec<char>>) {
+    fn posicionar_obstaculos(&self,tablero : &mut [Vec<char>]) {
         for obstaculo in &self.obstaculos {
             tablero[obstaculo.coordenada.x as usize][obstaculo.coordenada.y as usize] = obstaculo.id;
         }
     }
     
-    fn posicionar_bombas(&self,tablero : &mut Vec<Vec<char>>) {
+    fn posicionar_bombas(&self,tablero : &mut [Vec<char>]) {
         for bomba in &self.bombas {
             tablero[bomba.coordenada.x as usize][bomba.coordenada.y as usize] = bomba.id;
         }
     }
 
-    fn posicionar_desvios(&self,tablero : &mut Vec<Vec<char>>) {
+    fn posicionar_desvios(&self,tablero : &mut [Vec<char>]) {
         for desvio in &self.desvios {
             tablero[desvio.coordenada.x as usize][desvio.coordenada.y as usize] = desvio.direccion;
         }
     }
 
-    fn posicionar_elementos_en_tablero(&self,tablero : &mut Vec<Vec<char>>) {
+    fn posicionar_elementos_en_tablero(&self,tablero : &mut [Vec<char>]) {
         self.posicionar_enemigos(tablero);
         self.posicionar_bombas(tablero);
         self.posicionar_desvios(tablero);

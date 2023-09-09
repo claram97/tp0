@@ -47,7 +47,7 @@ impl Clone for Bomba {
             id: self.id,
             alcance: self.alcance,
             tipo: self.tipo.clone(), // Clonar el campo tipo si es clonable
-            coordenada: self.coordenada.clone(), // Clonar el campo coordenada si es clonable
+            coordenada: self.coordenada, // Clonar el campo coordenada si es clonable
         }
     }
 }

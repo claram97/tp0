@@ -199,8 +199,8 @@ fn main() -> io::Result<()> {
 
     juego.inicializar_dimension(filas);
 
-    let mut x: i8 = 0;
-    let mut y: i8 = 0;
+    let x: i8;
+    let y: i8;
 
     if let Ok(arg) = args[3].parse::<i8>() {
         x = arg;
