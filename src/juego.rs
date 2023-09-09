@@ -137,7 +137,7 @@ impl Juego {
 
         let mut output_file = File::create(output_path)?;
 
-        for row in &tablero {
+        for row in &tablero_final {
             let row_str: String = row
                 .iter()
                 .map(|c| {
