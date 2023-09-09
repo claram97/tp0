@@ -2,9 +2,9 @@ use std::env;
 use std::fs::File;
 use std::io::{self, BufRead};
 mod juego;
-use juego::Juego;
-use crate::juego::coordenada::Coordenada;
 use crate::juego::bomba::TipoDeBomba;
+use crate::juego::coordenada::Coordenada;
+use juego::Juego;
 use std::fmt;
 
 const DESVIO: char = 'D';
@@ -33,11 +33,7 @@ impl fmt::Display for CustomError {
     }
 }
 
-fn procesar_bomba(
-    palabra: &str,
-    punto: Coordenada,
-    juego: &mut Juego,
-) -> io::Result<()> {
+fn procesar_bomba(palabra: &str, punto: Coordenada, juego: &mut Juego) -> io::Result<()> {
     if let Some(segundo_caracter) = palabra.chars().nth(1) {
         if let Some(digito) = segundo_caracter.to_digit(10) {
             let alcance = digito as i8;
@@ -48,96 +44,100 @@ fn procesar_bomba(
             };
             juego.inicializar_bomba(punto, alcance, tipo);
         } else {
-            return Err(io::Error::new(io::ErrorKind::InvalidData,"Error al intentar inicializar la bomba con el número de alcance dado.",))
+            return Err(io::Error::new(
+                io::ErrorKind::InvalidData,
+                "Error al intentar inicializar la bomba con el número de alcance dado.",
+            ));
         }
     } else {
-        return Err(io::Error::new(io::ErrorKind::InvalidInput,"No se pudo determinar el alcance de la bomba.",));
+        return Err(io::Error::new(
+            io::ErrorKind::InvalidInput,
+            "No se pudo determinar el alcance de la bomba.",
+        ));
     }
     Ok(())
 }
 
-fn procesar_enemigo(
-    palabra: &str,
-    punto: Coordenada,
-    juego: &mut Juego,
-) -> io::Result<()> {
+fn procesar_enemigo(palabra: &str, punto: Coordenada, juego: &mut Juego) -> io::Result<()> {
     if let Some(segundo_caracter) = palabra.chars().nth(1) {
         if let Some(digito) = segundo_caracter.to_digit(10) {
             let vida = digito as i8;
-            juego.inicializar_enemigo(punto,vida);
+            juego.inicializar_enemigo(punto, vida);
+        } else {
+            return Err(io::Error::new(
+                io::ErrorKind::InvalidData,
+                "Error al intentar inicializar el enemigo con el puntaje de vida dado.",
+            ));
         }
-        else {
-            return Err(io::Error::new(io::ErrorKind::InvalidData,"Error al intentar inicializar el enemigo con el puntaje de vida dado.",));
-        }
-    }
-    else {
-        return Err(io::Error::new(io::ErrorKind::InvalidInput,"No se pudo determinar la vida del enemigo.",));
+    } else {
+        return Err(io::Error::new(
+            io::ErrorKind::InvalidInput,
+            "No se pudo determinar la vida del enemigo.",
+        ));
     }
     Ok(())
 }
 
-fn procesar_desvio(
-    palabra: &str,
-    punto: Coordenada,
-    juego: &mut Juego,
-) -> io::Result<()> {
+fn procesar_desvio(palabra: &str, punto: Coordenada, juego: &mut Juego) -> io::Result<()> {
     if let Some(segundo_caracter) = palabra.chars().nth(1) {
         let direccion = segundo_caracter;
         juego.inicializar_desvio(punto, direccion);
-    }
-    else {
-        return Err(io::Error::new(io::ErrorKind::InvalidData,"Error al intentar inicializar el desvío en la dirección dada.",));
+    } else {
+        return Err(io::Error::new(
+            io::ErrorKind::InvalidData,
+            "Error al intentar inicializar el desvío en la dirección dada.",
+        ));
     }
     Ok(())
 }
 
-fn funcion(punto: Coordenada,palabra: &str,juego: &mut Juego) -> io::Result<()> {
-        if palabra == PARED {
-            juego.inicializar_pared(punto);
-        }
-        else if palabra == ROCA {
-            juego.inicializar_roca(punto);
-        }
-        else if palabra.starts_with(BOMBA_DE_TRANSPASO) || palabra.starts_with(BOMBA_NORMAL){
-            let resultado = procesar_bomba(palabra, punto, juego);
-            match resultado {
-                Ok(()) => {}
-                Err(e) => {
-                    return Err(e);
-                }
-            }
-        }  
-        else if palabra.starts_with(ENEMIGO) {
-            let resultado = procesar_enemigo(palabra, punto, juego);
-            match resultado {
-                Ok(()) => {}
-                Err(e) => {
-                    return Err(e);
-                }
-            }
-        }
-        else if palabra.starts_with(DESVIO) {
-            let resultado = procesar_desvio(palabra, punto, juego);
-            match resultado {
-                Ok(()) => {}
-                Err(e) => {
-                    return Err(e);
-                }
-            }
-        }
-    Ok(())
-}
-
-fn procesar_linea_de_configuracion(l: &str, filas: &mut i8, coordenada_y: &mut i8,juego: &mut Juego) -> io::Result<()> {
-
-    let palabras: Vec<&str> = l.split_whitespace().collect();
-    for palabra in palabras {
-        let punto = Coordenada::new(*filas, *coordenada_y);
-        let resultado = funcion(punto,palabra,juego);
+fn funcion(punto: Coordenada, palabra: &str, juego: &mut Juego) -> io::Result<()> {
+    if palabra == PARED {
+        juego.inicializar_pared(punto);
+    } else if palabra == ROCA {
+        juego.inicializar_roca(punto);
+    } else if palabra.starts_with(BOMBA_DE_TRANSPASO) || palabra.starts_with(BOMBA_NORMAL) {
+        let resultado = procesar_bomba(palabra, punto, juego);
         match resultado {
             Ok(()) => {}
             Err(e) => {
-                    return Err(e);
+                return Err(e);
+            }
+        }
+    } else if palabra.starts_with(ENEMIGO) {
+        let resultado = procesar_enemigo(palabra, punto, juego);
+        match resultado {
+            Ok(()) => {}
+            Err(e) => {
+                return Err(e);
+            }
+        }
+    } else if palabra.starts_with(DESVIO) {
+        let resultado = procesar_desvio(palabra, punto, juego);
+        match resultado {
+            Ok(()) => {}
+            Err(e) => {
+                return Err(e);
+            }
+        }
+    }
+    Ok(())
+}
+
+fn procesar_linea_de_configuracion(
+    l: &str,
+    filas: &mut i8,
+    coordenada_y: &mut i8,
+    juego: &mut Juego,
+) -> io::Result<()> {
+    let palabras: Vec<&str> = l.split_whitespace().collect();
+    for palabra in palabras {
+        let punto = Coordenada::new(*filas, *coordenada_y);
+        let resultado = funcion(punto, palabra, juego);
+        match resultado {
+            Ok(()) => {}
+            Err(e) => {
+                return Err(e);
             }
         }
         *coordenada_y += 1;
@@ -147,14 +147,16 @@ fn procesar_linea_de_configuracion(l: &str, filas: &mut i8, coordenada_y: &mut i
     Ok(())
 }
 
-fn inicializar_coordenada_de_la_bomba(args : &[String],coordenada_bomba : &mut Coordenada) -> io::Result<()> {
+fn inicializar_coordenada_de_la_bomba(
+    args: &[String],
+    coordenada_bomba: &mut Coordenada,
+) -> io::Result<()> {
     let x: i8;
     let y: i8;
 
     if let Ok(arg) = args[3].parse::<i8>() {
         x = arg;
-    }
-    else {
+    } else {
         return Err(io::Error::new(
             io::ErrorKind::InvalidData,
             "Error en coordenada x.",
@@ -162,23 +164,21 @@ fn inicializar_coordenada_de_la_bomba(args : &[String],coordenada_bomba : &mut C
     }
     if let Ok(arg) = args[4].parse::<i8>() {
         y = arg;
-    }
-    else {
+    } else {
         return Err(io::Error::new(
             io::ErrorKind::InvalidData,
             "Error en coordenada y.",
         ));
     }
 
-    *coordenada_bomba = Coordenada::new(x,y);
+    *coordenada_bomba = Coordenada::new(x, y);
     Ok(())
 }
 
 fn main() -> io::Result<()> {
     let args: Vec<String> = env::args().collect();
     match chequear_argumentos(&args) {
-        Ok(_) => {
-        }
+        Ok(_) => {}
         Err(e) => {
             return Err(e);
         }
@@ -187,10 +187,10 @@ fn main() -> io::Result<()> {
     let output_file_name: &String = &args[2];
     //let mut output_file = File::create(output_file_name)?;
     /*
-    let contenido = "Hola, este es un ejemplo de escritura en un archivo desde Rust.\n";
+       let contenido = "Hola, este es un ejemplo de escritura en un archivo desde Rust.\n";
 
-    output_file.write_all(contenido.as_bytes())?;
- */
+       output_file.write_all(contenido.as_bytes())?;
+    */
     let maze_file_name: &String = &args[1];
     let maze_file = File::open(maze_file_name)?;
     let reader = io::BufReader::new(maze_file);
@@ -202,19 +202,15 @@ fn main() -> io::Result<()> {
     for linea in reader.lines() {
         match linea {
             Ok(l) => {
-                let resultado = procesar_linea_de_configuracion(&l, &mut filas, &mut coordenada_y,&mut juego);
+                let resultado =
+                    procesar_linea_de_configuracion(&l, &mut filas, &mut coordenada_y, &mut juego);
                 match resultado {
-                    Ok(_) => {
-                        continue
-                    }
+                    Ok(_) => continue,
                     Err(err) => {
-                        return Err(io::Error::new(
-                            io::ErrorKind::Other,
-                            err.to_string(),
-                        ));
+                        return Err(io::Error::new(io::ErrorKind::Other, err.to_string()));
                     }
                 }
-            }    
+            }
             Err(_e) => {
                 return Err(io::Error::new(
                     io::ErrorKind::UnexpectedEof,
@@ -226,30 +222,17 @@ fn main() -> io::Result<()> {
 
     juego.inicializar_dimension(filas);
 
-    let mut coordenada_bomba : Coordenada = Coordenada::new(0,0);
+    let mut coordenada_bomba: Coordenada = Coordenada::new(0, 0);
     let mut resultado = inicializar_coordenada_de_la_bomba(&args, &mut coordenada_bomba);
     match resultado {
-        Ok(()) => {},
-        Err(e) => {return Err(e)} 
+        Ok(()) => {}
+        Err(e) => return Err(e),
     }
-    resultado = juego.realizar_jugada(output_file_name,coordenada_bomba);
+    resultado = juego.realizar_jugada(output_file_name, coordenada_bomba);
     match resultado {
-        Ok(()) => {},
-        Err(e) => {return Err(e)} 
+        Ok(()) => {}
+        Err(e) => return Err(e),
     }
 
-    Ok(())   
+    Ok(())
 }
-
-    
-/*     let output_dir = &args[3];
-    let x = &args[4];
-    let y = &args[5];
-
-    // Ahora puedes utilizar las variables `maze_file`, `output_dir`, `x` y `y` en tu programa
-    println!("Laberinto: {}", maze_file);
-    println!("Directorio de salida: {}", output_dir);
-    println!("X: {}", x);
-    println!("Y: {}", y);
- */
-

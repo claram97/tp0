@@ -1,7 +1,7 @@
 #[derive(Debug, Copy, Clone)]
 pub struct Coordenada {
     pub x: i8,
-    pub y: i8
+    pub y: i8,
 }
 
 impl Coordenada {
@@ -9,8 +9,7 @@ impl Coordenada {
         Coordenada { x, y }
     }
 
-    pub fn is_equal_to(&self,coordenada: &Coordenada) -> bool{
+    pub fn is_equal_to(&self, coordenada: &Coordenada) -> bool {
         self.x == coordenada.x && self.y == coordenada.y
     }
-
 }

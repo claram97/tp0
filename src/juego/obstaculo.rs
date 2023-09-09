@@ -1,17 +1,17 @@
 use crate::juego::coordenada::Coordenada;
-const PARED : char = 'W';
-const ROCA : char = 'R';
+const PARED: char = 'W';
+const ROCA: char = 'R';
 
 #[derive(Debug, PartialEq, Eq)]
 pub enum TipoDeObstaculo {
     Pared,
-    Roca
+    Roca,
 }
 
 pub struct Obstaculo {
     pub coordenada: Coordenada,
     pub tipo: TipoDeObstaculo,
-    pub id: char
+    pub id: char,
 }
 
 impl Obstaculo {

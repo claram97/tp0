@@ -1,4 +1,3 @@
-
 use crate::juego::coordenada::Coordenada;
 
 pub struct Enemigo {
