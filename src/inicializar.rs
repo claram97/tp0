@@ -357,17 +357,14 @@ fn inicializar_coordenada_de_la_bomba(args: &[String]) -> io::Result<Coordenada>
 fn crear_archivo_en_ruta(ruta_entrada: &str) -> io::Result<File> {
     let ruta = Path::new(ruta_entrada);
 
-    let ruta_completa: PathBuf;
     if ruta.is_absolute() {
-        ruta_completa = ruta.to_path_buf();
+        let ruta_completa: PathBuf = ruta.to_path_buf();
+        File::create(ruta_completa)
     } else {
         let directorio_actual = std::env::current_dir()?;
-        ruta_completa = directorio_actual.join(ruta);
+        let ruta_completa: PathBuf = directorio_actual.join(ruta);
+        File::create(ruta_completa)
     }
-
-    println!("ruta de salida: {}", ruta_completa.to_string_lossy());
-
-    File::create(ruta_completa)
 }
 
 /// Ejecuta el programa principal.
@@ -406,7 +403,7 @@ pub fn run(args: Vec<String>) -> io::Result<()> {
     let maze_file_name = &args[1];
     let output_file_name = &args[2];
 
-    let mut output_file = crear_archivo_en_ruta(&output_file_name)?;
+    let mut output_file = crear_archivo_en_ruta(output_file_name)?;
 
     let mut juego = match cargar_juego(maze_file_name) {
         Ok(juego) => juego,

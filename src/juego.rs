@@ -288,7 +288,7 @@ impl Juego {
     ///
     pub fn realizar_jugada(
         &mut self,
-        mut output_file: &mut File,
+        output_file: &mut File,
         coordenada: Coordenada,
     ) -> io::Result<()> {
         let mut tablero: Vec<Vec<String>> = self.posicionar_elementos_en_tablero();
@@ -305,7 +305,7 @@ impl Juego {
         println!("Tablero final: ");
         self.imprimir_tablero(&tablero_final);
 
-        self.imprimir_tablero_en_archivo(&mut output_file, &tablero_final)?;
+        self.imprimir_tablero_en_archivo(output_file, &tablero_final)?;
         /*for row in &tablero_final {
             let row_str: String = row
                 .iter()
