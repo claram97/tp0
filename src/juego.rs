@@ -46,25 +46,71 @@ impl Juego {
         }
     }
 
+    /// Inicializa la dimensión del juego.
+    ///
+    /// Esta función establece la dimensión del juego con el valor proporcionado.
+    ///
+    /// # Argumentos
+    ///
+    /// * `dimension`: El valor de la dimensión del juego.
+    ///
     pub fn inicializar_dimension(&mut self, dimension: i8) {
         self.dimension = dimension;
     }
 
+    /// Inicializa un desvío en el juego.
+    ///
+    /// Esta función crea y agrega un nuevo desvío al juego con la coordenada, dirección e identificador especificados.
+    ///
+    /// # Argumentos
+    ///
+    /// * `coordenada`: La coordenada en la que se inicializa el desvío.
+    /// * `direccion`: La dirección del desvío.
+    /// * `id`: El identificador del desvío.
+    ///
     pub fn inicializar_desvio(&mut self, coordenada: Coordenada, direccion: String, id: String) {
         let desvio: Desvio = Desvio::new(coordenada, direccion, id);
         self.desvios.push(desvio);
     }
 
+    /// Inicializa un enemigo en el juego.
+    ///
+    /// Esta función crea y agrega un nuevo enemigo al juego con la coordenada y puntos de vida especificados.
+    ///
+    /// # Argumentos
+    ///
+    /// * `coordenada`: La coordenada en la que se inicializa el enemigo.
+    /// * `vida`: Los puntos de vida del enemigo.
+    ///
     pub fn inicializar_enemigo(&mut self, coordenada: Coordenada, vida: i8) {
         let enemigo: Enemigo = Enemigo::new(coordenada, vida);
         self.enemigos.push(enemigo);
     }
 
+    /// Inicializa una roca en el juego.
+    ///
+    /// Esta función crea y agrega una nueva roca al juego en la coordenada especificada.
+    ///
+    /// # Argumentos
+    ///
+    /// * `coordenada`: La coordenada en la que se inicializa la roca.
+    ///
     pub fn inicializar_roca(&mut self, coordenada: Coordenada) {
         let roca: Obstaculo = Obstaculo::new(obstaculo::TipoDeObstaculo::Roca, coordenada);
         self.obstaculos.push(roca);
     }
 
+    /// Inicializa una bomba en el juego.
+    ///
+    /// Esta función crea y agrega una nueva bomba al juego con la coordenada, alcance, tipo e identificador especificados.
+    ///
+    /// # Argumentos
+    ///
+    /// * `coordenada`: La coordenada en la que se inicializa la bomba.
+    /// * `alcance`: El alcance de la bomba.
+    /// * `tipo`: El tipo de bomba.
+    /// * `id`: El identificador de la bomba.
+    ///
     pub fn inicializar_bomba(
         &mut self,
         coordenada: Coordenada,
@@ -77,11 +123,28 @@ impl Juego {
         self.bombas.push(bomba);
     }
 
+    /// Inicializa una pared en el juego.
+    ///
+    /// Esta función crea y agrega una nueva pared al juego en la coordenada especificada.
+    ///
+    /// # Argumentos
+    ///
+    /// * `coordenada`: La coordenada en la que se inicializa la pared.
+    ///
     pub fn inicializar_pared(&mut self, coordenada: Coordenada) {
         let pared: Obstaculo = Obstaculo::new(obstaculo::TipoDeObstaculo::Pared, coordenada);
         self.obstaculos.push(pared);
     }
 
+    /// Posiciona los enemigos en el tablero del juego.
+    ///
+    /// Esta función coloca los enemigos en las coordenadas correspondientes en el tablero,
+    /// utilizando una representación única que combina el identificador y los puntos de vida del enemigo.
+    ///
+    /// # Argumentos
+    ///
+    /// * `tablero`: Una referencia mutable al tablero del juego representado como una matriz de cadenas.
+    ///
     fn posicionar_enemigos(&self, tablero: &mut [Vec<String>]) {
         for enemigo in &self.enemigos {
             let id = (enemigo.id).to_string() + &enemigo.vida.to_string();
@@ -89,6 +152,15 @@ impl Juego {
         }
     }
 
+    /// Posiciona los obstáculos en el tablero del juego.
+    ///
+    /// Esta función coloca los obstáculos en las coordenadas correspondientes en el tablero,
+    /// utilizando el identificador del obstáculo como representación.
+    ///
+    /// # Argumentos
+    ///
+    /// * `tablero`: Una referencia mutable al tablero del juego representado como una matriz de cadenas.
+    ///
     fn posicionar_obstaculos(&self, tablero: &mut [Vec<String>]) {
         for obstaculo in &self.obstaculos {
             let id: String = "".to_string() + &obstaculo.id;
@@ -96,6 +168,15 @@ impl Juego {
         }
     }
 
+    /// Posiciona las bombas en el tablero del juego.
+    ///
+    /// Esta función coloca las bombas en las coordenadas correspondientes en el tablero,
+    /// utilizando el identificador de la bomba como representación.
+    ///
+    /// # Argumentos
+    ///
+    /// * `tablero`: Una referencia mutable al tablero del juego representado como una matriz de cadenas.
+    ///
     fn posicionar_bombas(&self, tablero: &mut [Vec<String>]) {
         for bomba in &self.bombas {
             let id: String = "".to_string() + &bomba.id;
@@ -103,6 +184,15 @@ impl Juego {
         }
     }
 
+    /// Posiciona los desvíos en el tablero del juego.
+    ///
+    /// Esta función coloca los desvíos en las coordenadas correspondientes en el tablero,
+    /// utilizando el identificador del desvío como representación.
+    ///
+    /// # Argumentos
+    ///
+    /// * `tablero`: Una referencia mutable al tablero del juego representado como una matriz de cadenas.
+    ///
     fn posicionar_desvios(&self, tablero: &mut [Vec<String>]) {
         for desvio in &self.desvios {
             let id: String = "".to_string() + &desvio.id;
@@ -110,6 +200,16 @@ impl Juego {
         }
     }
 
+    /// Posiciona todos los elementos en el tablero del juego.
+    ///
+    /// Esta función crea un nuevo tablero y coloca en él todos los elementos del juego,
+    /// incluyendo enemigos, obstáculos, bombas y desvíos. El tablero es representado como
+    /// una matriz de cadenas.
+    ///
+    /// # Retorno
+    ///
+    /// Un vector de vectores de cadenas que representa el tablero del juego.
+    ///
     fn posicionar_elementos_en_tablero(&self) -> Vec<Vec<String>> {
         let mut tablero: Vec<Vec<String>> =
             vec![vec!["_".to_string(); self.dimension as usize]; self.dimension as usize];
@@ -120,6 +220,15 @@ impl Juego {
         tablero
     }
 
+    /// Imprime el tablero en la consola.
+    ///
+    /// Esta función imprime el contenido del tablero en la consola. Cada elemento del tablero se separa por espacio,
+    /// y cada fila del tablero se imprime en una nueva línea.
+    ///
+    /// # Argumentos
+    ///
+    /// * `tablero`: Un vector de vectores de cadenas que representa el tablero del juego.
+    ///
     pub fn imprimir_tablero(&self, tablero: &Vec<Vec<String>>) {
         for row in tablero {
             for element in row {
@@ -129,7 +238,25 @@ impl Juego {
         }
     }
 
-    fn imprimir_tablero_en_archivo(&self, output_file: &mut File, tablero : &Vec<Vec<String>>) -> std::io::Result<()> {
+    /// Imprime el tablero en un archivo.
+    ///
+    /// Esta función imprime el contenido del tablero en un archivo abierto en modo escritura. Cada elemento del tablero se
+    /// separa por espacio, y cada fila del tablero se imprime en una nueva línea en el archivo.
+    ///
+    /// # Argumentos
+    ///
+    /// * `output_file`: Una referencia mutable a un archivo abierto en modo escritura.
+    /// * `tablero`: Un vector de vectores de cadenas que representa el tablero del juego.
+    ///
+    /// # Errores
+    ///
+    /// Esta función devuelve un error si no se puede escribir en el archivo.
+    ///
+    pub fn imprimir_tablero_en_archivo(
+        &self,
+        output_file: &mut File,
+        tablero: &Vec<Vec<String>>,
+    ) -> std::io::Result<()> {
         for row in tablero {
             let row_str: String = row
                 .iter()
@@ -145,9 +272,23 @@ impl Juego {
         Ok(())
     }
 
+    /// Realiza una jugada en el juego y guarda el estado final en un archivo.
+    ///
+    /// Esta función realiza una jugada en el juego, detonando una bomba en la coordenada especificada.
+    /// Luego, muestra el tablero inicial y el tablero final en la consola, y guarda el tablero final en un archivo.
+    ///
+    /// # Argumentos
+    ///
+    /// * `output_file`: Una referencia mutable a un archivo abierto en modo escritura donde se guardará el tablero final.
+    /// * `coordenada`: La coordenada en la que se detonará la bomba.
+    ///
+    /// # Errores
+    ///
+    /// Esta función devuelve un error si no se puede escribir en el archivo de salida.
+    ///
     pub fn realizar_jugada(
         &mut self,
-        mut output_file : &mut File,
+        mut output_file: &mut File,
         coordenada: Coordenada,
     ) -> io::Result<()> {
         let mut tablero: Vec<Vec<String>> = self.posicionar_elementos_en_tablero();
@@ -164,7 +305,7 @@ impl Juego {
         println!("Tablero final: ");
         self.imprimir_tablero(&tablero_final);
 
-        self.imprimir_tablero_en_archivo(&mut output_file,&tablero_final)?;
+        self.imprimir_tablero_en_archivo(&mut output_file, &tablero_final)?;
         /*for row in &tablero_final {
             let row_str: String = row
                 .iter()
@@ -179,6 +320,18 @@ impl Juego {
         Ok(())
     }
 
+    /// Elimina un enemigo del juego y actualiza su estado.
+    ///
+    /// Esta función elimina un enemigo del juego si la coordenada especificada coincide con su posición.
+    /// Si la bomba que causó la eliminación del enemigo ya se ha registrado previamente, no se realiza ninguna acción adicional.
+    /// Si el enemigo aún tiene puntos de vida, se reduce su vida en uno y se actualiza su lista de bombas que lo impactaron.
+    /// Si el enemigo queda con cero puntos de vida, se elimina completamente del juego.
+    ///
+    /// # Argumentos
+    ///
+    /// * `coordenada`: La coordenada en la que se encuentra el enemigo.
+    /// * `coordenada_bomba`: La coordenada de la bomba que impactó al enemigo.
+    ///
     fn eliminar_enemigo(&mut self, coordenada: Coordenada, coordenada_bomba: Coordenada) {
         println!("Eliminar enemigo");
 
@@ -204,6 +357,19 @@ impl Juego {
         }
     }
 
+    /// Evalúa el contenido de un casillero en el tablero y realiza las acciones correspondientes.
+    ///
+    /// Esta función evalúa el contenido de un casillero en el tablero en función de su tipo y estado actual.
+    /// Realiza acciones como eliminar enemigos, detonar bombas, desviar la trayectoria de una bomba o manejar obstáculos.
+    ///
+    /// # Argumentos
+    ///
+    /// * `coordenada`: Una referencia mutable a la coordenada actual en el tablero.
+    /// * `tablero`: Una referencia mutable al tablero del juego.
+    /// * `i`: Un contador que representa el alcance actual de la explosión de una bomba.
+    /// * `bomba`: Una referencia a la bomba actual que está siendo evaluada.
+    /// * `coordenada_original`: La coordenada original de la bomba antes de comenzar su trayectoria.
+    ///
     fn evaluar_casillero(
         &mut self,
         coordenada: &mut Coordenada,
@@ -264,6 +430,18 @@ impl Juego {
         }
     }
 
+    /// Evalúa las posiciones hacia arriba desde la coordenada actual en busca de obstáculos o enemigos.
+    ///
+    /// Esta función verifica las posiciones hacia arriba desde la coordenada actual y realiza las
+    /// acciones correspondientes, como eliminar enemigos, detonar bombas o desviar la trayectoria de una bomba.
+    ///
+    /// # Argumentos
+    ///
+    /// * `coordenada`: Una referencia inmutable a la coordenada actual en el tablero.
+    /// * `tablero`: Una referencia mutable al tablero del juego.
+    /// * `i`: Un contador que representa el alcance actual de la explosión de una bomba.
+    /// * `bomba`: Una referencia a la bomba actual que está siendo evaluada.
+    ///
     fn evaluar_arriba(
         &mut self,
         coordenada: &Coordenada,
@@ -288,6 +466,18 @@ impl Juego {
         }
     }
 
+    /// Evalúa las posiciones hacia abajo desde la coordenada actual en busca de obstáculos o enemigos.
+    ///
+    /// Esta función verifica las posiciones hacia abajo desde la coordenada actual y realiza las
+    /// acciones correspondientes, como eliminar enemigos, detonar bombas o desviar la trayectoria de una bomba.
+    ///
+    /// # Argumentos
+    ///
+    /// * `coordenada`: Una referencia inmutable a la coordenada actual en el tablero.
+    /// * `tablero`: Una referencia mutable al tablero del juego.
+    /// * `i`: Un contador que representa el alcance actual de la explosión de una bomba.
+    /// * `bomba`: Una referencia a la bomba actual que está siendo evaluada.
+    ///
     fn evaluar_abajo(
         &mut self,
         coordenada: &Coordenada,
@@ -313,6 +503,18 @@ impl Juego {
         }
     }
 
+    /// Evalúa las posiciones hacia la izquierda desde la coordenada actual en busca de obstáculos o enemigos.
+    ///
+    /// Esta función verifica las posiciones hacia la izquierda desde la coordenada actual y realiza las
+    /// acciones correspondientes, como eliminar enemigos, detonar bombas o desviar la trayectoria de una bomba.
+    ///
+    /// # Argumentos
+    ///
+    /// * `coordenada`: Una referencia inmutable a la coordenada actual en el tablero.
+    /// * `tablero`: Una referencia mutable al tablero del juego.
+    /// * `i`: Un contador que representa el alcance actual de la explosión de una bomba.
+    /// * `bomba`: Una referencia a la bomba actual que está siendo evaluada.
+    ///
     fn evaluar_izquierda(
         &mut self,
         coordenada: &Coordenada,
@@ -338,6 +540,18 @@ impl Juego {
         }
     }
 
+    /// Evalúa las posiciones hacia la derecha desde la coordenada actual en busca de obstáculos o enemigos.
+    ///
+    /// Esta función verifica las posiciones hacia la derecha desde la coordenada actual y realiza las
+    /// acciones correspondientes, como eliminar enemigos, detonar bombas o desviar la trayectoria de una bomba.
+    ///
+    /// # Argumentos
+    ///
+    /// * `coordenada`: Una referencia inmutable a la coordenada actual en el tablero.
+    /// * `tablero`: Una referencia mutable al tablero del juego.
+    /// * `i`: Un contador que representa el alcance actual de la explosión de una bomba.
+    /// * `bomba`: Una referencia a la bomba actual que está siendo evaluada.
+    ///
     fn evaluar_derecha(
         &mut self,
         coordenada: &Coordenada,
@@ -363,6 +577,17 @@ impl Juego {
         }
     }
 
+    /// Evalúa el alcance de una bomba y su impacto en el tablero.
+    ///
+    /// Esta función evalúa el alcance de una bomba y su impacto en el tablero, considerando las direcciones
+    /// arriba, abajo, izquierda y derecha desde la posición de la bomba. Realiza las acciones correspondientes
+    /// como eliminar enemigos, detonar bombas o desviar la trayectoria de una bomba en cada dirección.
+    ///
+    /// # Argumentos
+    ///
+    /// * `bomba`: Una referencia a la bomba que se va a evaluar.
+    /// * `tablero`: Una referencia mutable al tablero del juego.
+    ///
     fn funcion_bomba(&mut self, bomba: &Bomba, tablero: &mut Vec<Vec<String>>) {
         self.evaluar_arriba(&bomba.coordenada, tablero, 1, bomba);
         self.evaluar_abajo(&bomba.coordenada, tablero, 1, bomba);
@@ -370,6 +595,17 @@ impl Juego {
         self.evaluar_derecha(&bomba.coordenada, tablero, 1, bomba);
     }
 
+    /// Detona una bomba en una coordenada dada y afecta el tablero.
+    ///
+    /// Esta función busca una bomba en la coordenada especificada y la detona si aún no ha sido detonada.
+    /// Cuando una bomba se detona, se evalúa su alcance en todas las direcciones y se aplican efectos como la eliminación
+    /// de enemigos, la detonación de otras bombas cercanas o la desviación de trayectorias de bombas, afectando el tablero.
+    ///
+    /// # Argumentos
+    ///
+    /// * `tablero`: Una referencia mutable al tablero del juego.
+    /// * `coordenada`: La coordenada en la que se va a detonar la bomba.
+    ///
     fn detonar_bomba(&mut self, tablero: &mut Vec<Vec<String>>, coordenada: Coordenada) {
         let mut bomba_index: Option<usize> = None;
 
@@ -399,23 +635,22 @@ impl Juego {
     }
 }
 
-    /*
-    fn eliminar_enemigo(&mut self, coordenada: Coordenada, impactado : bool) {
-        println!("Eliminar enemigo");
+/*
+fn eliminar_enemigo(&mut self, coordenada: Coordenada, impactado : bool) {
+    println!("Eliminar enemigo");
 
-        if !impactado {
-            if let Some(i) = self
-                .enemigos
-                .iter_mut()
-                .position(|enemigo| enemigo.coordenada.is_equal_to(&coordenada))
-            {
-                if self.enemigos[i].vida > 0 {
-                    self.enemigos[i].vida -= 1;
-                    if self.enemigos[i].vida == 0 {
-                        self.enemigos.swap_remove(i);
-                    }
+    if !impactado {
+        if let Some(i) = self
+            .enemigos
+            .iter_mut()
+            .position(|enemigo| enemigo.coordenada.is_equal_to(&coordenada))
+        {
+            if self.enemigos[i].vida > 0 {
+                self.enemigos[i].vida -= 1;
+                if self.enemigos[i].vida == 0 {
+                    self.enemigos.swap_remove(i);
                 }
             }
         }
-    } */
-
+    }
+} */
