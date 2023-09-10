@@ -4,7 +4,7 @@ pub struct Enemigo {
     pub id: String,
     pub vida: i8,
     pub coordenada: Coordenada,
-    pub bombas_que_lo_impactaron : Vec<Coordenada>
+    pub bombas_que_lo_impactaron: Vec<Coordenada>,
 }
 
 impl Enemigo {
@@ -20,7 +20,7 @@ impl Enemigo {
         }
     }
 
-    pub fn actualizar_lista_de_bombas(&mut self,coordenada_bomba : Coordenada) {
+    pub fn actualizar_lista_de_bombas(&mut self, coordenada_bomba: Coordenada) {
         self.bombas_que_lo_impactaron.push(coordenada_bomba);
     }
 }
