@@ -189,12 +189,12 @@ impl Juego {
             let casillero : &str = &tablero[coordenada.x as usize][coordenada.y as usize];
             match casillero {
                 a if a.starts_with(ENEMIGO) => {
-                    println!("Antes de mutar ha_impactado: {:?}", *bomba.ha_impactado.borrow());
+                    println!("Se encontró un enemigo");
                     self.eliminar_enemigo(*coordenada, *bomba.ha_impactado.borrow_mut());
                     *bomba.ha_impactado.borrow_mut() = true;
-                    println!("Después de mutar ha_impactado: {:?}", *bomba.ha_impactado.borrow());
                 }
                 b if b.starts_with(BOMBA_DE_TRANSPASO) || b.starts_with(BOMBA_NORMAL) => {
+                    println!("Se encontró una bomba: próxima a explotar.");
                     self.detonar_bomba(tablero, *coordenada);
                 }
                 c if c.starts_with(DESVIO) => {
@@ -202,16 +202,19 @@ impl Juego {
                     i+=1;
                     //println!("Incrementado alcance al {}... Listo!",i);
                     if c == DESVIO_ARRIBA {
-                        //println!("Desviando hacia arriba :)");
+                        println!("Desviando hacia arriba :)");
                         self.evaluar_arriba(coordenada, tablero, i, bomba);
                     }
                     else if c == DESVIO_ABAJO {
+                        println!("Desviando hacia abajo :)");
                         self.evaluar_abajo(coordenada, tablero, i, bomba);
                     }
                     else if c == DESVIO_DERECHA {
+                        println!("Desviando hacia derecha :)");
                         self.evaluar_izquierda(coordenada, tablero, i, bomba);
                     }
                     else if c == DESVIO_IZQUIERDA {
+                        println!("Desviando hacia izquierda :)");
                         self.evaluar_derecha(coordenada, tablero, i, bomba);
                     }
                 }
@@ -221,7 +224,9 @@ impl Juego {
                         coordenada.y = -1;
                         println!("Las bombas normales no pueden atravesar rocas.");
                     }
-                    println!("Super bomba! :D");
+                    else {
+                        println!("Super bomba! :D");
+                    }
                 }
                 e if e.starts_with(PARED) => {
                     coordenada.x = -1;
@@ -234,53 +239,67 @@ impl Juego {
     }
 
     fn evaluar_arriba(&mut self,coordenada : &Coordenada, tablero : &mut Vec<Vec<String>>, mut i : i8, bomba : &Bomba) {
-        println!("Alcance actual: {}, alcance total: {}",i,bomba.alcance);
+        let mut j : i8 = 1;
         while i <= bomba.alcance {
-            let mut coordenada_a_evaluar = Coordenada::new(coordenada.x-i,coordenada.y);
+            println!("Evaluando coordenada: ({},{})",coordenada.x,coordenada.y);
+            let mut coordenada_a_evaluar = Coordenada::new(coordenada.x-j,coordenada.y);
+            println!("Evaluando arriba: ({},{})",coordenada_a_evaluar.x,coordenada_a_evaluar.y);
             self.evaluar_casillero(&mut coordenada_a_evaluar, tablero, i, bomba);
             if coordenada_a_evaluar.x == -1 && coordenada_a_evaluar.y == -1 {
                 return;
             }
+            j += 1;
             i += 1;
         }
     }
 
     fn evaluar_abajo(&mut self,coordenada : &Coordenada, tablero : &mut Vec<Vec<String>>, mut i : i8, bomba : &Bomba) {
+        let mut j : i8 = 1;
         while i <= bomba.alcance {
-            let mut coordenada_a_evaluar : Coordenada = Coordenada::new(coordenada.x+i,coordenada.y);
+            println!("Evaluando coordenada: ({},{})",coordenada.x,coordenada.y);
+            let mut coordenada_a_evaluar : Coordenada = Coordenada::new(coordenada.x+j,coordenada.y);
+            println!("Evaluando abajo: ({},{})",coordenada_a_evaluar.x,coordenada_a_evaluar.y);
             self.evaluar_casillero(&mut coordenada_a_evaluar, tablero, i, bomba);
             if coordenada_a_evaluar.x == -1 && coordenada_a_evaluar.y == -1 {
                 return;
             }
+            j += 1;
             i += 1;
         }
     }
 
     fn evaluar_izquierda(&mut self,coordenada : &Coordenada, tablero : &mut Vec<Vec<String>>, mut i : i8, bomba : &Bomba) {
+        let mut j : i8 = 1;
         while i <= bomba.alcance {
-            let mut coordenada_a_evaluar : Coordenada = Coordenada::new(coordenada.x,coordenada.y-i);
+            println!("Evaluando coordenada: ({},{})",coordenada.x,coordenada.y);
+            let mut coordenada_a_evaluar : Coordenada = Coordenada::new(coordenada.x,coordenada.y-j);
+            println!("Evaluando izquierda: ({},{})",coordenada_a_evaluar.x,coordenada_a_evaluar.y);
             self.evaluar_casillero(&mut coordenada_a_evaluar, tablero, i, bomba);
             if coordenada_a_evaluar.x == -1 && coordenada_a_evaluar.y == -1 {
                 return;
             }
             i += 1;
+            j += 1;
         }
     }
 
     fn evaluar_derecha(&mut self,coordenada : &Coordenada, tablero : &mut Vec<Vec<String>>, mut i : i8,bomba : &Bomba) {
+        let mut j : i8 = 1;
         while i <= bomba.alcance {
-            let mut coordenada_a_evaluar : Coordenada = Coordenada::new(coordenada.x,coordenada.y+i);
+            println!("Evaluando coordenada: ({},{})",coordenada.x,coordenada.y);
+            let mut coordenada_a_evaluar : Coordenada = Coordenada::new(coordenada.x,coordenada.y+j);
+            println!("Evaluando derecha: ({},{})",coordenada_a_evaluar.x,coordenada_a_evaluar.y);
             self.evaluar_casillero(&mut coordenada_a_evaluar, tablero, i, bomba);
             if coordenada_a_evaluar.x == -1 && coordenada_a_evaluar.y == -1 {
                 return;
             }
             i += 1;
+            j += 1;
         }
     }
     
 
     fn funcion_bomba(&mut self, bomba: &Bomba, tablero: &mut Vec<Vec<String>>) {
-        println!("funcion bomba en ({},{})",bomba.coordenada.x,bomba.coordenada.y);
         self.evaluar_arriba(&bomba.coordenada,tablero,1,bomba);
         self.evaluar_abajo(&bomba.coordenada,tablero,1,bomba);
         self.evaluar_izquierda(&bomba.coordenada,tablero,1,bomba);
@@ -306,10 +325,6 @@ impl Juego {
 
                 self.bombas[i] = bomba;
 
-                println!(
-                    "Bomba detonada en ({},{})",
-                    self.bombas[i].coordenada.x, self.bombas[i].coordenada.y
-                );
                 return;
             } else {
                 return;
