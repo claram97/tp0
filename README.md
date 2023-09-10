@@ -2,7 +2,7 @@
 * ~Arreglar el formato de la matriz (de char a &str)~ -> String. Done.
 * ~Eliminar el enemigo~
 * Implementar el desvío
-* Revisar la funcionalidad de las bombas
+* ~Revisar la funcionalidad de las bombas~ -> Casi que está
 * Intentar reemplazar el clone por algún puntero
 * Documentación
 * Test's
