@@ -13,7 +13,7 @@ const BOMBA_DE_TRANSPASO: char = 'S';
 const BOMBA_NORMAL: char = 'B';
 const PARED: &str = "W";
 const ROCA: &str = "R";
-
+/*
 fn chequear_argumentos(args: &Vec<String>) -> io::Result<()> {
     if args.len() != 5 {
         return Err(io::Error::new(
@@ -22,7 +22,7 @@ fn chequear_argumentos(args: &Vec<String>) -> io::Result<()> {
         ));
     }
     Ok(())
-}
+} */
 
 #[derive(Debug)]
 struct CustomError(String);
@@ -91,7 +91,7 @@ fn procesar_desvio(palabra: &str, punto: Coordenada, juego: &mut Juego) -> io::R
     Ok(())
 }
 
-fn funcion(punto: Coordenada, palabra: &str, juego: &mut Juego) -> io::Result<()> {
+fn inicializar_juego(punto: Coordenada, palabra: &str, juego: &mut Juego) -> io::Result<()> {
     if palabra == PARED {
         juego.inicializar_pared(punto);
     } else if palabra == ROCA {
@@ -133,7 +133,7 @@ fn procesar_linea_de_configuracion(
     let palabras: Vec<&str> = l.split_whitespace().collect();
     for palabra in palabras {
         let punto = Coordenada::new(*filas, *coordenada_y);
-        let resultado = funcion(punto, palabra, juego);
+        let resultado = inicializar_juego(punto, palabra, juego);
         match resultado {
             Ok(()) => {}
             Err(e) => {
@@ -147,10 +147,7 @@ fn procesar_linea_de_configuracion(
     Ok(())
 }
 
-fn inicializar_coordenada_de_la_bomba(
-    args: &[String],
-    coordenada_bomba: &mut Coordenada,
-) -> io::Result<()> {
+fn inicializar_coordenada_de_la_bomba(args: &[String]) -> io::Result<Coordenada> {
     let x: i8;
     let y: i8;
 
@@ -171,10 +168,11 @@ fn inicializar_coordenada_de_la_bomba(
         ));
     }
 
-    *coordenada_bomba = Coordenada::new(x, y);
-    Ok(())
+    let coordenada_bomba: Coordenada = Coordenada::new(x, y);
+    Ok(coordenada_bomba)
 }
 
+/*
 fn main() -> io::Result<()> {
     let args: Vec<String> = env::args().collect();
     match chequear_argumentos(&args) {
@@ -185,12 +183,7 @@ fn main() -> io::Result<()> {
     }
 
     let output_file_name: &String = &args[2];
-    //let mut output_file = File::create(output_file_name)?;
-    /*
-       let contenido = "Hola, este es un ejemplo de escritura en un archivo desde Rust.\n";
 
-       output_file.write_all(contenido.as_bytes())?;
-    */
     let maze_file_name: &String = &args[1];
     let maze_file = File::open(maze_file_name)?;
     let reader = io::BufReader::new(maze_file);
@@ -235,4 +228,67 @@ fn main() -> io::Result<()> {
     }
 
     Ok(())
+}
+*/
+// Define las estructuras y funciones necesarias aquí, como `Juego`, `Coordenada`, etc.
+
+fn main() -> io::Result<()> {
+    let args: Vec<String> = env::args().collect();
+    run(args)?;
+    Ok(())
+}
+
+fn run(args: Vec<String>) -> io::Result<()> {
+    if args.len() != 5 {
+        return Err(io::Error::new(
+            io::ErrorKind::InvalidInput,
+            "Se esperaban exactamente 4 argumentos.",
+        ));
+    }
+
+    let maze_file_name = &args[1];
+    let output_file_name = &args[2];
+
+    let mut juego = match cargar_juego(maze_file_name) {
+        Ok(juego) => juego,
+        Err(e) => return Err(e),
+    };
+
+    let coordenada_bomba = match inicializar_coordenada_de_la_bomba(&args) {
+        Ok(coordenada) => coordenada,
+        Err(e) => return Err(e),
+    };
+
+    juego.realizar_jugada(output_file_name, coordenada_bomba)?;
+
+    Ok(())
+}
+
+fn cargar_juego(maze_file_name: &str) -> io::Result<Juego> {
+    let maze_file = File::open(maze_file_name)?;
+    let reader = io::BufReader::new(maze_file);
+    let mut juego: Juego = Juego::new();
+    let mut filas: i8 = 0;
+    let mut coordenada_y: i8 = 0;
+
+    for linea in reader.lines() {
+        match linea {
+            Ok(l) => {
+                if let Err(err) =
+                    procesar_linea_de_configuracion(&l, &mut filas, &mut coordenada_y, &mut juego)
+                {
+                    return Err(io::Error::new(io::ErrorKind::Other, err.to_string()));
+                }
+            }
+            Err(_e) => {
+                return Err(io::Error::new(
+                    io::ErrorKind::UnexpectedEof,
+                    "Error al leer línea:",
+                ));
+            }
+        }
+    }
+
+    juego.inicializar_dimension(filas);
+    Ok(juego)
 }
