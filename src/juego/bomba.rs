@@ -1,3 +1,5 @@
+use std::cell::RefCell;
+
 use crate::juego::coordenada::Coordenada;
 
 #[derive(Debug, PartialEq, Eq, Clone)]
@@ -13,7 +15,7 @@ pub struct Bomba {
     pub tipo: TipoDeBomba,
     pub coordenada: Coordenada,
     pub detonada: bool,
-    pub ha_impactado : bool,
+    pub ha_impactado: RefCell<bool>,
 }
 
 impl Bomba {
@@ -21,7 +23,7 @@ impl Bomba {
         let detonada: bool = false;
         let ha_impactado : bool = false;
         Bomba {
-            ha_impactado,
+            ha_impactado: RefCell::new(ha_impactado),
             detonada,
             id,
             alcance,
