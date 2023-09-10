@@ -135,10 +135,14 @@ impl Juego {
         let mut tablero: Vec<Vec<String>> = self.posicionar_elementos_en_tablero();
 
         self.detonar_bomba(&mut tablero, coordenada);
+        println!();
+        println!("***************");
         println!("Tablero inicial: ");
         self.imprimir_tablero(&tablero);
 
         let tablero_final = self.posicionar_elementos_en_tablero();
+        println!();
+        println!("***************");
         println!("Tablero final: ");
         self.imprimir_tablero(&tablero_final);
 
@@ -152,7 +156,9 @@ impl Juego {
                 .join(" ");
             writeln!(output_file, "{}", row_str)?;
         }
-
+        println!();
+        println!("***************");
+        println!();
         Ok(())
     }
 
@@ -164,9 +170,7 @@ impl Juego {
             .position(|enemigo| enemigo.coordenada.is_equal_to(&coordenada))
         {
             if self.enemigos[i].vida > 0 {
-                println!("Vida inicial: {}", self.enemigos[i].vida);
                 self.enemigos[i].vida -= 1;
-                println!("Vida actual: {}", self.enemigos[i].vida);
                 if self.enemigos[i].vida == 0 {
                     self.enemigos.swap_remove(i);
                     return true;
@@ -208,49 +212,49 @@ impl Juego {
     }
 
     fn evaluar_arriba(&mut self,coordenada : &Coordenada, alcance : &i8, tipo : &bomba::TipoDeBomba, tablero : &mut Vec<Vec<String>>, mut i : i8) {
-        println!("Evaluando arriba la coordenada: ({},{})",coordenada.x,coordenada.y);
-        if coordenada.x > -1 {
-            while &i <= alcance {
-                let mut coordenada_a_evaluar = Coordenada::new(coordenada.x-i,coordenada.y);
-                println!("Coordenada de arriba: ({},{})",coordenada_a_evaluar.x,coordenada_a_evaluar.y);
-                self.evaluar_casillero(&mut coordenada_a_evaluar, tablero, tipo, i);
-                i += 1;
+        while &i <= alcance {
+            let mut coordenada_a_evaluar = Coordenada::new(coordenada.x-i,coordenada.y);
+            self.evaluar_casillero(&mut coordenada_a_evaluar, tablero, tipo, i);
+            if coordenada_a_evaluar.x == -1 && coordenada_a_evaluar.y == -1 {
+                return;
             }
+            i += 1;
         }
-        println!("Fin de evaluación arriba");
     }
 
     fn evaluar_abajo(&mut self,coordenada : &Coordenada, alcance : &i8, tipo : &bomba::TipoDeBomba, tablero : &mut Vec<Vec<String>>, mut i : i8) {
-        println!("Evaluando abajo la coordenada: ({},{})",coordenada.x,coordenada.y);
-        if coordenada.x > -1 {
-            while &i <= alcance {
-                let mut coordenada_a_evaluar : Coordenada = Coordenada::new(coordenada.x+i,coordenada.y);
-                println!("Coordenada de abajo: ({},{})",coordenada_a_evaluar.x,coordenada_a_evaluar.y);
-                self.evaluar_casillero(&mut coordenada_a_evaluar, tablero, tipo, i);
-                i += 1;
+        while &i <= alcance {
+            let mut coordenada_a_evaluar : Coordenada = Coordenada::new(coordenada.x+i,coordenada.y);
+            self.evaluar_casillero(&mut coordenada_a_evaluar, tablero, tipo, i);
+            if coordenada_a_evaluar.x == -1 && coordenada_a_evaluar.y == -1 {
+                return;
             }
+            i += 1;
         }
     }
 
     fn evaluar_izquierda(&mut self,coordenada : &Coordenada, alcance : &i8, tipo : &bomba::TipoDeBomba, tablero : &mut Vec<Vec<String>>, mut i : i8) {
-        if coordenada.x > -1 {
-            while &i <= alcance {
-                let mut coordenada_a_evaluar : Coordenada = Coordenada::new(coordenada.x,coordenada.y-i);
-                self.evaluar_casillero(&mut coordenada_a_evaluar, tablero, tipo,i);
-                i += 1;
+        while &i <= alcance {
+            let mut coordenada_a_evaluar : Coordenada = Coordenada::new(coordenada.x,coordenada.y-i);
+            self.evaluar_casillero(&mut coordenada_a_evaluar, tablero, tipo,i);
+            if coordenada_a_evaluar.x == -1 && coordenada_a_evaluar.y == -1 {
+                return;
             }
+            i += 1;
         }
     }
 
     fn evaluar_derecha(&mut self,coordenada : &Coordenada, alcance : &i8, tipo : &bomba::TipoDeBomba, tablero : &mut Vec<Vec<String>>, mut i : i8) {
-        if coordenada.x > -1 {
-            while &i <= alcance {
-                let mut coordenada_a_evaluar : Coordenada = Coordenada::new(coordenada.x,coordenada.y+i);
-                self.evaluar_casillero(&mut coordenada_a_evaluar, tablero, tipo,i);
-                i += 1;
+        while &i <= alcance {
+            let mut coordenada_a_evaluar : Coordenada = Coordenada::new(coordenada.x,coordenada.y+i);
+            self.evaluar_casillero(&mut coordenada_a_evaluar, tablero, tipo,i);
+            if coordenada_a_evaluar.x == -1 && coordenada_a_evaluar.y == -1 {
+                return;
             }
+            i += 1;
         }
     }
+    
 
     fn funcion_bomba(&mut self, bomba: &Bomba, tablero: &mut Vec<Vec<String>>) {
         println!("funcion bomba en ({},{})",bomba.coordenada.x,bomba.coordenada.y);
