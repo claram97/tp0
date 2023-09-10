@@ -129,9 +129,25 @@ impl Juego {
         }
     }
 
+    fn imprimir_tablero_en_archivo(&self, output_file: &mut File, tablero : &Vec<Vec<String>>) -> std::io::Result<()> {
+        for row in tablero {
+            let row_str: String = row
+                .iter()
+                .map(|c| c.to_string())
+                .collect::<Vec<_>>()
+                .join(" ");
+            let resultado = writeln!(output_file, "{}", row_str);
+            match resultado {
+                Err(e) => return Err(e),
+                Ok(()) => continue,
+            }
+        }
+        Ok(())
+    }
+
     pub fn realizar_jugada(
         &mut self,
-        output_path: &String,
+        mut output_file : &mut File,
         coordenada: Coordenada,
     ) -> io::Result<()> {
         let mut tablero: Vec<Vec<String>> = self.posicionar_elementos_en_tablero();
@@ -148,16 +164,15 @@ impl Juego {
         println!("Tablero final: ");
         self.imprimir_tablero(&tablero_final);
 
-        let mut output_file = File::create(output_path)?;
-
-        for row in &tablero_final {
+        self.imprimir_tablero_en_archivo(&mut output_file,&tablero_final)?;
+        /*for row in &tablero_final {
             let row_str: String = row
                 .iter()
                 .map(|c| c.to_string())
                 .collect::<Vec<_>>()
                 .join(" ");
             writeln!(output_file, "{}", row_str)?;
-        }
+        }*/
         println!();
         println!("***************");
         println!();
@@ -172,7 +187,6 @@ impl Juego {
             .iter_mut()
             .position(|enemigo| enemigo.coordenada.is_equal_to(&coordenada))
         {
-            // Buscar una coordenada de bomba que coincida en bombas_que_lo_impactaron
             if let Some(_bomba_index) = self.enemigos[i]
                 .bombas_que_lo_impactaron
                 .iter()
@@ -181,7 +195,6 @@ impl Juego {
                 return;
             }
             if self.enemigos[i].vida > 0 {
-                // Decrementar la vida del enemigo si aún está vivo
                 self.enemigos[i].vida -= 1;
                 self.enemigos[i].actualizar_lista_de_bombas(coordenada_bomba);
                 if self.enemigos[i].vida == 0 {
@@ -190,26 +203,6 @@ impl Juego {
             }
         }
     }
-
-    /*
-    fn eliminar_enemigo(&mut self, coordenada: Coordenada, impactado : bool) {
-        println!("Eliminar enemigo");
-
-        if !impactado {
-            if let Some(i) = self
-                .enemigos
-                .iter_mut()
-                .position(|enemigo| enemigo.coordenada.is_equal_to(&coordenada))
-            {
-                if self.enemigos[i].vida > 0 {
-                    self.enemigos[i].vida -= 1;
-                    if self.enemigos[i].vida == 0 {
-                        self.enemigos.swap_remove(i);
-                    }
-                }
-            }
-        }
-    } */
 
     fn evaluar_casillero(
         &mut self,
@@ -405,3 +398,24 @@ impl Juego {
         println!("Bomba no encontrada");
     }
 }
+
+    /*
+    fn eliminar_enemigo(&mut self, coordenada: Coordenada, impactado : bool) {
+        println!("Eliminar enemigo");
+
+        if !impactado {
+            if let Some(i) = self
+                .enemigos
+                .iter_mut()
+                .position(|enemigo| enemigo.coordenada.is_equal_to(&coordenada))
+            {
+                if self.enemigos[i].vida > 0 {
+                    self.enemigos[i].vida -= 1;
+                    if self.enemigos[i].vida == 0 {
+                        self.enemigos.swap_remove(i);
+                    }
+                }
+            }
+        }
+    } */
+
