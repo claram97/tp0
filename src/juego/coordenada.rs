@@ -12,4 +12,5 @@ impl Coordenada {
     pub fn is_equal_to(&self, coordenada: &Coordenada) -> bool {
         self.x == coordenada.x && self.y == coordenada.y
     }
+
 }
