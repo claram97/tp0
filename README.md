@@ -6,3 +6,4 @@
 * Intentar reemplazar el clone por algún puntero
 * Documentación
 * Test's
+* La bomba no debe impactar más de una vez
