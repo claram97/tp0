@@ -80,7 +80,7 @@ impl Juego {
 
     fn posicionar_enemigos(&self, tablero: &mut [Vec<String>]) {
         for enemigo in &self.enemigos {
-            let id = "F".to_string() + &enemigo.vida.to_string(); 
+            let id = (&enemigo.id).to_string() + &enemigo.vida.to_string(); 
             tablero[enemigo.coordenada.x as usize][enemigo.coordenada.y as usize] =
                 id;
         }
@@ -178,7 +178,6 @@ impl Juego {
     }
 
     fn evaluar_casillero(&mut self,coordenada : &mut Coordenada, tablero : &mut Vec<Vec<String>>,tipo: &bomba::TipoDeBomba,mut i : i8) {
-        println!("evaluar casillero en ({},{})",coordenada.x,coordenada.y);
         if coordenada.x >= 0 && coordenada.y >= 0  && coordenada.x < self.dimension && coordenada.y < self.dimension {
             let casillero : &str = &tablero[coordenada.x as usize][coordenada.y as usize];
             match casillero {
@@ -196,16 +195,14 @@ impl Juego {
                         coordenada.x = -1;
                         coordenada.y = -1;
                         println!("Las bombas normales no pueden atravesar rocas.");
-                         // Detenerse si es una roca y la bomba es normal
                     }
                 }
                 e if e.starts_with(PARED) => {
                     coordenada.x = -1;
                     coordenada.y = -1;
                     println!("Ninguna pared puede ser atravesada.");
-                     // Detenerse si es una pared
                 }
-                _ => {} // Otros casos
+                _ => {}
             }
         }
     }
@@ -262,56 +259,6 @@ impl Juego {
         self.evaluar_izquierda(&bomba.coordenada,&bomba.alcance,&bomba.tipo,tablero,1);
         self.evaluar_derecha(&bomba.coordenada,&bomba.alcance,&bomba.tipo,tablero,1);
     }
-
-    /*fn funcion_bomba(&mut self, bomba: &Bomba, tablero: &mut Vec<Vec<String>>) {
-        let alcance = bomba.alcance;
-        let coordenada = bomba.coordenada;
-
-        let direcciones = [(0, 1), (1, 0), (0, -1), (-1, 0)]; // Direcciones: Derecha, Abajo, Izquierda, Arriba
-
-        for &(dx, dy) in &direcciones {
-            let mut incremento = 1;
-            let mut x = coordenada.x + dx;
-            let mut y = coordenada.y + dy;
-
-            while incremento <= alcance {
-                if x >= 0 && y >= 0 && x < tablero.len() as i8 && y < tablero[0].len() as i8 {
-                    let casilla = &tablero[x as usize][y as usize];
-
-                    match casilla {
-                        a if a.starts_with(ENEMIGO) => {
-                            let coordenada_enemigo = Coordenada::new(x, y);
-                            self.eliminar_enemigo(coordenada_enemigo);
-                        }
-                        b if b.starts_with(BOMBA_DE_TRANSPASO) || b.starts_with(BOMBA_NORMAL) => {
-                            let coordenada_bomba = Coordenada::new(x, y);
-                            self.detonar_bomba(tablero, coordenada_bomba);
-                        }
-                        c if c.starts_with(DESVIO) => {
-                            //Not yet implemented
-                        }
-                        d if d.starts_with(ROCA) => {
-                            if bomba.tipo == TipoDeBomba::Normal {
-                                println!("Las bombas normales no pueden atravesar rocas.");
-                                break; // Detenerse si es una roca y la bomba es normal
-                            }
-                        }
-                        e if e.starts_with(PARED) => {
-                            println!("Ninguna pared puede ser atravesada.");
-                            break; // Detenerse si es una pared
-                        }
-                        _ => {} // Otros casos
-                    }
-                } else {
-                    break;
-                }
-
-                incremento += 1;
-                x += dx;
-                y += dy;
-            }
-        }
-    }*/
 
     fn detonar_bomba(&mut self, tablero: &mut Vec<Vec<String>>, coordenada: Coordenada) {
         let mut bomba_index: Option<usize> = None;

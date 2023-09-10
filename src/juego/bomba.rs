@@ -13,12 +13,15 @@ pub struct Bomba {
     pub tipo: TipoDeBomba,
     pub coordenada: Coordenada,
     pub detonada: bool,
+    pub ha_impactado : bool,
 }
 
 impl Bomba {
     pub fn new(coordenada: Coordenada, alcance: i8, tipo: TipoDeBomba, id: String) -> Bomba {
         let detonada: bool = false;
+        let ha_impactado : bool = false;
         Bomba {
+            ha_impactado,
             detonada,
             id,
             alcance,
