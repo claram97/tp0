@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"constant":["BOMBA_DE_TRANSPASO","BOMBA_NORMAL","DESVIO","ENEMIGO","PARED","ROCA"],"fn":["cargar_juego","crear_archivo_en_ruta","inicializar_coordenada_de_la_bomba","inicializar_juego","procesar_bomba","procesar_desvio","procesar_enemigo","procesar_linea_de_configuracion","run"],"struct":["CustomError"]};

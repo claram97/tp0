@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"constant":["BOMBA_DE_TRANSPASO","BOMBA_NORMAL","DESVIO","DESVIO_ABAJO","DESVIO_ARRIBA","DESVIO_DERECHA","DESVIO_IZQUIERDA","ENEMIGO","PARED","ROCA"],"mod":["bomba","coordenada","desvio","enemigo","obstaculo"],"struct":["Juego"]};
