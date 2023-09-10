@@ -4,6 +4,6 @@
 * ~Implementar el desvío~
 * ~Revisar la funcionalidad de las bombas~
 * Intentar reemplazar el clone por algún puntero
-* Documentación
+* ~Documentación~
 * Test's
 * ~La bomba no debe impactar más de una vez~
