@@ -94,7 +94,7 @@ fn procesar_bomba(palabra: &str, punto: Coordenada, juego: &mut Juego) -> io::Re
 ///
 /// assert!(resultado.is_ok());
 /// ```*/
-fn procesar_enemigo(palabra: &str, punto: Coordenada, juego: &mut Juego) -> io::Result<()> {
+pub fn procesar_enemigo(palabra: &str, punto: Coordenada, juego: &mut Juego) -> io::Result<()> {
     if let Some(segundo_caracter) = palabra.chars().nth(1) {
         if let Some(digito) = segundo_caracter.to_digit(10) {
             let vida = digito as i8;
@@ -187,7 +187,7 @@ fn procesar_desvio(palabra: &str, punto: Coordenada, juego: &mut Juego) -> io::R
 ///
 /// assert!(resultado.is_ok());
 /// ```*/
-fn inicializar_juego(punto: Coordenada, palabra: &str, juego: &mut Juego) -> io::Result<()> {
+pub fn inicializar_juego(punto: Coordenada, palabra: &str, juego: &mut Juego) -> io::Result<()> {
     if palabra == PARED {
         juego.inicializar_pared(punto);
     } else if palabra == ROCA {
@@ -304,7 +304,7 @@ fn procesar_linea_de_configuracion(
 /// assert_eq!(coordenada.x, 2);
 /// assert_eq!(coordenada.y, 3);
 /// ```*/
-fn inicializar_coordenada_de_la_bomba(args: &[String]) -> io::Result<Coordenada> {
+pub fn inicializar_coordenada_de_la_bomba(args: &[String]) -> io::Result<Coordenada> {
     let x: i8;
     let y: i8;
 
