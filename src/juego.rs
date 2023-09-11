@@ -2,7 +2,7 @@ use std::{
     fs::File,
     io::{self, Write},
 };
-
+use std::rc::Rc;
 use crate::estructuras_juego::bomba::*;
 use crate::estructuras_juego::coordenada::*;
 use crate::estructuras_juego::desvio::*;
@@ -622,7 +622,7 @@ impl Juego {
     /// * `tablero`: Una referencia mutable al tablero del juego.
     /// * `coordenada`: La coordenada en la que se va a detonar la bomba.
     ///
-    pub fn detonar_bomba(&mut self, tablero: &mut Vec<Vec<String>>, coordenada: Coordenada) {
+    /*pub fn detonar_bomba(&mut self, tablero: &mut Vec<Vec<String>>, coordenada: Coordenada) {
         let mut bomba_index: Option<usize> = None;
 
         for (i, bomba) in self.bombas.iter().enumerate().rev() {
@@ -648,7 +648,55 @@ impl Juego {
         }
 
         println!("Bomba no encontrada");
+    }*/
+
+    /// Detona una bomba en el tablero en la coordenada especificada.
+    ///
+    /// Esta función busca una bomba en la lista de bombas del objeto actual (`self`)
+    /// que coincide con la coordenada especificada. Si se encuentra una bomba válida,
+    /// la función la detona y ejecuta la función `funcion_bomba` con la bomba como argumento.
+    /// Si la bomba ya ha sido detonada, la función no hace nada.
+    ///
+    /// # Argumentos
+    ///
+    /// - `tablero`: Un tablero mutable representado como un vector bidimensional de cadenas.
+    /// - `coordenada`: La coordenada en la que se busca y detona la bomba.
+    ///
+    /*/// # Ejemplo
+    ///
+    /// ```rust
+    /// let mut juego = Juego::new(); // Crea una instancia del juego.
+    /// let coordenada = Coordenada { x: 2, y: 3 };
+    /// juego.detonar_bomba(&mut tablero, coordenada);
+    /// ```*/
+    pub fn detonar_bomba(&mut self, tablero: &mut Vec<Vec<String>>, coordenada: Coordenada) {
+        let mut bomba_index: Option<usize> = None;
+    
+        for (i, bomba) in self.bombas.iter().enumerate().rev() {
+            if bomba.coordenada.is_equal_to(&coordenada) {
+                bomba_index = Some(i);
+                break;
+            }
+        }
+    
+        if let Some(i) = bomba_index {
+            if !self.bombas[i].detonada {
+                let bomba_rc = Rc::new(self.bombas[i].clone()); // Crear una referencia contada Rc
+                self.bombas[i].detonar();
+                
+                self.funcion_bomba(&*bomba_rc, tablero); // Convertir Rc en una referencia común con &*bomba_rc
+                
+                // No necesitas asignar nuevamente la bomba a self.bombas[i] ya que Rc se encargará de la gestión de referencias
+                return;
+            } else {
+                return;
+            }
+        }
+    
+        println!("Bomba no encontrada");
     }
+    
+    
 }
 
 /*
