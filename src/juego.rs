@@ -21,7 +21,7 @@ const DESVIO_IZQUIERDA: &str = "DL";
 const DESVIO_DERECHA: &str = "DR";
 
 pub struct Juego {
-    dimension: i8,
+    pub dimension: i8,
     pub enemigos: Vec<Enemigo>,
     obstaculos: Vec<Obstaculo>,
     bombas: Vec<Bomba>,

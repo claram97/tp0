@@ -415,6 +415,13 @@ pub fn run(args: Vec<String>) -> io::Result<()> {
         Err(e) => return Err(e),
     };
 
+    if coordenada_bomba.x >= juego.dimension || coordenada_bomba.y >= juego.dimension {
+        return Err(io::Error::new(
+            io::ErrorKind::InvalidInput,
+            "La bomba no puede estar fuera de rango.",
+        ));
+    }
+
     juego.realizar_jugada(&mut output_file, coordenada_bomba)?;
 
     Ok(())
