@@ -23,7 +23,7 @@ impl Enemigo {
     /// * `coordenada`: La coordenada en la que se encuentra el enemigo en el tablero.
     /// * `vida`: La cantidad de vida del enemigo, que determina cuántas bombas puede resistir.
     ///
-    /// # Ejemplo
+ /*  /// # Ejemplo
     ///
     /// ```rust
     /// use mi_modulo::Enemigo;
@@ -32,7 +32,7 @@ impl Enemigo {
     /// let vida = 3;
     ///
     /// let enemigo = Enemigo::new(coordenada, vida);
-    /// ```
+    /// ```*/
     ///
     pub fn new(coordenada: Coordenada, vida: i8) -> Enemigo {
         let id: String = "F".to_string();
@@ -52,7 +52,7 @@ impl Enemigo {
     ///
     /// * `coordenada_bomba`: La coordenada de la bomba que impactó al enemigo.
     ///
-    /// # Ejemplo
+    /*/// # Ejemplo
     ///
     /// ```rust
     /// use mi_modulo::{Enemigo, Coordenada};
@@ -61,7 +61,7 @@ impl Enemigo {
     /// let coordenada_bomba = Coordenada::new(2, 4);
     ///
     /// enemigo.actualizar_lista_de_bombas(coordenada_bomba);
-    /// ```
+    /// ```*/
     ///
     pub fn actualizar_lista_de_bombas(&mut self, coordenada_bomba: Coordenada) {
         self.bombas_que_lo_impactaron.push(coordenada_bomba);

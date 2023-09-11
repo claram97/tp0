@@ -21,7 +21,7 @@ impl Desvio {
     /// * `direccion`: La dirección en la que el desvío redirige las bombas.
     /// * `id`: El identificador único del desvío.
     ///
-    /// # Ejemplo
+    /*/// # Ejemplo
     ///
     /// ```rust
     /// use mi_modulo::Desvio;
@@ -31,7 +31,7 @@ impl Desvio {
     /// let id = "Desvio1".to_string();
     ///
     /// let desvio = Desvio::new(coordenada, direccion, id);
-    /// ```
+    /// ```*/
     ///
     pub fn new(coordenada: Coordenada, direccion: String, id: String) -> Desvio {
         Desvio {

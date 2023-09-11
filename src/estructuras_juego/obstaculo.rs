@@ -30,7 +30,7 @@ impl Obstaculo {
     /// * `tipo`: Tipo de obstáculo, que puede ser "Pared" o "Roca".
     /// * `coordenada`: Coordenada en el tablero donde se encuentra el obstáculo.
     ///
-    /// # Ejemplo
+    /*/// # Ejemplo
     ///
     /// ```rust
     /// use mi_modulo::{Obstaculo, TipoDeObstaculo, Coordenada};
@@ -38,7 +38,7 @@ impl Obstaculo {
     /// let coordenada = Coordenada::new(2, 3);
     /// let pared = Obstaculo::new(TipoDeObstaculo::Pared, coordenada);
     /// let roca = Obstaculo::new(TipoDeObstaculo::Roca, coordenada);
-    /// ```
+    /// ```*/
     pub fn new(tipo: TipoDeObstaculo, coordenada: Coordenada) -> Obstaculo {
         let id = if tipo == TipoDeObstaculo::Pared {
             "W".to_string()

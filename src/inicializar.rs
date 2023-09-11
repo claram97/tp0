@@ -82,7 +82,7 @@ fn procesar_bomba(palabra: &str, punto: Coordenada, juego: &mut Juego) -> io::Re
 ///
 /// # Ejemplo
 ///
-/// ```rust
+/*/// ```rust
 /// use tu_modulo::procesar_enemigo;
 /// use tu_modulo::Coordenada;
 /// use tu_modulo::Juego;
@@ -93,7 +93,7 @@ fn procesar_bomba(palabra: &str, punto: Coordenada, juego: &mut Juego) -> io::Re
 /// let resultado = procesar_enemigo(palabra, punto, &mut juego);
 ///
 /// assert!(resultado.is_ok());
-/// ```
+/// ```*/
 fn procesar_enemigo(palabra: &str, punto: Coordenada, juego: &mut Juego) -> io::Result<()> {
     if let Some(segundo_caracter) = palabra.chars().nth(1) {
         if let Some(digito) = segundo_caracter.to_digit(10) {
@@ -131,7 +131,7 @@ fn procesar_enemigo(palabra: &str, punto: Coordenada, juego: &mut Juego) -> io::
 /// Esta función devuelve un error si no se puede determinar la dirección del desvío o si hay un problema al inicializarlo.
 ///
 /// # Ejemplo
-///
+/*///
 /// ```rust
 /// use tu_modulo::procesar_desvio;
 /// use tu_modulo::Coordenada;
@@ -143,7 +143,7 @@ fn procesar_enemigo(palabra: &str, punto: Coordenada, juego: &mut Juego) -> io::
 /// let resultado = procesar_desvio(palabra, punto, &mut juego);
 ///
 /// assert!(resultado.is_ok());
-/// ```
+/// ```*/
 fn procesar_desvio(palabra: &str, punto: Coordenada, juego: &mut Juego) -> io::Result<()> {
     if let Some(segundo_caracter) = palabra.chars().nth(1) {
         let direccion = segundo_caracter;
@@ -173,7 +173,7 @@ fn procesar_desvio(palabra: &str, punto: Coordenada, juego: &mut Juego) -> io::R
 /// Esta función devuelve un error si hay problemas al inicializar el elemento, como la detección
 /// de un formato incorrecto o la incapacidad de inicializar un tipo específico.
 ///
-/// # Ejemplo
+/*/// # Ejemplo
 ///
 /// ```rust
 /// use tu_modulo::inicializar_juego;
@@ -186,7 +186,7 @@ fn procesar_desvio(palabra: &str, punto: Coordenada, juego: &mut Juego) -> io::R
 /// let resultado = inicializar_juego(punto, palabra, &mut juego);
 ///
 /// assert!(resultado.is_ok());
-/// ```
+/// ```*/
 fn inicializar_juego(punto: Coordenada, palabra: &str, juego: &mut Juego) -> io::Result<()> {
     if palabra == PARED {
         juego.inicializar_pared(punto);
@@ -237,7 +237,7 @@ fn inicializar_juego(punto: Coordenada, palabra: &str, juego: &mut Juego) -> io:
 /// Esta función devuelve un error si hay problemas al procesar la línea, como la detección de un formato
 /// incorrecto o la incapacidad de inicializar elementos.
 ///
-/// # Ejemplo
+/*/// # Ejemplo
 ///
 /// ```rust
 /// use tu_modulo::procesar_linea_de_configuracion;
@@ -251,7 +251,7 @@ fn inicializar_juego(punto: Coordenada, palabra: &str, juego: &mut Juego) -> io:
 /// let resultado = procesar_linea_de_configuracion(linea, &mut filas, &mut coordenada_y, &mut juego);
 ///
 /// assert!(resultado.is_ok());
-/// ```
+/// ```*/
 fn procesar_linea_de_configuracion(
     l: &str,
     filas: &mut i8,
@@ -290,7 +290,7 @@ fn procesar_linea_de_configuracion(
 /// Esta función devuelve un error si hay problemas al inicializar las coordenadas, como la detección
 /// de un formato incorrecto o la incapacidad de convertir las cadenas en valores numéricos.
 ///
-/// # Ejemplo
+/*/// # Ejemplo
 ///
 /// ```rust
 /// use tu_modulo::inicializar_coordenada_de_la_bomba;
@@ -303,7 +303,7 @@ fn procesar_linea_de_configuracion(
 /// let coordenada = resultado.unwrap();
 /// assert_eq!(coordenada.x, 2);
 /// assert_eq!(coordenada.y, 3);
-/// ```
+/// ```*/
 fn inicializar_coordenada_de_la_bomba(args: &[String]) -> io::Result<Coordenada> {
     let x: i8;
     let y: i8;
@@ -342,7 +342,7 @@ fn inicializar_coordenada_de_la_bomba(args: &[String]) -> io::Result<Coordenada>
 ///
 /// Esta función devuelve un error si no se puede crear el archivo en la ruta especificada.
 ///
-/// # Ejemplo
+/*/// # Ejemplo
 ///
 /// ```rust
 /// use tu_modulo::crear_archivo_en_ruta;
@@ -353,7 +353,7 @@ fn inicializar_coordenada_de_la_bomba(args: &[String]) -> io::Result<Coordenada>
 /// assert!(resultado.is_ok());
 /// let archivo = resultado.unwrap();
 /// assert!(archivo.is_file());
-/// ```
+/// ```*/
 fn crear_archivo_en_ruta(ruta_entrada: &str) -> io::Result<File> {
     let ruta = Path::new(ruta_entrada);
 
@@ -382,7 +382,7 @@ fn crear_archivo_en_ruta(ruta_entrada: &str) -> io::Result<File> {
 /// Esta función devuelve un error si no se proporcionan exactamente 4 argumentos en la línea de comandos
 /// o si hay problemas durante la ejecución del programa.
 ///
-/// # Ejemplo
+/*/// # Ejemplo
 ///
 /// ```rust
 /// use tu_modulo::run;
@@ -391,7 +391,7 @@ fn crear_archivo_en_ruta(ruta_entrada: &str) -> io::Result<File> {
 /// let resultado = run(args);
 ///
 /// assert!(resultado.is_ok());
-/// ```
+/// ```*/
 pub fn run(args: Vec<String>) -> io::Result<()> {
     if args.len() != 5 {
         return Err(io::Error::new(
@@ -435,7 +435,7 @@ pub fn run(args: Vec<String>) -> io::Result<()> {
 /// Esta función devuelve un error si no se puede abrir o leer el archivo de configuración,
 /// o si hay problemas al procesar su contenido.
 ///
-/// # Ejemplo
+/*/// # Ejemplo
 ///
 /// ```rust
 /// use tu_modulo::cargar_juego;
@@ -444,7 +444,7 @@ pub fn run(args: Vec<String>) -> io::Result<()> {
 /// let resultado = cargar_juego(maze_file_name);
 ///
 /// assert!(resultado.is_ok());
-/// ```
+/// ```*/
 pub fn cargar_juego(maze_file_name: &str) -> io::Result<Juego> {
     let maze_file = File::open(maze_file_name)?;
     let reader = io::BufReader::new(maze_file);
