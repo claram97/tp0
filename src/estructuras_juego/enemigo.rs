@@ -23,7 +23,7 @@ impl Enemigo {
     /// * `coordenada`: La coordenada en la que se encuentra el enemigo en el tablero.
     /// * `vida`: La cantidad de vida del enemigo, que determina cuántas bombas puede resistir.
     ///
- /*  /// # Ejemplo
+    /*  /// # Ejemplo
     ///
     /// ```rust
     /// use mi_modulo::Enemigo;
