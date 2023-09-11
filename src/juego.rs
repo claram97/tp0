@@ -29,7 +29,7 @@ const DESVIO_DERECHA: &str = "DR";
 
 pub struct Juego {
     dimension: i8,
-    enemigos: Vec<Enemigo>,
+    pub enemigos: Vec<Enemigo>,
     obstaculos: Vec<Obstaculo>,
     bombas: Vec<Bomba>,
     desvios: Vec<Desvio>,
@@ -306,20 +306,64 @@ impl Juego {
         self.imprimir_tablero(&tablero_final);
 
         self.imprimir_tablero_en_archivo(output_file, &tablero_final)?;
-        /*for row in &tablero_final {
-            let row_str: String = row
-                .iter()
-                .map(|c| c.to_string())
-                .collect::<Vec<_>>()
-                .join(" ");
-            writeln!(output_file, "{}", row_str)?;
-        }*/
+        
         println!();
         println!("***************");
         println!();
         Ok(())
     }
 
+    /// Busca un enemigo en el vector de enemigos en función de sus coordenadas.
+    ///
+    /// # Argumentos
+    ///
+    /// * `coordenada`: La coordenada en la que se busca al enemigo.
+    ///
+    /// # Devolución
+    ///
+    /// Si se encuentra un enemigo con las coordenadas especificadas, se devuelve
+    /// `Some(usize)` que contiene la posición del enemigo en el vector de enemigos.
+    /// Si no se encuentra ningún enemigo con las coordenadas dadas, se devuelve `None`.
+    ///
+    fn buscar_enemigo(&self, coordenada: Coordenada) -> Option<usize> {
+        self.enemigos.iter().position(|enemigo| enemigo.coordenada.is_equal_to(&coordenada))
+    }
+
+    /// Elimina un enemigo en función de sus coordenadas y la coordenada de la bomba.
+    ///
+    /// Si se encuentra un enemigo en las coordenadas especificadas y la bomba no ha impactado
+    /// previamente en él, reduce la vida del enemigo y actualiza su lista de bombas.
+    /// Si la vida del enemigo llega a 0, se elimina del vector de enemigos.
+    ///
+    /// # Argumentos
+    ///
+    /// * `coordenada`: La coordenada en la que se busca al enemigo.
+    /// * `coordenada_bomba`: La coordenada de la bomba.
+    ///
+    fn eliminar_enemigo(&mut self, coordenada: Coordenada, coordenada_bomba: Coordenada) {
+        println!("Eliminar enemigo");
+
+        // Buscar al enemigo utilizando la función buscar_enemigo
+        if let Some(i) = self.buscar_enemigo(coordenada) {
+            if let Some(_bomba_index) = self.enemigos[i]
+                .bombas_que_lo_impactaron
+                .iter()
+                .position(|&coord| coord.is_equal_to(&coordenada_bomba))
+            {
+                return;
+            }
+            if self.enemigos[i].vida > 0 {
+                self.enemigos[i].vida -= 1;
+                self.enemigos[i].actualizar_lista_de_bombas(coordenada_bomba);
+                if self.enemigos[i].vida == 0 {
+                    self.enemigos.swap_remove(i);
+                }
+            }
+        }
+    }
+
+    
+/*
     /// Elimina un enemigo del juego y actualiza su estado.
     ///
     /// Esta función elimina un enemigo del juego si la coordenada especificada coincide con su posición.
@@ -355,7 +399,7 @@ impl Juego {
                 }
             }
         }
-    }
+    }*/
 
     /// Evalúa el contenido de un casillero en el tablero y realiza las acciones correspondientes.
     ///
