@@ -3,11 +3,11 @@ use std::{
     io::{self, Write},
 };
 
-use crate::estructuras_juego::enemigo::*;
 use crate::estructuras_juego::bomba::*;
-use crate::estructuras_juego::obstaculo::*;
-use crate::estructuras_juego::desvio::*;
 use crate::estructuras_juego::coordenada::*;
+use crate::estructuras_juego::desvio::*;
+use crate::estructuras_juego::enemigo::*;
+use crate::estructuras_juego::obstaculo::*;
 
 const ENEMIGO: &str = "F";
 const BOMBA_DE_TRANSPASO: &str = "S";
@@ -30,12 +30,11 @@ pub struct Juego {
 
 impl Default for Juego {
     fn default() -> Self {
-         Self::new()
+        Self::new()
     }
 }
 
 impl Juego {
-    
     pub fn new() -> Juego {
         Juego {
             dimension: 0,
@@ -306,7 +305,7 @@ impl Juego {
         self.imprimir_tablero(&tablero_final);
 
         self.imprimir_tablero_en_archivo(output_file, &tablero_final)?;
-        
+
         println!();
         println!("***************");
         println!();
@@ -326,7 +325,9 @@ impl Juego {
     /// Si no se encuentra ningún enemigo con las coordenadas dadas, se devuelve `None`.
     ///
     pub fn buscar_enemigo(&self, coordenada: Coordenada) -> Option<usize> {
-        self.enemigos.iter().position(|enemigo| enemigo.coordenada.is_equal_to(&coordenada))
+        self.enemigos
+            .iter()
+            .position(|enemigo| enemigo.coordenada.is_equal_to(&coordenada))
     }
 
     /// Elimina un enemigo en función de sus coordenadas y la coordenada de la bomba.
@@ -362,8 +363,7 @@ impl Juego {
         }
     }
 
-    
-/*
+    /*
     /// Elimina un enemigo del juego y actualiza su estado.
     ///
     /// Esta función elimina un enemigo del juego si la coordenada especificada coincide con su posición.
