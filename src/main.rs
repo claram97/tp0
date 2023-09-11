@@ -1,7 +1,6 @@
 use std::env;
 use std::io;
-mod inicializar;
-mod juego;
+use tp0::inicializar;
 
 fn main() -> io::Result<()> {
     let args: Vec<String> = env::args().collect();

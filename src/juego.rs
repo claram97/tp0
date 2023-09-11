@@ -1,20 +1,13 @@
-pub mod bomba;
-pub mod coordenada;
-pub mod desvio;
-pub mod enemigo;
-pub mod obstaculo;
 use std::{
     fs::File,
     io::{self, Write},
 };
 
-use bomba::Bomba;
-use coordenada::Coordenada;
-use desvio::Desvio;
-use enemigo::Enemigo;
-use obstaculo::Obstaculo;
-
-use self::bomba::TipoDeBomba;
+use crate::estructuras_juego::enemigo::*;
+use crate::estructuras_juego::bomba::*;
+use crate::estructuras_juego::obstaculo::*;
+use crate::estructuras_juego::desvio::*;
+use crate::estructuras_juego::coordenada::*;
 
 const ENEMIGO: &str = "F";
 const BOMBA_DE_TRANSPASO: &str = "S";
@@ -35,7 +28,14 @@ pub struct Juego {
     desvios: Vec<Desvio>,
 }
 
+impl Default for Juego {
+    fn default() -> Self {
+         Self::new()
+    }
+}
+
 impl Juego {
+    
     pub fn new() -> Juego {
         Juego {
             dimension: 0,
@@ -96,7 +96,7 @@ impl Juego {
     /// * `coordenada`: La coordenada en la que se inicializa la roca.
     ///
     pub fn inicializar_roca(&mut self, coordenada: Coordenada) {
-        let roca: Obstaculo = Obstaculo::new(obstaculo::TipoDeObstaculo::Roca, coordenada);
+        let roca: Obstaculo = Obstaculo::new(TipoDeObstaculo::Roca, coordenada);
         self.obstaculos.push(roca);
     }
 
@@ -115,7 +115,7 @@ impl Juego {
         &mut self,
         coordenada: Coordenada,
         alcance: i8,
-        tipo: bomba::TipoDeBomba,
+        tipo: TipoDeBomba,
         id: String,
     ) {
         println!("Inicializar bomba en: ({},{})", coordenada.x, coordenada.y);
@@ -132,7 +132,7 @@ impl Juego {
     /// * `coordenada`: La coordenada en la que se inicializa la pared.
     ///
     pub fn inicializar_pared(&mut self, coordenada: Coordenada) {
-        let pared: Obstaculo = Obstaculo::new(obstaculo::TipoDeObstaculo::Pared, coordenada);
+        let pared: Obstaculo = Obstaculo::new(TipoDeObstaculo::Pared, coordenada);
         self.obstaculos.push(pared);
     }
 
@@ -325,7 +325,7 @@ impl Juego {
     /// `Some(usize)` que contiene la posición del enemigo en el vector de enemigos.
     /// Si no se encuentra ningún enemigo con las coordenadas dadas, se devuelve `None`.
     ///
-    fn buscar_enemigo(&self, coordenada: Coordenada) -> Option<usize> {
+    pub fn buscar_enemigo(&self, coordenada: Coordenada) -> Option<usize> {
         self.enemigos.iter().position(|enemigo| enemigo.coordenada.is_equal_to(&coordenada))
     }
 
@@ -340,7 +340,7 @@ impl Juego {
     /// * `coordenada`: La coordenada en la que se busca al enemigo.
     /// * `coordenada_bomba`: La coordenada de la bomba.
     ///
-    fn eliminar_enemigo(&mut self, coordenada: Coordenada, coordenada_bomba: Coordenada) {
+    pub fn eliminar_enemigo(&mut self, coordenada: Coordenada, coordenada_bomba: Coordenada) {
         println!("Eliminar enemigo");
 
         // Buscar al enemigo utilizando la función buscar_enemigo
@@ -486,7 +486,7 @@ impl Juego {
     /// * `i`: Un contador que representa el alcance actual de la explosión de una bomba.
     /// * `bomba`: Una referencia a la bomba actual que está siendo evaluada.
     ///
-    fn evaluar_arriba(
+    pub fn evaluar_arriba(
         &mut self,
         coordenada: &Coordenada,
         tablero: &mut Vec<Vec<String>>,

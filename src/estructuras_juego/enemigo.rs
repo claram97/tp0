@@ -1,4 +1,4 @@
-use crate::juego::coordenada::Coordenada;
+use crate::estructuras_juego::coordenada::Coordenada;
 
 /// Representa un enemigo en el juego con una vida determinada que puede ser afectado por bombas.
 pub struct Enemigo {

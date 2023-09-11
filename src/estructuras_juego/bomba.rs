@@ -1,4 +1,4 @@
-use crate::juego::coordenada::Coordenada;
+use crate::estructuras_juego::coordenada::Coordenada;
 
 /// Enumeración que representa los tipos de bombas en el juego.
 #[derive(Debug, PartialEq, Eq, Clone)]

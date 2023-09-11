@@ -1,7 +1,7 @@
 //! Este módulo contiene las funciones y estructuras para procesar el archivo de configuración del juego.
 
-use crate::juego::bomba::TipoDeBomba;
-use crate::juego::coordenada::Coordenada;
+use crate::estructuras_juego::bomba::TipoDeBomba;
+use crate::estructuras_juego::coordenada::Coordenada;
 use crate::juego::Juego;
 use std::fmt;
 use std::fs::File;

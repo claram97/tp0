@@ -1,4 +1,4 @@
-use crate::juego::coordenada::Coordenada;
+use crate::estructuras_juego::coordenada::Coordenada;
 
 /// Representa un objeto de desvío en el juego, que puede alterar la trayectoria de una bomba.
 pub struct Desvio {
