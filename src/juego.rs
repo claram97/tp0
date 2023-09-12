@@ -1,13 +1,13 @@
-use std::{
-    fs::File,
-    io::{self, Write},
-};
-use std::rc::Rc;
 use crate::estructuras_juego::bomba::*;
 use crate::estructuras_juego::coordenada::*;
 use crate::estructuras_juego::desvio::*;
 use crate::estructuras_juego::enemigo::*;
 use crate::estructuras_juego::obstaculo::*;
+use std::rc::Rc;
+use std::{
+    fs::File,
+    io::{self, Write},
+};
 
 const ENEMIGO: &str = "F";
 const BOMBA_DE_TRANSPASO: &str = "S";
@@ -344,7 +344,6 @@ impl Juego {
     pub fn eliminar_enemigo(&mut self, coordenada: Coordenada, coordenada_bomba: Coordenada) {
         println!("Eliminar enemigo");
 
-        // Buscar al enemigo utilizando la función buscar_enemigo
         if let Some(i) = self.buscar_enemigo(coordenada) {
             if let Some(_bomba_index) = self.enemigos[i]
                 .bombas_que_lo_impactaron
@@ -362,44 +361,6 @@ impl Juego {
             }
         }
     }
-
-    /*
-    /// Elimina un enemigo del juego y actualiza su estado.
-    ///
-    /// Esta función elimina un enemigo del juego si la coordenada especificada coincide con su posición.
-    /// Si la bomba que causó la eliminación del enemigo ya se ha registrado previamente, no se realiza ninguna acción adicional.
-    /// Si el enemigo aún tiene puntos de vida, se reduce su vida en uno y se actualiza su lista de bombas que lo impactaron.
-    /// Si el enemigo queda con cero puntos de vida, se elimina completamente del juego.
-    ///
-    /// # Argumentos
-    ///
-    /// * `coordenada`: La coordenada en la que se encuentra el enemigo.
-    /// * `coordenada_bomba`: La coordenada de la bomba que impactó al enemigo.
-    ///
-    fn eliminar_enemigo(&mut self, coordenada: Coordenada, coordenada_bomba: Coordenada) {
-        println!("Eliminar enemigo");
-
-        if let Some(i) = self
-            .enemigos
-            .iter_mut()
-            .position(|enemigo| enemigo.coordenada.is_equal_to(&coordenada))
-        {
-            if let Some(_bomba_index) = self.enemigos[i]
-                .bombas_que_lo_impactaron
-                .iter()
-                .position(|&coord| coord.is_equal_to(&coordenada_bomba))
-            {
-                return;
-            }
-            if self.enemigos[i].vida > 0 {
-                self.enemigos[i].vida -= 1;
-                self.enemigos[i].actualizar_lista_de_bombas(coordenada_bomba);
-                if self.enemigos[i].vida == 0 {
-                    self.enemigos.swap_remove(i);
-                }
-            }
-        }
-    }*/
 
     /// Evalúa el contenido de un casillero en el tablero y realiza las acciones correspondientes.
     ///
@@ -611,45 +572,6 @@ impl Juego {
         self.evaluar_derecha(&bomba.coordenada, tablero, 1, bomba);
     }
 
-    /// Detona una bomba en una coordenada dada y afecta el tablero.
-    ///
-    /// Esta función busca una bomba en la coordenada especificada y la detona si aún no ha sido detonada.
-    /// Cuando una bomba se detona, se evalúa su alcance en todas las direcciones y se aplican efectos como la eliminación
-    /// de enemigos, la detonación de otras bombas cercanas o la desviación de trayectorias de bombas, afectando el tablero.
-    ///
-    /// # Argumentos
-    ///
-    /// * `tablero`: Una referencia mutable al tablero del juego.
-    /// * `coordenada`: La coordenada en la que se va a detonar la bomba.
-    ///
-    /*pub fn detonar_bomba(&mut self, tablero: &mut Vec<Vec<String>>, coordenada: Coordenada) {
-        let mut bomba_index: Option<usize> = None;
-
-        for (i, bomba) in self.bombas.iter().enumerate().rev() {
-            if bomba.coordenada.is_equal_to(&coordenada) {
-                bomba_index = Some(i);
-                break;
-            }
-        }
-
-        if let Some(i) = bomba_index {
-            if !self.bombas[i].detonada {
-                self.bombas[i].detonar();
-                let bomba = self.bombas[i].clone();
-
-                self.funcion_bomba(&self.bombas[i].clone(), tablero);
-
-                self.bombas[i] = bomba;
-
-                return;
-            } else {
-                return;
-            }
-        }
-
-        println!("Bomba no encontrada");
-    }*/
-
     /// Detona una bomba en el tablero en la coordenada especificada.
     ///
     /// Esta función busca una bomba en la lista de bombas del objeto actual (`self`)
@@ -671,50 +593,27 @@ impl Juego {
     /// ```*/
     pub fn detonar_bomba(&mut self, tablero: &mut Vec<Vec<String>>, coordenada: Coordenada) {
         let mut bomba_index: Option<usize> = None;
-    
+
         for (i, bomba) in self.bombas.iter().enumerate().rev() {
             if bomba.coordenada.is_equal_to(&coordenada) {
                 bomba_index = Some(i);
                 break;
             }
         }
-    
+
         if let Some(i) = bomba_index {
             if !self.bombas[i].detonada {
-                let bomba_rc = Rc::new(self.bombas[i].clone()); // Crear una referencia contada Rc
+                let bomba_rc = Rc::new(self.bombas[i].clone());
                 self.bombas[i].detonar();
-                
-                self.funcion_bomba(&*bomba_rc, tablero); // Convertir Rc en una referencia común con &*bomba_rc
-                
-                // No necesitas asignar nuevamente la bomba a self.bombas[i] ya que Rc se encargará de la gestión de referencias
+
+                self.funcion_bomba(&*bomba_rc, tablero);
+
                 return;
             } else {
                 return;
             }
         }
-    
+
         println!("Bomba no encontrada");
     }
-    
-    
 }
-
-/*
-fn eliminar_enemigo(&mut self, coordenada: Coordenada, impactado : bool) {
-    println!("Eliminar enemigo");
-
-    if !impactado {
-        if let Some(i) = self
-            .enemigos
-            .iter_mut()
-            .position(|enemigo| enemigo.coordenada.is_equal_to(&coordenada))
-        {
-            if self.enemigos[i].vida > 0 {
-                self.enemigos[i].vida -= 1;
-                if self.enemigos[i].vida == 0 {
-                    self.enemigos.swap_remove(i);
-                }
-            }
-        }
-    }
-} */
