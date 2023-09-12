@@ -375,7 +375,7 @@ impl Juego {
     /// * `bomba`: Una referencia a la bomba actual que está siendo evaluada.
     /// * `coordenada_original`: La coordenada original de la bomba antes de comenzar su trayectoria.
     ///
-    fn evaluar_casillero(
+    pub fn evaluar_casillero(
         &mut self,
         coordenada: &mut Coordenada,
         tablero: &mut Vec<Vec<String>>,
@@ -397,9 +397,7 @@ impl Juego {
                     self.detonar_bomba(tablero, *coordenada);
                 }
                 c if c.starts_with(DESVIO) => {
-                    //println!("Desvío encontrado. Alcance actual: {}",i);
                     i += 1;
-                    //println!("Incrementado alcance al {}... Listo!",i);
                     if c == DESVIO_ARRIBA {
                         self.evaluar_arriba(coordenada, tablero, i, bomba);
                     } else if c == DESVIO_ABAJO {
@@ -412,8 +410,15 @@ impl Juego {
                 }
                 d if d.starts_with(ROCA) => {
                     if bomba.tipo == TipoDeBomba::Normal {
+                        println!("Bomba normal.");
                         coordenada.x = -1;
                         coordenada.y = -1;
+                    }
+                    if bomba.tipo == TipoDeBomba::Traspaso {
+                        println!(
+                            "Bomba de traspaso. Coordenadas: ({},{})",
+                            coordenada.x, coordenada.y
+                        );
                     }
                 }
                 e if e.starts_with(PARED) => {
@@ -616,4 +621,36 @@ impl Juego {
 
         println!("Bomba no encontrada");
     }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    pub fn eliminar_enemigo_del_mapa() {
+        let mut juego: Juego = Juego::new();
+        juego.inicializar_dimension(8);
+        let coordenada_enemigo: Coordenada = Coordenada::new(3, 5);
+        let coordenada_bomba: Coordenada = Coordenada::new(3, 4);
+        juego.inicializar_enemigo(coordenada_enemigo, 1);
+        let cantidad_inicial_de_enemigos = juego.enemigos.len();
+        juego.eliminar_enemigo(coordenada_enemigo, coordenada_bomba);
+        let cantidad_final_de_enemigos = juego.enemigos.len();
+        assert_ne!(cantidad_inicial_de_enemigos, cantidad_final_de_enemigos);
+    }
+
+    #[test]
+    pub fn eliminar_enemigo_con_vida_restante_mayor_a_cero_no_muere() {
+        let mut juego: Juego = Juego::new();
+        juego.inicializar_dimension(8);
+        let coordenada_enemigo: Coordenada = Coordenada::new(3, 5);
+        let coordenada_bomba: Coordenada = Coordenada::new(3, 4);
+        juego.inicializar_enemigo(coordenada_enemigo, 5);
+        let cantidad_inicial_de_enemigos = juego.enemigos.len();
+        juego.eliminar_enemigo(coordenada_enemigo, coordenada_bomba);
+        let cantidad_final_de_enemigos = juego.enemigos.len();
+        assert_eq!(cantidad_inicial_de_enemigos, cantidad_final_de_enemigos);
+    }
+
 }

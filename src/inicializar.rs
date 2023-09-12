@@ -480,3 +480,58 @@ pub fn cargar_juego(maze_file_name: &str) -> io::Result<Juego> {
     juego.inicializar_dimension(filas);
     Ok(juego)
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    pub fn inicializar_coordenadas_erroneas_devuelve_error() {
+        let args: Vec<String> = vec![
+            "string".to_string(),
+            "maze.txt".to_string(),
+            "output.txt".to_string(),
+            "x".to_string(),
+            "9".to_string(),
+        ];
+        let resultado = inicializar_coordenada_de_la_bomba(&args);
+        assert!(resultado.is_err())
+    }
+
+    #[test]
+    pub fn inicializar_coordenadas_correctas_devuelve_ok() {
+        let args: Vec<String> = vec![
+            "string".to_string(),
+            "maze.txt".to_string(),
+            "output.txt".to_string(),
+            "8".to_string(),
+            "9".to_string(),
+        ];
+        let resultado = inicializar_coordenada_de_la_bomba(&args);
+        assert!(resultado.is_ok())
+    }
+
+    #[test]
+    pub fn inicializar_enemigo_sin_especificar_vida_devuelve_error() {
+        let mut juego: Juego = Juego::new();
+        let coordenada_enemigo: Coordenada = Coordenada::new(3, 5);
+        let resultado = procesar_enemigo("F", coordenada_enemigo, &mut juego);
+        assert!(resultado.is_err());
+    }
+
+    #[test]
+    pub fn inicializar_enemigo_con_formato_correcto_devuelve_ok() {
+        let mut juego: Juego = Juego::new();
+        let coordenada_enemigo: Coordenada = Coordenada::new(3, 5);
+        let resultado = procesar_enemigo("F5", coordenada_enemigo, &mut juego);
+        assert!(resultado.is_ok());
+    }
+
+    #[test]
+    pub fn inicializar_enemigo_con_formato_erroneo_devuelve_error() {
+        let mut juego: Juego = Juego::new();
+        let coordenada_enemigo: Coordenada = Coordenada::new(3, 5);
+        let resultado = procesar_enemigo("FD", coordenada_enemigo, &mut juego);
+        assert!(resultado.is_err());
+    }
+}
