@@ -606,7 +606,7 @@ impl Juego {
                 let bomba_rc = Rc::new(self.bombas[i].clone());
                 self.bombas[i].detonar();
 
-                self.funcion_bomba(&*bomba_rc, tablero);
+                self.funcion_bomba(&bomba_rc, tablero);
 
                 return;
             } else {
