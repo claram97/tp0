@@ -1,0 +1,10 @@
+pub const ENEMIGO: &str = "F";
+pub const BOMBA_DE_TRANSPASO: &str = "S";
+pub const BOMBA_NORMAL: &str = "B";
+pub const PARED: &str = "W";
+pub const ROCA: &str = "R";
+pub const DESVIO: &str = "D";
+pub const DESVIO_ARRIBA: &str = "DU";
+pub const DESVIO_ABAJO: &str = "DD";
+pub const DESVIO_IZQUIERDA: &str = "DL";
+pub const DESVIO_DERECHA: &str = "DR";

@@ -9,6 +9,7 @@ use std::{
     io::{self, Write},
 };
 
+use crate::constantes;
 const ENEMIGO: &str = "F";
 const BOMBA_DE_TRANSPASO: &str = "S";
 const BOMBA_NORMAL: &str = "B";
@@ -228,14 +229,14 @@ impl Juego {
     ///
     /// * `tablero`: Un vector de vectores de cadenas que representa el tablero del juego.
     ///
-    pub fn imprimir_tablero(&self, tablero: &Vec<Vec<String>>) {
+    /*pub fn imprimir_tablero(&self, tablero: &Vec<Vec<String>>) {
         for row in tablero {
             for element in row {
                 print!("{} ", element);
             }
             println!();
         }
-    }
+    }*/
 
     /// Imprime el tablero en un archivo.
     ///
@@ -263,10 +264,7 @@ impl Juego {
                 .collect::<Vec<_>>()
                 .join(" ");
             let resultado = writeln!(output_file, "{}", row_str);
-            match resultado {
-                Err(e) => return Err(e),
-                Ok(()) => continue,
-            }
+            resultado?;
         }
         Ok(())
     }
@@ -293,22 +291,11 @@ impl Juego {
         let mut tablero: Vec<Vec<String>> = self.posicionar_elementos_en_tablero();
 
         self.detonar_bomba(&mut tablero, coordenada);
-        println!();
-        println!("***************");
-        println!("Tablero inicial: ");
-        self.imprimir_tablero(&tablero);
 
         let tablero_final = self.posicionar_elementos_en_tablero();
-        println!();
-        println!("***************");
-        println!("Tablero final: ");
-        self.imprimir_tablero(&tablero_final);
 
         self.imprimir_tablero_en_archivo(output_file, &tablero_final)?;
 
-        println!();
-        println!("***************");
-        println!();
         Ok(())
     }
 
@@ -342,8 +329,6 @@ impl Juego {
     /// * `coordenada_bomba`: La coordenada de la bomba.
     ///
     pub fn eliminar_enemigo(&mut self, coordenada: Coordenada, coordenada_bomba: Coordenada) {
-        println!("Eliminar enemigo");
-
         if let Some(i) = self.buscar_enemigo(coordenada) {
             if let Some(_bomba_index) = self.enemigos[i]
                 .bombas_que_lo_impactaron
@@ -390,38 +375,31 @@ impl Juego {
         {
             let casillero: &str = &tablero[coordenada.x as usize][coordenada.y as usize];
             match casillero {
-                a if a.starts_with(ENEMIGO) => {
+                a if a.starts_with(constantes::ENEMIGO) => {
                     self.eliminar_enemigo(*coordenada, coordenada_original);
                 }
-                b if b.starts_with(BOMBA_DE_TRANSPASO) || b.starts_with(BOMBA_NORMAL) => {
+                b if b.starts_with(constantes::BOMBA_DE_TRANSPASO) || b.starts_with(constantes::BOMBA_NORMAL) => {
                     self.detonar_bomba(tablero, *coordenada);
                 }
-                c if c.starts_with(DESVIO) => {
+                c if c.starts_with(constantes::DESVIO) => {
                     i += 1;
-                    if c == DESVIO_ARRIBA {
+                    if c == constantes::DESVIO_ARRIBA {
                         self.evaluar_arriba(coordenada, tablero, i, bomba);
-                    } else if c == DESVIO_ABAJO {
+                    } else if c == constantes::DESVIO_ABAJO {
                         self.evaluar_abajo(coordenada, tablero, i, bomba);
-                    } else if c == DESVIO_DERECHA {
+                    } else if c == constantes::DESVIO_DERECHA {
                         self.evaluar_izquierda(coordenada, tablero, i, bomba);
-                    } else if c == DESVIO_IZQUIERDA {
+                    } else if c == constantes::DESVIO_IZQUIERDA {
                         self.evaluar_derecha(coordenada, tablero, i, bomba);
                     }
                 }
-                d if d.starts_with(ROCA) => {
+                d if d.starts_with(constantes::ROCA) => {
                     if bomba.tipo == TipoDeBomba::Normal {
-                        println!("Bomba normal.");
                         coordenada.x = -1;
                         coordenada.y = -1;
                     }
-                    if bomba.tipo == TipoDeBomba::Traspaso {
-                        println!(
-                            "Bomba de traspaso. Coordenadas: ({},{})",
-                            coordenada.x, coordenada.y
-                        );
-                    }
                 }
-                e if e.starts_with(PARED) => {
+                e if e.starts_with(constantes::PARED) => {
                     coordenada.x = -1;
                     coordenada.y = -1;
                 }
@@ -618,8 +596,6 @@ impl Juego {
                 return;
             }
         }
-
-        println!("Bomba no encontrada");
     }
 }
 

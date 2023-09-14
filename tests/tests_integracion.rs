@@ -2,21 +2,45 @@ use tp0::estructuras_juego::bomba::*;
 use tp0::estructuras_juego::coordenada::*;
 use tp0::inicializar::inicializar_juego;
 use tp0::juego::*;
+use std::fs::File;
 
 #[test]
-pub fn inicializar_juego_con_enemigo_invalido_devuelve_error() {
+pub fn inicializar_juego_con_enemigo_invalido_devuelve_error() -> Result<(), Box<dyn std::error::Error>> {
+    let file_creation_result = File::create("testing_output.txt");
+    let mut file = match file_creation_result {
+        Ok(file) => file,
+        Err(err) => {
+            return Err(err.into()); // Devolver un error con la descripción del error
+        }
+    };
+
     let mut juego: Juego = Juego::new();
     let coordenada_enemigo: Coordenada = Coordenada::new(3, 5);
-    let resultado = inicializar_juego(coordenada_enemigo, "FB", &mut juego);
-    assert!(resultado.is_err())
+    let resultado = inicializar_juego(coordenada_enemigo, "FB", &mut juego, &mut file);
+
+    assert!(resultado.is_err());
+    std::fs::remove_file("testing_output.txt")?;
+
+    Ok(())
 }
 
+
 #[test]
-pub fn inicializar_juego_con_enemigo_correcto_devuelve_ok() {
+pub fn inicializar_juego_con_enemigo_correcto_devuelve_ok() -> Result<(), Box<dyn std::error::Error>>{
+    let file_creation_result = File::create("testing_output.txt");
+    let mut file = match file_creation_result {
+        Ok(file) => file,
+        Err(err) => {
+            return Err(err.into());
+        }
+    };
     let mut juego: Juego = Juego::new();
     let coordenada_enemigo: Coordenada = Coordenada::new(3, 5);
-    let resultado = inicializar_juego(coordenada_enemigo, "F6", &mut juego);
-    assert!(resultado.is_ok())
+    let resultado = inicializar_juego(coordenada_enemigo, "F6", &mut juego, &mut file);
+    assert!(resultado.is_ok());
+    std::fs::remove_file("testing_output.txt")?;
+
+    Ok(())
 }
 
 #[test]
@@ -563,5 +587,85 @@ pub fn bomba_no_se_detona_dos_veces() {
     tablero[0][5] = "F3".to_string();
     juego.detonar_bomba(&mut tablero, coordenada_bomba);
     assert_eq!(juego.enemigos[1].vida, 3);
+}
+
+#[test]
+pub fn se_actualiza_la_lista_de_bombas_del_enemigo_luego_del_impacto() {
+    let mut tablero: Vec<Vec<String>> = vec![
+        vec![
+            "_".to_string(),
+            "_".to_string(),
+            "_".to_string(),
+            "_".to_string(),
+            "_".to_string(),
+            "_".to_string(),
+            "_".to_string(),
+        ],
+        vec![
+            "_".to_string(),
+            "_".to_string(),
+            "_".to_string(),
+            "_".to_string(),
+            "_".to_string(),
+            "_".to_string(),
+            "_".to_string(),
+        ],
+        vec![
+            "_".to_string(),
+            "_".to_string(),
+            "_".to_string(),
+            "_".to_string(),
+            "_".to_string(),
+            "_".to_string(),
+            "_".to_string(),
+        ],
+        vec![
+            "_".to_string(),
+            "_".to_string(),
+            "_".to_string(),
+            "_".to_string(),
+            "_".to_string(),
+            "_".to_string(),
+            "_".to_string(),
+        ],
+        vec![
+            "_".to_string(),
+            "_".to_string(),
+            "_".to_string(),
+            "_".to_string(),
+            "_".to_string(),
+            "_".to_string(),
+            "_".to_string(),
+        ],
+        vec![
+            "_".to_string(),
+            "B5".to_string(),
+            "F5".to_string(),
+            "_".to_string(),
+            "_".to_string(),
+            "_".to_string(),
+            "_".to_string(),
+        ],
+        vec![
+            "_".to_string(),
+            "_".to_string(),
+            "_".to_string(),
+            "_".to_string(),
+            "_".to_string(),
+            "_".to_string(),
+            "_".to_string(),
+        ],
+    ];
+    let coordenada_bomba: Coordenada = Coordenada::new(5, 1);
+    let coordenada_enemigo : Coordenada = Coordenada::new(5,2);
+    let mut juego: Juego = Juego::new();
+    juego.inicializar_dimension(7);
+    juego.inicializar_enemigo(coordenada_enemigo, 5);
+    juego.inicializar_bomba(coordenada_bomba, 5, TipoDeBomba::Normal, "B5".to_string());
+    let antes = juego.enemigos[0].bombas_que_lo_impactaron.len();
+    juego.detonar_bomba(&mut tablero, coordenada_bomba);
+    let despues: usize = juego.enemigos[0].bombas_que_lo_impactaron.len();
+    assert_ne!(antes,despues);
+
 }
 
