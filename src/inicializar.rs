@@ -1,5 +1,6 @@
 //! Este módulo contiene las funciones y estructuras para procesar el archivo de configuración del juego.
 
+use crate::constantes;
 use crate::estructuras_juego::bomba::TipoDeBomba;
 use crate::estructuras_juego::coordenada::Coordenada;
 use crate::juego::Juego;
@@ -7,7 +8,6 @@ use std::fmt;
 use std::fs::File;
 use std::io::{self, BufRead, Write};
 use std::path::{Path, PathBuf};
-use crate::constantes;
 
 #[derive(Debug)]
 struct CustomError(String);
@@ -179,12 +179,19 @@ fn procesar_desvio(palabra: &str, punto: Coordenada, juego: &mut Juego) -> io::R
 /// resultado?;
 ///
 /// ```*/
-pub fn inicializar_juego(punto: Coordenada, palabra: &str, juego: &mut Juego,output_file : &mut File) -> io::Result<()> {
+pub fn inicializar_juego(
+    punto: Coordenada,
+    palabra: &str,
+    juego: &mut Juego,
+    output_file: &mut File,
+) -> io::Result<()> {
     if palabra == constantes::PARED {
         juego.inicializar_pared(punto);
     } else if palabra == constantes::ROCA {
         juego.inicializar_roca(punto);
-    } else if palabra.starts_with(constantes::BOMBA_DE_TRANSPASO) || palabra.starts_with(constantes::BOMBA_NORMAL) {
+    } else if palabra.starts_with(constantes::BOMBA_DE_TRANSPASO)
+        || palabra.starts_with(constantes::BOMBA_NORMAL)
+    {
         let resultado = procesar_bomba(palabra, punto, juego);
         resultado?;
     } else if palabra.starts_with(constantes::ENEMIGO) {
@@ -193,8 +200,9 @@ pub fn inicializar_juego(punto: Coordenada, palabra: &str, juego: &mut Juego,out
     } else if palabra.starts_with(constantes::DESVIO) {
         let resultado = procesar_desvio(palabra, punto, juego);
         resultado?;
-    }
-    else {
+    } else if palabra == constantes::VACIO {
+        return Ok(());
+    } else {
         let texto = "Se encontraron caracteres inválidos en el archivo de entrada.";
 
         output_file.write_all(texto.as_bytes())?;
@@ -243,7 +251,8 @@ fn procesar_linea_de_configuracion(
     l: &str,
     filas: &mut i8,
     coordenada_y: &mut i8,
-    juego: &mut Juego, output_file : &mut File
+    juego: &mut Juego,
+    output_file: &mut File,
 ) -> io::Result<()> {
     let palabras: Vec<&str> = l.split_whitespace().collect();
     for palabra in palabras {
@@ -296,19 +305,19 @@ pub fn inicializar_coordenada_de_la_bomba(args: &[String]) -> io::Result<Coorden
     let y: i8;
 
     if let Ok(arg) = args[3].parse::<i8>() {
-        x = arg;
-    } else {
-        return Err(io::Error::new(
-            io::ErrorKind::InvalidData,
-            "Error en coordenada x.",
-        ));
-    }
-    if let Ok(arg) = args[4].parse::<i8>() {
         y = arg;
     } else {
         return Err(io::Error::new(
             io::ErrorKind::InvalidData,
-            "Error en coordenada y.",
+            "Error en coordenada correspondiente a la columna.",
+        ));
+    }
+    if let Ok(arg) = args[4].parse::<i8>() {
+        x = arg;
+    } else {
+        return Err(io::Error::new(
+            io::ErrorKind::InvalidData,
+            "Error en coordenada a la fila.",
         ));
     }
 
@@ -399,7 +408,11 @@ pub fn run(args: Vec<String>) -> io::Result<()> {
 
     let coordenada_bomba = match inicializar_coordenada_de_la_bomba(&args) {
         Ok(coordenada) => coordenada,
-        Err(e) => return Err(e),
+        Err(e) => {
+            let mensaje_error = e.to_string();
+            output_file.write_all(mensaje_error.as_bytes())?;
+            return Err(e);
+        }
     };
 
     if coordenada_bomba.x >= juego.dimension || coordenada_bomba.y >= juego.dimension {
@@ -451,9 +464,13 @@ pub fn cargar_juego(maze_file_name: &str, output_file: &mut File) -> io::Result<
     for linea in reader.lines() {
         match linea {
             Ok(l) => {
-                if let Err(err) =
-                    procesar_linea_de_configuracion(&l, &mut filas, &mut coordenada_y, &mut juego, output_file)
-                {
+                if let Err(err) = procesar_linea_de_configuracion(
+                    &l,
+                    &mut filas,
+                    &mut coordenada_y,
+                    &mut juego,
+                    output_file,
+                ) {
                     return Err(io::Error::new(io::ErrorKind::Other, err.to_string()));
                 }
             }
@@ -523,5 +540,4 @@ mod tests {
         let resultado = procesar_enemigo("FD", coordenada_enemigo, &mut juego);
         assert!(resultado.is_err());
     }
-    
 }

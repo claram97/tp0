@@ -8,3 +8,4 @@ pub const DESVIO_ARRIBA: &str = "DU";
 pub const DESVIO_ABAJO: &str = "DD";
 pub const DESVIO_IZQUIERDA: &str = "DL";
 pub const DESVIO_DERECHA: &str = "DR";
+pub const VACIO: &str = "_";

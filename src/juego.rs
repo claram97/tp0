@@ -108,7 +108,6 @@ impl Juego {
         tipo: TipoDeBomba,
         id: String,
     ) {
-        println!("Inicializar bomba en: ({},{})", coordenada.x, coordenada.y);
         let bomba: Bomba = Bomba::new(coordenada, alcance, tipo, id);
         self.bombas.push(bomba);
     }
@@ -368,7 +367,9 @@ impl Juego {
                 a if a.starts_with(constantes::ENEMIGO) => {
                     self.eliminar_enemigo(*coordenada, coordenada_original);
                 }
-                b if b.starts_with(constantes::BOMBA_DE_TRANSPASO) || b.starts_with(constantes::BOMBA_NORMAL) => {
+                b if b.starts_with(constantes::BOMBA_DE_TRANSPASO)
+                    || b.starts_with(constantes::BOMBA_NORMAL) =>
+                {
                     self.detonar_bomba(tablero, *coordenada);
                 }
                 c if c.starts_with(constantes::DESVIO) => {
@@ -559,7 +560,7 @@ impl Juego {
     ///
     /*/// # Ejemplo
     ///
-    /// ```rust
+    /// ```
     /// let mut juego = Juego::new(); // Crea una instancia del juego.
     /// let coordenada = Coordenada { x: 2, y: 3 };
     /// juego.detonar_bomba(&mut tablero, coordenada);
@@ -580,7 +581,7 @@ impl Juego {
                 self.bombas[i].detonar();
 
                 self.funcion_bomba(&bomba_rc, tablero);
-            } 
+            }
         }
     }
 }
@@ -614,5 +615,4 @@ mod tests {
         let cantidad_final_de_enemigos = juego.enemigos.len();
         assert_eq!(cantidad_inicial_de_enemigos, cantidad_final_de_enemigos);
     }
-
 }
