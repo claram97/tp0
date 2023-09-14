@@ -10,16 +10,6 @@ use std::{
 };
 
 use crate::constantes;
-const ENEMIGO: &str = "F";
-const BOMBA_DE_TRANSPASO: &str = "S";
-const BOMBA_NORMAL: &str = "B";
-const PARED: &str = "W";
-const ROCA: &str = "R";
-const DESVIO: &str = "D";
-const DESVIO_ARRIBA: &str = "DU";
-const DESVIO_ABAJO: &str = "DD";
-const DESVIO_IZQUIERDA: &str = "DL";
-const DESVIO_DERECHA: &str = "DR";
 
 pub struct Juego {
     pub dimension: i8,
@@ -590,8 +580,7 @@ impl Juego {
                 self.bombas[i].detonar();
 
                 self.funcion_bomba(&bomba_rc, tablero);
-            } else {
-            }
+            } 
         }
     }
 }
