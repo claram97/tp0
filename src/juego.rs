@@ -590,10 +590,7 @@ impl Juego {
                 self.bombas[i].detonar();
 
                 self.funcion_bomba(&bomba_rc, tablero);
-
-                return;
             } else {
-                return;
             }
         }
     }
