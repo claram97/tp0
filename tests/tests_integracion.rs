@@ -1,16 +1,17 @@
+use std::fs::File;
 use tp0::estructuras_juego::bomba::*;
 use tp0::estructuras_juego::coordenada::*;
-use tp0::inicializar::inicializar_juego;
+use tp0::inicializar::{inicializar_juego, procesar_enemigo};
 use tp0::juego::*;
-use std::fs::File;
 
 #[test]
-pub fn inicializar_juego_con_enemigo_invalido_devuelve_error() -> Result<(), Box<dyn std::error::Error>> {
+pub fn inicializar_juego_con_enemigo_invalido_devuelve_error(
+) -> Result<(), Box<dyn std::error::Error>> {
     let file_creation_result = File::create("testing_output.txt");
     let mut file = match file_creation_result {
         Ok(file) => file,
         Err(err) => {
-            return Err(err.into()); // Devolver un error con la descripción del error
+            return Err(err.into());
         }
     };
 
@@ -19,14 +20,13 @@ pub fn inicializar_juego_con_enemigo_invalido_devuelve_error() -> Result<(), Box
     let resultado = inicializar_juego(coordenada_enemigo, "FB", &mut juego, &mut file);
 
     assert!(resultado.is_err());
-    std::fs::remove_file("testing_output.txt")?;
 
     Ok(())
 }
 
-
 #[test]
-pub fn inicializar_juego_con_enemigo_correcto_devuelve_ok() -> Result<(), Box<dyn std::error::Error>>{
+pub fn inicializar_juego_con_enemigo_correcto_devuelve_ok() -> Result<(), Box<dyn std::error::Error>>
+{
     let file_creation_result = File::create("testing_output.txt");
     let mut file = match file_creation_result {
         Ok(file) => file,
@@ -38,9 +38,32 @@ pub fn inicializar_juego_con_enemigo_correcto_devuelve_ok() -> Result<(), Box<dy
     let coordenada_enemigo: Coordenada = Coordenada::new(3, 5);
     let resultado = inicializar_juego(coordenada_enemigo, "F6", &mut juego, &mut file);
     assert!(resultado.is_ok());
-    std::fs::remove_file("testing_output.txt")?;
 
     Ok(())
+}
+
+#[test]
+pub fn inicializar_enemigo_sin_especificar_vida_devuelve_error() {
+    let mut juego: Juego = Juego::new();
+    let coordenada_enemigo: Coordenada = Coordenada::new(3, 5);
+    let resultado = procesar_enemigo("F", coordenada_enemigo, &mut juego);
+    assert!(resultado.is_err());
+}
+
+#[test]
+pub fn inicializar_enemigo_con_formato_correcto_devuelve_ok() {
+    let mut juego: Juego = Juego::new();
+    let coordenada_enemigo: Coordenada = Coordenada::new(3, 5);
+    let resultado = procesar_enemigo("F5", coordenada_enemigo, &mut juego);
+    assert!(resultado.is_ok());
+}
+
+#[test]
+pub fn inicializar_enemigo_con_formato_erroneo_devuelve_error() {
+    let mut juego: Juego = Juego::new();
+    let coordenada_enemigo: Coordenada = Coordenada::new(3, 5);
+    let resultado = procesar_enemigo("FD", coordenada_enemigo, &mut juego);
+    assert!(resultado.is_err());
 }
 
 #[test]
@@ -506,7 +529,6 @@ pub fn desvio_funciona_correctamente() {
     assert_eq!(vida_final, vida_inicial - 1);
 }
 
-
 #[test]
 pub fn bomba_no_se_detona_dos_veces() {
     let mut juego: Juego = Juego::new();
@@ -657,7 +679,7 @@ pub fn se_actualiza_la_lista_de_bombas_del_enemigo_luego_del_impacto() {
         ],
     ];
     let coordenada_bomba: Coordenada = Coordenada::new(5, 1);
-    let coordenada_enemigo : Coordenada = Coordenada::new(5,2);
+    let coordenada_enemigo: Coordenada = Coordenada::new(5, 2);
     let mut juego: Juego = Juego::new();
     juego.inicializar_dimension(7);
     juego.inicializar_enemigo(coordenada_enemigo, 5);
@@ -665,7 +687,5 @@ pub fn se_actualiza_la_lista_de_bombas_del_enemigo_luego_del_impacto() {
     let antes = juego.enemigos[0].bombas_que_lo_impactaron.len();
     juego.detonar_bomba(&mut tablero, coordenada_bomba);
     let despues: usize = juego.enemigos[0].bombas_que_lo_impactaron.len();
-    assert_ne!(antes,despues);
-
+    assert_ne!(antes, despues);
 }
-

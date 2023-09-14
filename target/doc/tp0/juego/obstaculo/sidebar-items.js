@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"enum":["TipoDeObstaculo"],"struct":["Obstaculo"]};

@@ -1,3 +1,3 @@
 (function() {var implementors = {
-"tp0":[["impl <a class=\"trait\" href=\"https://doc.rust-lang.org/1.72.0/core/marker/trait.Copy.html\" title=\"trait core::marker::Copy\">Copy</a> for <a class=\"struct\" href=\"tp0/juego/coordenada/struct.Coordenada.html\" title=\"struct tp0::juego::coordenada::Coordenada\">Coordenada</a>"]]
+"tp0":[["impl <a class=\"trait\" href=\"https://doc.rust-lang.org/1.72.0/core/marker/trait.Copy.html\" title=\"trait core::marker::Copy\">Copy</a> for <a class=\"struct\" href=\"tp0/estructuras_juego/coordenada/struct.Coordenada.html\" title=\"struct tp0::estructuras_juego::coordenada::Coordenada\">Coordenada</a>"]]
 };if (window.register_implementors) {window.register_implementors(implementors);} else {window.pending_implementors = implementors;}})()

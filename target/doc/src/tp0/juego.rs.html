@@ -616,79 +616,31 @@
 <a href="#616" id="616">616</a>
 <a href="#617" id="617">617</a>
 <a href="#618" id="618">618</a>
-<a href="#619" id="619">619</a>
-<a href="#620" id="620">620</a>
-<a href="#621" id="621">621</a>
-<a href="#622" id="622">622</a>
-<a href="#623" id="623">623</a>
-<a href="#624" id="624">624</a>
-<a href="#625" id="625">625</a>
-<a href="#626" id="626">626</a>
-<a href="#627" id="627">627</a>
-<a href="#628" id="628">628</a>
-<a href="#629" id="629">629</a>
-<a href="#630" id="630">630</a>
-<a href="#631" id="631">631</a>
-<a href="#632" id="632">632</a>
-<a href="#633" id="633">633</a>
-<a href="#634" id="634">634</a>
-<a href="#635" id="635">635</a>
-<a href="#636" id="636">636</a>
-<a href="#637" id="637">637</a>
-<a href="#638" id="638">638</a>
-<a href="#639" id="639">639</a>
-<a href="#640" id="640">640</a>
-<a href="#641" id="641">641</a>
-<a href="#642" id="642">642</a>
-<a href="#643" id="643">643</a>
-<a href="#644" id="644">644</a>
-<a href="#645" id="645">645</a>
-<a href="#646" id="646">646</a>
-<a href="#647" id="647">647</a>
-<a href="#648" id="648">648</a>
-<a href="#649" id="649">649</a>
-<a href="#650" id="650">650</a>
-<a href="#651" id="651">651</a>
-<a href="#652" id="652">652</a>
-<a href="#653" id="653">653</a>
-<a href="#654" id="654">654</a>
-<a href="#655" id="655">655</a>
-<a href="#656" id="656">656</a>
-</pre></div><pre class="rust"><code><span class="kw">pub mod </span>bomba;
-<span class="kw">pub mod </span>coordenada;
-<span class="kw">pub mod </span>desvio;
-<span class="kw">pub mod </span>enemigo;
-<span class="kw">pub mod </span>obstaculo;
+</pre></div><pre class="rust"><code><span class="kw">use </span><span class="kw">crate</span>::estructuras_juego::bomba::<span class="kw-2">*</span>;
+<span class="kw">use </span><span class="kw">crate</span>::estructuras_juego::coordenada::<span class="kw-2">*</span>;
+<span class="kw">use </span><span class="kw">crate</span>::estructuras_juego::desvio::<span class="kw-2">*</span>;
+<span class="kw">use </span><span class="kw">crate</span>::estructuras_juego::enemigo::<span class="kw-2">*</span>;
+<span class="kw">use </span><span class="kw">crate</span>::estructuras_juego::obstaculo::<span class="kw-2">*</span>;
+<span class="kw">use </span>std::rc::Rc;
 <span class="kw">use </span>std::{
     fs::File,
     io::{<span class="self">self</span>, Write},
 };
 
-<span class="kw">use </span>bomba::Bomba;
-<span class="kw">use </span>coordenada::Coordenada;
-<span class="kw">use </span>desvio::Desvio;
-<span class="kw">use </span>enemigo::Enemigo;
-<span class="kw">use </span>obstaculo::Obstaculo;
-
-<span class="kw">use </span><span class="self">self</span>::bomba::TipoDeBomba;
-
-<span class="kw">const </span>ENEMIGO: <span class="kw-2">&amp;</span>str = <span class="string">&quot;F&quot;</span>;
-<span class="kw">const </span>BOMBA_DE_TRANSPASO: <span class="kw-2">&amp;</span>str = <span class="string">&quot;S&quot;</span>;
-<span class="kw">const </span>BOMBA_NORMAL: <span class="kw-2">&amp;</span>str = <span class="string">&quot;B&quot;</span>;
-<span class="kw">const </span>PARED: <span class="kw-2">&amp;</span>str = <span class="string">&quot;W&quot;</span>;
-<span class="kw">const </span>ROCA: <span class="kw-2">&amp;</span>str = <span class="string">&quot;R&quot;</span>;
-<span class="kw">const </span>DESVIO: <span class="kw-2">&amp;</span>str = <span class="string">&quot;D&quot;</span>;
-<span class="kw">const </span>DESVIO_ARRIBA: <span class="kw-2">&amp;</span>str = <span class="string">&quot;DU&quot;</span>;
-<span class="kw">const </span>DESVIO_ABAJO: <span class="kw-2">&amp;</span>str = <span class="string">&quot;DD&quot;</span>;
-<span class="kw">const </span>DESVIO_IZQUIERDA: <span class="kw-2">&amp;</span>str = <span class="string">&quot;DL&quot;</span>;
-<span class="kw">const </span>DESVIO_DERECHA: <span class="kw-2">&amp;</span>str = <span class="string">&quot;DR&quot;</span>;
+<span class="kw">use </span><span class="kw">crate</span>::constantes;
 
 <span class="kw">pub struct </span>Juego {
-    dimension: i8,
-    enemigos: Vec&lt;Enemigo&gt;,
+    <span class="kw">pub </span>dimension: i8,
+    <span class="kw">pub </span>enemigos: Vec&lt;Enemigo&gt;,
     obstaculos: Vec&lt;Obstaculo&gt;,
     bombas: Vec&lt;Bomba&gt;,
     desvios: Vec&lt;Desvio&gt;,
+}
+
+<span class="kw">impl </span>Default <span class="kw">for </span>Juego {
+    <span class="kw">fn </span>default() -&gt; <span class="self">Self </span>{
+        <span class="self">Self</span>::new()
+    }
 }
 
 <span class="kw">impl </span>Juego {
@@ -752,7 +704,7 @@
     /// * `coordenada`: La coordenada en la que se inicializa la roca.
     ///
     </span><span class="kw">pub fn </span>inicializar_roca(<span class="kw-2">&amp;mut </span><span class="self">self</span>, coordenada: Coordenada) {
-        <span class="kw">let </span>roca: Obstaculo = Obstaculo::new(obstaculo::TipoDeObstaculo::Roca, coordenada);
+        <span class="kw">let </span>roca: Obstaculo = Obstaculo::new(TipoDeObstaculo::Roca, coordenada);
         <span class="self">self</span>.obstaculos.push(roca);
     }
 
@@ -771,10 +723,9 @@
         <span class="kw-2">&amp;mut </span><span class="self">self</span>,
         coordenada: Coordenada,
         alcance: i8,
-        tipo: bomba::TipoDeBomba,
+        tipo: TipoDeBomba,
         id: String,
     ) {
-        <span class="macro">println!</span>(<span class="string">&quot;Inicializar bomba en: ({},{})&quot;</span>, coordenada.x, coordenada.y);
         <span class="kw">let </span>bomba: Bomba = Bomba::new(coordenada, alcance, tipo, id);
         <span class="self">self</span>.bombas.push(bomba);
     }
@@ -788,7 +739,7 @@
     /// * `coordenada`: La coordenada en la que se inicializa la pared.
     ///
     </span><span class="kw">pub fn </span>inicializar_pared(<span class="kw-2">&amp;mut </span><span class="self">self</span>, coordenada: Coordenada) {
-        <span class="kw">let </span>pared: Obstaculo = Obstaculo::new(obstaculo::TipoDeObstaculo::Pared, coordenada);
+        <span class="kw">let </span>pared: Obstaculo = Obstaculo::new(TipoDeObstaculo::Pared, coordenada);
         <span class="self">self</span>.obstaculos.push(pared);
     }
 
@@ -885,16 +836,16 @@
     ///
     /// * `tablero`: Un vector de vectores de cadenas que representa el tablero del juego.
     ///
-    </span><span class="kw">pub fn </span>imprimir_tablero(<span class="kw-2">&amp;</span><span class="self">self</span>, tablero: <span class="kw-2">&amp;</span>Vec&lt;Vec&lt;String&gt;&gt;) {
-        <span class="kw">for </span>row <span class="kw">in </span>tablero {
-            <span class="kw">for </span>element <span class="kw">in </span>row {
-                <span class="macro">print!</span>(<span class="string">&quot;{} &quot;</span>, element);
+    </span><span class="comment">/*pub fn imprimir_tablero(&amp;self, tablero: &amp;Vec&lt;Vec&lt;String&gt;&gt;) {
+        for row in tablero {
+            for element in row {
+                print!(&quot;{} &quot;, element);
             }
-            <span class="macro">println!</span>();
+            println!();
         }
-    }
+    }*/
 
-    <span class="doccomment">/// Imprime el tablero en un archivo.
+    </span><span class="doccomment">/// Imprime el tablero en un archivo.
     ///
     /// Esta función imprime el contenido del tablero en un archivo abierto en modo escritura. Cada elemento del tablero se
     /// separa por espacio, y cada fila del tablero se imprime en una nueva línea en el archivo.
@@ -920,10 +871,7 @@
                 .collect::&lt;Vec&lt;<span class="kw">_</span>&gt;&gt;()
                 .join(<span class="string">&quot; &quot;</span>);
             <span class="kw">let </span>resultado = <span class="macro">writeln!</span>(output_file, <span class="string">&quot;{}&quot;</span>, row_str);
-            <span class="kw">match </span>resultado {
-                <span class="prelude-val">Err</span>(e) =&gt; <span class="kw">return </span><span class="prelude-val">Err</span>(e),
-                <span class="prelude-val">Ok</span>(()) =&gt; <span class="kw">continue</span>,
-            }
+            resultado<span class="question-mark">?</span>;
         }
         <span class="prelude-val">Ok</span>(())
     }
@@ -950,52 +898,45 @@
         <span class="kw">let </span><span class="kw-2">mut </span>tablero: Vec&lt;Vec&lt;String&gt;&gt; = <span class="self">self</span>.posicionar_elementos_en_tablero();
 
         <span class="self">self</span>.detonar_bomba(<span class="kw-2">&amp;mut </span>tablero, coordenada);
-        <span class="macro">println!</span>();
-        <span class="macro">println!</span>(<span class="string">&quot;***************&quot;</span>);
-        <span class="macro">println!</span>(<span class="string">&quot;Tablero inicial: &quot;</span>);
-        <span class="self">self</span>.imprimir_tablero(<span class="kw-2">&amp;</span>tablero);
 
         <span class="kw">let </span>tablero_final = <span class="self">self</span>.posicionar_elementos_en_tablero();
-        <span class="macro">println!</span>();
-        <span class="macro">println!</span>(<span class="string">&quot;***************&quot;</span>);
-        <span class="macro">println!</span>(<span class="string">&quot;Tablero final: &quot;</span>);
-        <span class="self">self</span>.imprimir_tablero(<span class="kw-2">&amp;</span>tablero_final);
 
         <span class="self">self</span>.imprimir_tablero_en_archivo(output_file, <span class="kw-2">&amp;</span>tablero_final)<span class="question-mark">?</span>;
-        <span class="comment">/*for row in &amp;tablero_final {
-            let row_str: String = row
-                .iter()
-                .map(|c| c.to_string())
-                .collect::&lt;Vec&lt;_&gt;&gt;()
-                .join(&quot; &quot;);
-            writeln!(output_file, &quot;{}&quot;, row_str)?;
-        }*/
-        </span><span class="macro">println!</span>();
-        <span class="macro">println!</span>(<span class="string">&quot;***************&quot;</span>);
-        <span class="macro">println!</span>();
+
         <span class="prelude-val">Ok</span>(())
     }
 
-    <span class="doccomment">/// Elimina un enemigo del juego y actualiza su estado.
-    ///
-    /// Esta función elimina un enemigo del juego si la coordenada especificada coincide con su posición.
-    /// Si la bomba que causó la eliminación del enemigo ya se ha registrado previamente, no se realiza ninguna acción adicional.
-    /// Si el enemigo aún tiene puntos de vida, se reduce su vida en uno y se actualiza su lista de bombas que lo impactaron.
-    /// Si el enemigo queda con cero puntos de vida, se elimina completamente del juego.
+    <span class="doccomment">/// Busca un enemigo en el vector de enemigos en función de sus coordenadas.
     ///
     /// # Argumentos
     ///
-    /// * `coordenada`: La coordenada en la que se encuentra el enemigo.
-    /// * `coordenada_bomba`: La coordenada de la bomba que impactó al enemigo.
+    /// * `coordenada`: La coordenada en la que se busca al enemigo.
     ///
-    </span><span class="kw">fn </span>eliminar_enemigo(<span class="kw-2">&amp;mut </span><span class="self">self</span>, coordenada: Coordenada, coordenada_bomba: Coordenada) {
-        <span class="macro">println!</span>(<span class="string">&quot;Eliminar enemigo&quot;</span>);
-
-        <span class="kw">if let </span><span class="prelude-val">Some</span>(i) = <span class="self">self
-            </span>.enemigos
-            .iter_mut()
+    /// # Devolución
+    ///
+    /// Si se encuentra un enemigo con las coordenadas especificadas, se devuelve
+    /// `Some(usize)` que contiene la posición del enemigo en el vector de enemigos.
+    /// Si no se encuentra ningún enemigo con las coordenadas dadas, se devuelve `None`.
+    ///
+    </span><span class="kw">pub fn </span>buscar_enemigo(<span class="kw-2">&amp;</span><span class="self">self</span>, coordenada: Coordenada) -&gt; <span class="prelude-ty">Option</span>&lt;usize&gt; {
+        <span class="self">self</span>.enemigos
+            .iter()
             .position(|enemigo| enemigo.coordenada.is_equal_to(<span class="kw-2">&amp;</span>coordenada))
-        {
+    }
+
+    <span class="doccomment">/// Elimina un enemigo en función de sus coordenadas y la coordenada de la bomba.
+    ///
+    /// Si se encuentra un enemigo en las coordenadas especificadas y la bomba no ha impactado
+    /// previamente en él, reduce la vida del enemigo y actualiza su lista de bombas.
+    /// Si la vida del enemigo llega a 0, se elimina del vector de enemigos.
+    ///
+    /// # Argumentos
+    ///
+    /// * `coordenada`: La coordenada en la que se busca al enemigo.
+    /// * `coordenada_bomba`: La coordenada de la bomba.
+    ///
+    </span><span class="kw">pub fn </span>eliminar_enemigo(<span class="kw-2">&amp;mut </span><span class="self">self</span>, coordenada: Coordenada, coordenada_bomba: Coordenada) {
+        <span class="kw">if let </span><span class="prelude-val">Some</span>(i) = <span class="self">self</span>.buscar_enemigo(coordenada) {
             <span class="kw">if let </span><span class="prelude-val">Some</span>(_bomba_index) = <span class="self">self</span>.enemigos[i]
                 .bombas_que_lo_impactaron
                 .iter()
@@ -1026,7 +967,7 @@
     /// * `bomba`: Una referencia a la bomba actual que está siendo evaluada.
     /// * `coordenada_original`: La coordenada original de la bomba antes de comenzar su trayectoria.
     ///
-    </span><span class="kw">fn </span>evaluar_casillero(
+    </span><span class="kw">pub fn </span>evaluar_casillero(
         <span class="kw-2">&amp;mut </span><span class="self">self</span>,
         coordenada: <span class="kw-2">&amp;mut </span>Coordenada,
         tablero: <span class="kw-2">&amp;mut </span>Vec&lt;Vec&lt;String&gt;&gt;,
@@ -1041,45 +982,35 @@
         {
             <span class="kw">let </span>casillero: <span class="kw-2">&amp;</span>str = <span class="kw-2">&amp;</span>tablero[coordenada.x <span class="kw">as </span>usize][coordenada.y <span class="kw">as </span>usize];
             <span class="kw">match </span>casillero {
-                a <span class="kw">if </span>a.starts_with(ENEMIGO) =&gt; {
-                    <span class="macro">println!</span>(<span class="string">&quot;Se encontró un enemigo&quot;</span>);
+                a <span class="kw">if </span>a.starts_with(constantes::ENEMIGO) =&gt; {
                     <span class="self">self</span>.eliminar_enemigo(<span class="kw-2">*</span>coordenada, coordenada_original);
                 }
-                b <span class="kw">if </span>b.starts_with(BOMBA_DE_TRANSPASO) || b.starts_with(BOMBA_NORMAL) =&gt; {
-                    <span class="macro">println!</span>(<span class="string">&quot;Se encontró una bomba: próxima a explotar.&quot;</span>);
+                b <span class="kw">if </span>b.starts_with(constantes::BOMBA_DE_TRANSPASO)
+                    || b.starts_with(constantes::BOMBA_NORMAL) =&gt;
+                {
                     <span class="self">self</span>.detonar_bomba(tablero, <span class="kw-2">*</span>coordenada);
                 }
-                c <span class="kw">if </span>c.starts_with(DESVIO) =&gt; {
-                    <span class="comment">//println!(&quot;Desvío encontrado. Alcance actual: {}&quot;,i);
-                    </span>i += <span class="number">1</span>;
-                    <span class="comment">//println!(&quot;Incrementado alcance al {}... Listo!&quot;,i);
-                    </span><span class="kw">if </span>c == DESVIO_ARRIBA {
-                        <span class="macro">println!</span>(<span class="string">&quot;Desviando hacia arriba :)&quot;</span>);
+                c <span class="kw">if </span>c.starts_with(constantes::DESVIO) =&gt; {
+                    i += <span class="number">1</span>;
+                    <span class="kw">if </span>c == constantes::DESVIO_ARRIBA {
                         <span class="self">self</span>.evaluar_arriba(coordenada, tablero, i, bomba);
-                    } <span class="kw">else if </span>c == DESVIO_ABAJO {
-                        <span class="macro">println!</span>(<span class="string">&quot;Desviando hacia abajo :)&quot;</span>);
+                    } <span class="kw">else if </span>c == constantes::DESVIO_ABAJO {
                         <span class="self">self</span>.evaluar_abajo(coordenada, tablero, i, bomba);
-                    } <span class="kw">else if </span>c == DESVIO_DERECHA {
-                        <span class="macro">println!</span>(<span class="string">&quot;Desviando hacia derecha :)&quot;</span>);
+                    } <span class="kw">else if </span>c == constantes::DESVIO_DERECHA {
                         <span class="self">self</span>.evaluar_izquierda(coordenada, tablero, i, bomba);
-                    } <span class="kw">else if </span>c == DESVIO_IZQUIERDA {
-                        <span class="macro">println!</span>(<span class="string">&quot;Desviando hacia izquierda :)&quot;</span>);
+                    } <span class="kw">else if </span>c == constantes::DESVIO_IZQUIERDA {
                         <span class="self">self</span>.evaluar_derecha(coordenada, tablero, i, bomba);
                     }
                 }
-                d <span class="kw">if </span>d.starts_with(ROCA) =&gt; {
+                d <span class="kw">if </span>d.starts_with(constantes::ROCA) =&gt; {
                     <span class="kw">if </span>bomba.tipo == TipoDeBomba::Normal {
                         coordenada.x = -<span class="number">1</span>;
                         coordenada.y = -<span class="number">1</span>;
-                        <span class="macro">println!</span>(<span class="string">&quot;Las bombas normales no pueden atravesar rocas.&quot;</span>);
-                    } <span class="kw">else </span>{
-                        <span class="macro">println!</span>(<span class="string">&quot;Super bomba! :D&quot;</span>);
                     }
                 }
-                e <span class="kw">if </span>e.starts_with(PARED) =&gt; {
+                e <span class="kw">if </span>e.starts_with(constantes::PARED) =&gt; {
                     coordenada.x = -<span class="number">1</span>;
                     coordenada.y = -<span class="number">1</span>;
-                    <span class="macro">println!</span>(<span class="string">&quot;Ninguna pared puede ser atravesada.&quot;</span>);
                 }
                 <span class="kw">_ </span>=&gt; {}
             }
@@ -1098,7 +1029,7 @@
     /// * `i`: Un contador que representa el alcance actual de la explosión de una bomba.
     /// * `bomba`: Una referencia a la bomba actual que está siendo evaluada.
     ///
-    </span><span class="kw">fn </span>evaluar_arriba(
+    </span><span class="kw">pub fn </span>evaluar_arriba(
         <span class="kw-2">&amp;mut </span><span class="self">self</span>,
         coordenada: <span class="kw-2">&amp;</span>Coordenada,
         tablero: <span class="kw-2">&amp;mut </span>Vec&lt;Vec&lt;String&gt;&gt;,
@@ -1107,12 +1038,7 @@
     ) {
         <span class="kw">let </span><span class="kw-2">mut </span>j: i8 = <span class="number">1</span>;
         <span class="kw">while </span>i &lt;= bomba.alcance {
-            <span class="macro">println!</span>(<span class="string">&quot;Evaluando coordenada: ({},{})&quot;</span>, coordenada.x, coordenada.y);
             <span class="kw">let </span><span class="kw-2">mut </span>coordenada_a_evaluar = Coordenada::new(coordenada.x - j, coordenada.y);
-            <span class="macro">println!</span>(
-                <span class="string">&quot;Evaluando arriba: ({},{})&quot;</span>,
-                coordenada_a_evaluar.x, coordenada_a_evaluar.y
-            );
             <span class="self">self</span>.evaluar_casillero(<span class="kw-2">&amp;mut </span>coordenada_a_evaluar, tablero, i, bomba, <span class="kw-2">*</span>coordenada);
             <span class="kw">if </span>coordenada_a_evaluar.x == -<span class="number">1 </span>&amp;&amp; coordenada_a_evaluar.y == -<span class="number">1 </span>{
                 <span class="kw">return</span>;
@@ -1143,13 +1069,8 @@
     ) {
         <span class="kw">let </span><span class="kw-2">mut </span>j: i8 = <span class="number">1</span>;
         <span class="kw">while </span>i &lt;= bomba.alcance {
-            <span class="macro">println!</span>(<span class="string">&quot;Evaluando coordenada: ({},{})&quot;</span>, coordenada.x, coordenada.y);
             <span class="kw">let </span><span class="kw-2">mut </span>coordenada_a_evaluar: Coordenada =
                 Coordenada::new(coordenada.x + j, coordenada.y);
-            <span class="macro">println!</span>(
-                <span class="string">&quot;Evaluando abajo: ({},{})&quot;</span>,
-                coordenada_a_evaluar.x, coordenada_a_evaluar.y
-            );
             <span class="self">self</span>.evaluar_casillero(<span class="kw-2">&amp;mut </span>coordenada_a_evaluar, tablero, i, bomba, <span class="kw-2">*</span>coordenada);
             <span class="kw">if </span>coordenada_a_evaluar.x == -<span class="number">1 </span>&amp;&amp; coordenada_a_evaluar.y == -<span class="number">1 </span>{
                 <span class="kw">return</span>;
@@ -1180,13 +1101,9 @@
     ) {
         <span class="kw">let </span><span class="kw-2">mut </span>j: i8 = <span class="number">1</span>;
         <span class="kw">while </span>i &lt;= bomba.alcance {
-            <span class="macro">println!</span>(<span class="string">&quot;Evaluando coordenada: ({},{})&quot;</span>, coordenada.x, coordenada.y);
             <span class="kw">let </span><span class="kw-2">mut </span>coordenada_a_evaluar: Coordenada =
                 Coordenada::new(coordenada.x, coordenada.y - j);
-            <span class="macro">println!</span>(
-                <span class="string">&quot;Evaluando izquierda: ({},{})&quot;</span>,
-                coordenada_a_evaluar.x, coordenada_a_evaluar.y
-            );
+
             <span class="self">self</span>.evaluar_casillero(<span class="kw-2">&amp;mut </span>coordenada_a_evaluar, tablero, i, bomba, <span class="kw-2">*</span>coordenada);
             <span class="kw">if </span>coordenada_a_evaluar.x == -<span class="number">1 </span>&amp;&amp; coordenada_a_evaluar.y == -<span class="number">1 </span>{
                 <span class="kw">return</span>;
@@ -1217,13 +1134,9 @@
     ) {
         <span class="kw">let </span><span class="kw-2">mut </span>j: i8 = <span class="number">1</span>;
         <span class="kw">while </span>i &lt;= bomba.alcance {
-            <span class="macro">println!</span>(<span class="string">&quot;Evaluando coordenada: ({},{})&quot;</span>, coordenada.x, coordenada.y);
             <span class="kw">let </span><span class="kw-2">mut </span>coordenada_a_evaluar: Coordenada =
                 Coordenada::new(coordenada.x, coordenada.y + j);
-            <span class="macro">println!</span>(
-                <span class="string">&quot;Evaluando derecha: ({},{})&quot;</span>,
-                coordenada_a_evaluar.x, coordenada_a_evaluar.y
-            );
+
             <span class="self">self</span>.evaluar_casillero(<span class="kw-2">&amp;mut </span>coordenada_a_evaluar, tablero, i, bomba, <span class="kw-2">*</span>coordenada);
             <span class="kw">if </span>coordenada_a_evaluar.x == -<span class="number">1 </span>&amp;&amp; coordenada_a_evaluar.y == -<span class="number">1 </span>{
                 <span class="kw">return</span>;
@@ -1251,18 +1164,26 @@
         <span class="self">self</span>.evaluar_derecha(<span class="kw-2">&amp;</span>bomba.coordenada, tablero, <span class="number">1</span>, bomba);
     }
 
-    <span class="doccomment">/// Detona una bomba en una coordenada dada y afecta el tablero.
+    <span class="doccomment">/// Detona una bomba en el tablero en la coordenada especificada.
     ///
-    /// Esta función busca una bomba en la coordenada especificada y la detona si aún no ha sido detonada.
-    /// Cuando una bomba se detona, se evalúa su alcance en todas las direcciones y se aplican efectos como la eliminación
-    /// de enemigos, la detonación de otras bombas cercanas o la desviación de trayectorias de bombas, afectando el tablero.
+    /// Esta función busca una bomba en la lista de bombas del objeto actual (`self`)
+    /// que coincide con la coordenada especificada. Si se encuentra una bomba válida,
+    /// la función la detona y ejecuta la función `funcion_bomba` con la bomba como argumento.
+    /// Si la bomba ya ha sido detonada, la función no hace nada.
     ///
     /// # Argumentos
     ///
-    /// * `tablero`: Una referencia mutable al tablero del juego.
-    /// * `coordenada`: La coordenada en la que se va a detonar la bomba.
+    /// - `tablero`: Un tablero mutable representado como un vector bidimensional de cadenas.
+    /// - `coordenada`: La coordenada en la que se busca y detona la bomba.
     ///
-    </span><span class="kw">fn </span>detonar_bomba(<span class="kw-2">&amp;mut </span><span class="self">self</span>, tablero: <span class="kw-2">&amp;mut </span>Vec&lt;Vec&lt;String&gt;&gt;, coordenada: Coordenada) {
+    </span><span class="comment">/*/// # Ejemplo
+    ///
+    /// ```
+    /// let mut juego = Juego::new(); // Crea una instancia del juego.
+    /// let coordenada = Coordenada { x: 2, y: 3 };
+    /// juego.detonar_bomba(&amp;mut tablero, coordenada);
+    /// ```*/
+    </span><span class="kw">pub fn </span>detonar_bomba(<span class="kw-2">&amp;mut </span><span class="self">self</span>, tablero: <span class="kw-2">&amp;mut </span>Vec&lt;Vec&lt;String&gt;&gt;, coordenada: Coordenada) {
         <span class="kw">let </span><span class="kw-2">mut </span>bomba_index: <span class="prelude-ty">Option</span>&lt;usize&gt; = <span class="prelude-val">None</span>;
 
         <span class="kw">for </span>(i, bomba) <span class="kw">in </span><span class="self">self</span>.bombas.iter().enumerate().rev() {
@@ -1274,40 +1195,43 @@
 
         <span class="kw">if let </span><span class="prelude-val">Some</span>(i) = bomba_index {
             <span class="kw">if </span>!<span class="self">self</span>.bombas[i].detonada {
+                <span class="kw">let </span>bomba_rc = Rc::new(<span class="self">self</span>.bombas[i].clone());
                 <span class="self">self</span>.bombas[i].detonar();
-                <span class="kw">let </span>bomba = <span class="self">self</span>.bombas[i].clone();
 
-                <span class="self">self</span>.funcion_bomba(<span class="kw-2">&amp;</span><span class="self">self</span>.bombas[i].clone(), tablero);
-
-                <span class="self">self</span>.bombas[i] = bomba;
-
-                <span class="kw">return</span>;
-            } <span class="kw">else </span>{
-                <span class="kw">return</span>;
+                <span class="self">self</span>.funcion_bomba(<span class="kw-2">&amp;</span>bomba_rc, tablero);
             }
         }
-
-        <span class="macro">println!</span>(<span class="string">&quot;Bomba no encontrada&quot;</span>);
     }
 }
 
-<span class="comment">/*
-fn eliminar_enemigo(&amp;mut self, coordenada: Coordenada, impactado : bool) {
-    println!(&quot;Eliminar enemigo&quot;);
+<span class="attr">#[cfg(test)]
+</span><span class="kw">mod </span>tests {
+    <span class="kw">use super</span>::<span class="kw-2">*</span>;
 
-    if !impactado {
-        if let Some(i) = self
-            .enemigos
-            .iter_mut()
-            .position(|enemigo| enemigo.coordenada.is_equal_to(&amp;coordenada))
-        {
-            if self.enemigos[i].vida &gt; 0 {
-                self.enemigos[i].vida -= 1;
-                if self.enemigos[i].vida == 0 {
-                    self.enemigos.swap_remove(i);
-                }
-            }
-        }
+    <span class="attr">#[test]
+    </span><span class="kw">pub fn </span>eliminar_enemigo_del_mapa() {
+        <span class="kw">let </span><span class="kw-2">mut </span>juego: Juego = Juego::new();
+        juego.inicializar_dimension(<span class="number">8</span>);
+        <span class="kw">let </span>coordenada_enemigo: Coordenada = Coordenada::new(<span class="number">3</span>, <span class="number">5</span>);
+        <span class="kw">let </span>coordenada_bomba: Coordenada = Coordenada::new(<span class="number">3</span>, <span class="number">4</span>);
+        juego.inicializar_enemigo(coordenada_enemigo, <span class="number">1</span>);
+        <span class="kw">let </span>cantidad_inicial_de_enemigos = juego.enemigos.len();
+        juego.eliminar_enemigo(coordenada_enemigo, coordenada_bomba);
+        <span class="kw">let </span>cantidad_final_de_enemigos = juego.enemigos.len();
+        <span class="macro">assert_ne!</span>(cantidad_inicial_de_enemigos, cantidad_final_de_enemigos);
     }
-} */
-</span></code></pre></div></section></main></body></html>
+
+    <span class="attr">#[test]
+    </span><span class="kw">pub fn </span>eliminar_enemigo_con_vida_restante_mayor_a_cero_no_muere() {
+        <span class="kw">let </span><span class="kw-2">mut </span>juego: Juego = Juego::new();
+        juego.inicializar_dimension(<span class="number">8</span>);
+        <span class="kw">let </span>coordenada_enemigo: Coordenada = Coordenada::new(<span class="number">3</span>, <span class="number">5</span>);
+        <span class="kw">let </span>coordenada_bomba: Coordenada = Coordenada::new(<span class="number">3</span>, <span class="number">4</span>);
+        juego.inicializar_enemigo(coordenada_enemigo, <span class="number">5</span>);
+        <span class="kw">let </span>cantidad_inicial_de_enemigos = juego.enemigos.len();
+        juego.eliminar_enemigo(coordenada_enemigo, coordenada_bomba);
+        <span class="kw">let </span>cantidad_final_de_enemigos = juego.enemigos.len();
+        <span class="macro">assert_eq!</span>(cantidad_inicial_de_enemigos, cantidad_final_de_enemigos);
+    }
+}
+</code></pre></div></section></main></body></html>

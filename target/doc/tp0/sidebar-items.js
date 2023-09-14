@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"fn":["main"],"mod":["inicializar","juego"]};
+window.SIDEBAR_ITEMS = {"mod":["constantes","estructuras_juego","inicializar","juego"]};
