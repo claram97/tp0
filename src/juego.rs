@@ -209,24 +209,6 @@ impl Juego {
         tablero
     }
 
-    /// Imprime el tablero en la consola.
-    ///
-    /// Esta función imprime el contenido del tablero en la consola. Cada elemento del tablero se separa por espacio,
-    /// y cada fila del tablero se imprime en una nueva línea.
-    ///
-    /// # Argumentos
-    ///
-    /// * `tablero`: Un vector de vectores de cadenas que representa el tablero del juego.
-    ///
-    /*pub fn imprimir_tablero(&self, tablero: &Vec<Vec<String>>) {
-        for row in tablero {
-            for element in row {
-                print!("{} ", element);
-            }
-            println!();
-        }
-    }*/
-
     /// Imprime el tablero en un archivo.
     ///
     /// Esta función imprime el contenido del tablero en un archivo abierto en modo escritura. Cada elemento del tablero se
@@ -558,13 +540,7 @@ impl Juego {
     /// - `tablero`: Un tablero mutable representado como un vector bidimensional de cadenas.
     /// - `coordenada`: La coordenada en la que se busca y detona la bomba.
     ///
-    /*/// # Ejemplo
-    ///
-    /// ```
-    /// let mut juego = Juego::new(); // Crea una instancia del juego.
-    /// let coordenada = Coordenada { x: 2, y: 3 };
-    /// juego.detonar_bomba(&mut tablero, coordenada);
-    /// ```*/
+
     pub fn detonar_bomba(&mut self, tablero: &mut Vec<Vec<String>>, coordenada: Coordenada) {
         let mut bomba_index: Option<usize> = None;
 
