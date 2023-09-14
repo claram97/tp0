@@ -1,12 +1,12 @@
 use std::fs::File;
+use std::io;
 use tp0::estructuras_juego::bomba::*;
 use tp0::estructuras_juego::coordenada::*;
 use tp0::inicializar::{inicializar_juego, procesar_enemigo};
 use tp0::juego::*;
 
 #[test]
-pub fn inicializar_juego_con_enemigo_invalido_devuelve_error(
-) -> Result<(), Box<dyn std::error::Error>> {
+pub fn inicializar_juego_con_enemigo_invalido_devuelve_error() -> io::Result<()> {
     let file_creation_result = File::create("testing_output.txt");
     let mut file = match file_creation_result {
         Ok(file) => file,
@@ -25,8 +25,7 @@ pub fn inicializar_juego_con_enemigo_invalido_devuelve_error(
 }
 
 #[test]
-pub fn inicializar_juego_con_enemigo_correcto_devuelve_ok() -> Result<(), Box<dyn std::error::Error>>
-{
+pub fn inicializar_juego_con_enemigo_correcto_devuelve_ok() -> io::Result<()> {
     let file_creation_result = File::create("testing_output.txt");
     let mut file = match file_creation_result {
         Ok(file) => file,
