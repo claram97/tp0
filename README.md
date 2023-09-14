@@ -3,7 +3,7 @@
 * ~Eliminar el enemigo~
 * ~Implementar el desvío~
 * ~Revisar la funcionalidad de las bombas~
-* Intentar reemplazar el clone por algún puntero
+* ~Intentar reemplazar el clone por algún puntero~
 * ~Documentación~
-* Test's
+* ~Test's~
 * ~La bomba no debe impactar más de una vez~
