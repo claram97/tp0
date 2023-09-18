@@ -406,7 +406,7 @@ pub fn vida_erronea_en_enemigo_se_informa_en_archivo() -> io::Result<()> {
         "src/maze_enemigo_fail.txt".to_string(),
         "tests/test_files/output_del_test/maze_enemigo_fail_output.txt".to_string(),
         "3".to_string(),
-        "y".to_string(),
+        "4".to_string(),
     ];
     let _result = inicializar::run(comando);
 
