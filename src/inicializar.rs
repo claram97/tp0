@@ -135,10 +135,7 @@ fn procesar_desvio(palabra: &str, punto: Coordenada, juego: &mut Juego) -> io::R
 /// de un formato incorrecto o la incapacidad de inicializar un tipo específico.
 ///
 
-pub fn inicializar_juego(
-    punto: Coordenada,
-    palabra: &str,
-    juego: &mut Juego) -> io::Result<()> {
+pub fn inicializar_juego(punto: Coordenada, palabra: &str, juego: &mut Juego) -> io::Result<()> {
     if palabra == constantes::PARED {
         juego.inicializar_pared(punto);
     } else if palabra == constantes::ROCA {
@@ -187,7 +184,8 @@ fn procesar_linea_de_configuracion(
     l: &str,
     filas: &mut i8,
     coordenada_y: &mut i8,
-    juego: &mut Juego) -> io::Result<()> {
+    juego: &mut Juego,
+) -> io::Result<()> {
     let palabras: Vec<&str> = l.split_whitespace().collect();
     for palabra in palabras {
         let punto = Coordenada::new(*filas, *coordenada_y);
@@ -293,7 +291,7 @@ pub fn run(args: Vec<String>) -> io::Result<()> {
     if args.len() != 5 {
         return Err(io::Error::new(
             io::ErrorKind::InvalidInput,
-            "ERROR: Se esperaban exactamente 4 argumentos.",
+            "ERROR: Se esperaban exactamente 4 argumentos.\n",
         ));
     }
 
@@ -356,11 +354,9 @@ pub fn cargar_juego(maze_file_name: &str, output_file: &mut File) -> io::Result<
     for linea in reader.lines() {
         match linea {
             Ok(l) => {
-                if let Err(err) = procesar_linea_de_configuracion(
-                    &l,
-                    &mut filas,
-                    &mut coordenada_y,
-                    &mut juego) {
+                if let Err(err) =
+                    procesar_linea_de_configuracion(&l, &mut filas, &mut coordenada_y, &mut juego)
+                {
                     let mensaje_error = err.to_string();
                     output_file.write_all(mensaje_error.as_bytes())?;
                     return Err(io::Error::new(io::ErrorKind::Other, mensaje_error));
@@ -369,17 +365,18 @@ pub fn cargar_juego(maze_file_name: &str, output_file: &mut File) -> io::Result<
                 cantidad_cadenas += cadenas.len();
             }
             Err(_e) => {
-                let mensaje_error = "ERROR: se han presentado inconvenientes en la lectura del archivo.";
+                let mensaje_error =
+                    "ERROR: se han presentado inconvenientes en la lectura del archivo.\n";
                 output_file.write_all(mensaje_error.as_bytes())?;
                 return Err(io::Error::new(
                     io::ErrorKind::UnexpectedEof,
-                    "ERROR: se han presentado inconvenientes en la lectura del archivo.",
+                    "ERROR: se han presentado inconvenientes en la lectura del archivo.\n",
                 ));
             }
         }
     }
 
-    let cadenas_esperadas : usize = (filas * filas) as usize;
+    let cadenas_esperadas: usize = (filas * filas) as usize;
     if cantidad_cadenas != cadenas_esperadas {
         let mensaje_error = "ERROR: el tablero debe ser cuadrado.\n";
         output_file.write_all(mensaje_error.as_bytes())?;
@@ -420,5 +417,46 @@ mod tests {
         ];
         let resultado = inicializar_coordenada_de_la_bomba(&args);
         assert!(resultado.is_ok())
+    }
+
+    #[test]
+    pub fn inicializar_juego_con_enemigo_invalido_devuelve_error() {
+        let mut juego: Juego = Juego::new();
+        let coordenada_enemigo: Coordenada = Coordenada::new(3, 5);
+        let resultado = inicializar_juego(coordenada_enemigo, "FB", &mut juego);
+
+        assert!(resultado.is_err());
+    }
+
+    #[test]
+    pub fn inicializar_juego_con_enemigo_correcto_devuelve_ok() {
+        let mut juego: Juego = Juego::new();
+        let coordenada_enemigo: Coordenada = Coordenada::new(3, 5);
+        let resultado = inicializar_juego(coordenada_enemigo, "F6", &mut juego);
+        assert!(resultado.is_ok());
+    }
+
+    #[test]
+    pub fn inicializar_enemigo_sin_especificar_vida_devuelve_error() {
+        let mut juego: Juego = Juego::new();
+        let coordenada_enemigo: Coordenada = Coordenada::new(3, 5);
+        let resultado = procesar_enemigo("F", coordenada_enemigo, &mut juego);
+        assert!(resultado.is_err());
+    }
+
+    #[test]
+    pub fn inicializar_enemigo_con_formato_correcto_devuelve_ok() {
+        let mut juego: Juego = Juego::new();
+        let coordenada_enemigo: Coordenada = Coordenada::new(3, 5);
+        let resultado = procesar_enemigo("F5", coordenada_enemigo, &mut juego);
+        assert!(resultado.is_ok());
+    }
+
+    #[test]
+    pub fn inicializar_enemigo_con_formato_erroneo_devuelve_error() {
+        let mut juego: Juego = Juego::new();
+        let coordenada_enemigo: Coordenada = Coordenada::new(3, 5);
+        let resultado = procesar_enemigo("FD", coordenada_enemigo, &mut juego);
+        assert!(resultado.is_err());
     }
 }

@@ -1,1 +1,0 @@
-Error en coordenada correspondiente a la columna.

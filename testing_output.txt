@@ -1,0 +1,1 @@
+ERROR: Error al intentar inicializar el enemigo con el puntaje de vida dado.

@@ -1,1 +1,0 @@
-ERROR: se encontraron caracteres inválidos en el archivo de entrada.
