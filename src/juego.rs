@@ -168,8 +168,10 @@ impl Juego {
     ///
     fn posicionar_bombas(&self, tablero: &mut [Vec<String>]) {
         for bomba in &self.bombas {
-            let id: String = "".to_string() + &bomba.id;
-            tablero[bomba.coordenada.x as usize][bomba.coordenada.y as usize] = id;
+            if !bomba.detonada {
+                let id: String = "".to_string() + &bomba.id;
+                tablero[bomba.coordenada.x as usize][bomba.coordenada.y as usize] = id;
+            }
         }
     }
 

@@ -4,19 +4,12 @@ use crate::constantes;
 use crate::estructuras_juego::bomba::TipoDeBomba;
 use crate::estructuras_juego::coordenada::Coordenada;
 use crate::juego::Juego;
-use std::fmt;
 use std::fs::File;
 use std::io::{self, BufRead, Write};
 use std::path::{Path, PathBuf};
 
 #[derive(Debug)]
 struct CustomError(String);
-
-impl fmt::Display for CustomError {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "Custom error: {}", self.0)
-    }
-}
 
 /// Procesa una bomba en el archivo de configuración.
 ///
@@ -46,13 +39,13 @@ fn procesar_bomba(palabra: &str, punto: Coordenada, juego: &mut Juego) -> io::Re
         } else {
             return Err(io::Error::new(
                 io::ErrorKind::InvalidData,
-                "Error al intentar inicializar la bomba con el número de alcance dado.",
+                "ERROR: Error al intentar inicializar la bomba con el número de alcance dado.\n",
             ));
         }
     } else {
         return Err(io::Error::new(
             io::ErrorKind::InvalidInput,
-            "No se pudo determinar el alcance de la bomba.",
+            "ERROR: No se pudo determinar el alcance de la bomba.\n",
         ));
     }
     Ok(())
@@ -83,13 +76,13 @@ pub fn procesar_enemigo(palabra: &str, punto: Coordenada, juego: &mut Juego) -> 
         } else {
             return Err(io::Error::new(
                 io::ErrorKind::InvalidData,
-                "Error al intentar inicializar el enemigo con el puntaje de vida dado.",
+                "ERROR: Error al intentar inicializar el enemigo con el puntaje de vida dado.\n",
             ));
         }
     } else {
         return Err(io::Error::new(
             io::ErrorKind::InvalidInput,
-            "No se pudo determinar la vida del enemigo.",
+            "ERROR: No se pudo determinar la vida del enemigo.\n",
         ));
     }
     Ok(())
@@ -119,7 +112,7 @@ fn procesar_desvio(palabra: &str, punto: Coordenada, juego: &mut Juego) -> io::R
     } else {
         return Err(io::Error::new(
             io::ErrorKind::InvalidData,
-            "Error al intentar inicializar el desvío en la dirección dada.",
+            "ERROR: error al intentar inicializar el desvío en la dirección dada.\n",
         ));
     }
     Ok(())
@@ -145,9 +138,7 @@ fn procesar_desvio(palabra: &str, punto: Coordenada, juego: &mut Juego) -> io::R
 pub fn inicializar_juego(
     punto: Coordenada,
     palabra: &str,
-    juego: &mut Juego,
-    output_file: &mut File,
-) -> io::Result<()> {
+    juego: &mut Juego) -> io::Result<()> {
     if palabra == constantes::PARED {
         juego.inicializar_pared(punto);
     } else if palabra == constantes::ROCA {
@@ -166,13 +157,9 @@ pub fn inicializar_juego(
     } else if palabra == constantes::VACIO {
         return Ok(());
     } else {
-        let texto = "Se encontraron caracteres inválidos en el archivo de entrada.";
-
-        output_file.write_all(texto.as_bytes())?;
-
         return Err(io::Error::new(
             io::ErrorKind::InvalidData,
-            "Se encontraron caracteres inválidos en el archivo de entrada.",
+            "ERROR: se encontraron caracteres inválidos en el archivo de entrada.\n",
         ));
     }
     Ok(())
@@ -200,13 +187,11 @@ fn procesar_linea_de_configuracion(
     l: &str,
     filas: &mut i8,
     coordenada_y: &mut i8,
-    juego: &mut Juego,
-    output_file: &mut File,
-) -> io::Result<()> {
+    juego: &mut Juego) -> io::Result<()> {
     let palabras: Vec<&str> = l.split_whitespace().collect();
     for palabra in palabras {
         let punto = Coordenada::new(*filas, *coordenada_y);
-        let resultado = inicializar_juego(punto, palabra, juego, output_file);
+        let resultado = inicializar_juego(punto, palabra, juego);
         match resultado {
             Ok(()) => {}
             Err(e) => {
@@ -245,7 +230,7 @@ pub fn inicializar_coordenada_de_la_bomba(args: &[String]) -> io::Result<Coorden
     } else {
         return Err(io::Error::new(
             io::ErrorKind::InvalidData,
-            "Error en coordenada correspondiente a la columna.",
+            "ERROR: Error en coordenada correspondiente a la fila.\n",
         ));
     }
     if let Ok(arg) = args[4].parse::<i8>() {
@@ -253,7 +238,7 @@ pub fn inicializar_coordenada_de_la_bomba(args: &[String]) -> io::Result<Coorden
     } else {
         return Err(io::Error::new(
             io::ErrorKind::InvalidData,
-            "Error en coordenada a la fila.",
+            "ERROR: Error en coordenada correspondiente a la columna.\n",
         ));
     }
 
@@ -308,7 +293,7 @@ pub fn run(args: Vec<String>) -> io::Result<()> {
     if args.len() != 5 {
         return Err(io::Error::new(
             io::ErrorKind::InvalidInput,
-            "Se esperaban exactamente 4 argumentos.",
+            "ERROR: Se esperaban exactamente 4 argumentos.",
         ));
     }
 
@@ -332,11 +317,11 @@ pub fn run(args: Vec<String>) -> io::Result<()> {
     };
 
     if coordenada_bomba.x >= juego.dimension || coordenada_bomba.y >= juego.dimension {
-        let mensaje_error = "La bomba no puede estar fuera de rango.";
+        let mensaje_error = "ERROR: La bomba no puede estar fuera de rango.\n";
         output_file.write_all(mensaje_error.as_bytes())?;
         return Err(io::Error::new(
             io::ErrorKind::InvalidInput,
-            "La bomba no puede estar fuera de rango.",
+            "ERROR: La bomba no puede estar fuera de rango.\n",
         ));
     }
 
@@ -367,7 +352,7 @@ pub fn cargar_juego(maze_file_name: &str, output_file: &mut File) -> io::Result<
     let mut juego: Juego = Juego::new();
     let mut filas: i8 = 0;
     let mut coordenada_y: i8 = 0;
-
+    let mut cantidad_cadenas = 0;
     for linea in reader.lines() {
         match linea {
             Ok(l) => {
@@ -375,21 +360,34 @@ pub fn cargar_juego(maze_file_name: &str, output_file: &mut File) -> io::Result<
                     &l,
                     &mut filas,
                     &mut coordenada_y,
-                    &mut juego,
-                    output_file,
-                ) {
-                    return Err(io::Error::new(io::ErrorKind::Other, err.to_string()));
+                    &mut juego) {
+                    let mensaje_error = err.to_string();
+                    output_file.write_all(mensaje_error.as_bytes())?;
+                    return Err(io::Error::new(io::ErrorKind::Other, mensaje_error));
                 }
+                let cadenas = l.split_whitespace().collect::<Vec<&str>>();
+                cantidad_cadenas += cadenas.len();
             }
             Err(_e) => {
+                let mensaje_error = "ERROR: se han presentado inconvenientes en la lectura del archivo.";
+                output_file.write_all(mensaje_error.as_bytes())?;
                 return Err(io::Error::new(
                     io::ErrorKind::UnexpectedEof,
-                    "Error al leer línea:",
+                    "ERROR: se han presentado inconvenientes en la lectura del archivo.",
                 ));
             }
         }
     }
 
+    let cadenas_esperadas : usize = (filas * filas) as usize;
+    if cantidad_cadenas != cadenas_esperadas {
+        let mensaje_error = "ERROR: el tablero debe ser cuadrado.\n";
+        output_file.write_all(mensaje_error.as_bytes())?;
+        return Err(io::Error::new(
+            io::ErrorKind::InvalidInput,
+            "ERROR: el tablero debe ser cuadrado.\n",
+        ));
+    }
     juego.inicializar_dimension(filas);
     Ok(juego)
 }
