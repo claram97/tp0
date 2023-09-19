@@ -402,7 +402,6 @@ pub fn el_tablero_ingresado_es_cuadrado(
     Ok(())
 }
 
-
 /// Carga el estado del juego desde un archivo de laberinto especificado y lo inicializa.
 ///
 /// # Argumentos

@@ -15,20 +15,19 @@ use crate::constantes;
 pub struct Juego {
     /// La dimensión del juego, que indica el tamaño del tablero cuadrado.
     pub dimension: i8,
-    
+
     /// Una colección de enemigos presentes en el juego.
     pub enemigos: Vec<Enemigo>,
-    
+
     /// Una colección de obstáculos presentes en el juego.
     obstaculos: Vec<Obstaculo>,
-    
+
     /// Una colección de bombas presentes en el juego.
     bombas: Vec<Bomba>,
-    
+
     /// Una colección de desvíos presentes en el juego.
     desvios: Vec<Desvio>,
 }
-
 
 impl Default for Juego {
     fn default() -> Self {
@@ -331,6 +330,76 @@ impl Juego {
         }
     }
 
+    pub fn matchear_casillero(
+        &mut self,
+        coordenada: &mut Coordenada,
+        tablero: &mut Vec<Vec<String>>,
+        mut i: i8,
+        bomba: &Bomba,
+        coordenada_original: Coordenada,
+        casillero: &str,
+    ) {
+        match casillero {
+            a if a.starts_with(constantes::ENEMIGO) => {
+                self.eliminar_enemigo(*coordenada, coordenada_original);
+            }
+            b if b.starts_with(constantes::BOMBA_DE_TRANSPASO)
+                || b.starts_with(constantes::BOMBA_NORMAL) =>
+            {
+                self.detonar_bomba(tablero, *coordenada);
+            }
+            c if c.starts_with(constantes::DESVIO) => {
+                i += 1;
+                if c == constantes::DESVIO_ARRIBA {
+                    self.evaluar_arriba(coordenada, tablero, i, bomba);
+                } else if c == constantes::DESVIO_ABAJO {
+                    self.evaluar_abajo(coordenada, tablero, i, bomba);
+                } else if c == constantes::DESVIO_DERECHA {
+                    self.evaluar_izquierda(coordenada, tablero, i, bomba);
+                } else if c == constantes::DESVIO_IZQUIERDA {
+                    self.evaluar_derecha(coordenada, tablero, i, bomba);
+                }
+            }
+            d if d.starts_with(constantes::ROCA) => {
+                if bomba.tipo == TipoDeBomba::Normal {
+                    coordenada.x = -1;
+                    coordenada.y = -1;
+                }
+            }
+            e if e.starts_with(constantes::PARED) => {
+                coordenada.x = -1;
+                coordenada.y = -1;
+            }
+            _ => {}
+        }
+    }
+
+    fn dentro_del_tablero(coordenada: &Coordenada, dimension: i8) -> bool {
+        coordenada.x >= 0
+            && coordenada.y >= 0
+            && coordenada.x < dimension
+            && coordenada.y < dimension
+    }
+
+    fn invalidar_coordenadas(coordenada: &mut Coordenada) {
+        coordenada.x = -1;
+        coordenada.y = -1;
+    }
+
+    fn evaluar_obstaculos(d: &str, coordenada: &mut Coordenada, bomba: &Bomba) {
+        if d.starts_with(constantes::ROCA) && bomba.tipo == TipoDeBomba::Normal {
+            Juego::invalidar_coordenadas(coordenada);
+        }
+        if d.starts_with(constantes::PARED) {
+            Juego::invalidar_coordenadas(coordenada);
+        }
+    }
+
+    fn es_bomba(casillero: &str) -> bool {
+        casillero.starts_with(constantes::BOMBA_DE_TRANSPASO)
+            || casillero.starts_with(constantes::BOMBA_NORMAL)
+    }
+
     /// Evalúa el contenido de un casillero en el tablero y realiza las acciones correspondientes.
     ///
     /// Esta función evalúa el contenido de un casillero en el tablero en función de su tipo y estado actual.
@@ -352,19 +421,13 @@ impl Juego {
         bomba: &Bomba,
         coordenada_original: Coordenada,
     ) {
-        if coordenada.x >= 0
-            && coordenada.y >= 0
-            && coordenada.x < self.dimension
-            && coordenada.y < self.dimension
-        {
+        if Self::dentro_del_tablero(coordenada, self.dimension) {
             let casillero: &str = &tablero[coordenada.x as usize][coordenada.y as usize];
             match casillero {
                 a if a.starts_with(constantes::ENEMIGO) => {
                     self.eliminar_enemigo(*coordenada, coordenada_original);
                 }
-                b if b.starts_with(constantes::BOMBA_DE_TRANSPASO)
-                    || b.starts_with(constantes::BOMBA_NORMAL) =>
-                {
+                b if Self::es_bomba(b) => {
                     self.detonar_bomba(tablero, *coordenada);
                 }
                 c if c.starts_with(constantes::DESVIO) => {
@@ -379,15 +442,8 @@ impl Juego {
                         self.evaluar_derecha(coordenada, tablero, i, bomba);
                     }
                 }
-                d if d.starts_with(constantes::ROCA) => {
-                    if bomba.tipo == TipoDeBomba::Normal {
-                        coordenada.x = -1;
-                        coordenada.y = -1;
-                    }
-                }
-                e if e.starts_with(constantes::PARED) => {
-                    coordenada.x = -1;
-                    coordenada.y = -1;
+                d if d.starts_with(constantes::ROCA) || d.starts_with(constantes::PARED) => {
+                    Self::evaluar_obstaculos(d, coordenada, bomba);
                 }
                 _ => {}
             }
