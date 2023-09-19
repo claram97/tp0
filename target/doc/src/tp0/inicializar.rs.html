@@ -529,37 +529,18 @@
 <a href="#529" id="529">529</a>
 <a href="#530" id="530">530</a>
 <a href="#531" id="531">531</a>
-<a href="#532" id="532">532</a>
-<a href="#533" id="533">533</a>
-<a href="#534" id="534">534</a>
-<a href="#535" id="535">535</a>
-<a href="#536" id="536">536</a>
-<a href="#537" id="537">537</a>
-<a href="#538" id="538">538</a>
-<a href="#539" id="539">539</a>
-<a href="#540" id="540">540</a>
-<a href="#541" id="541">541</a>
-<a href="#542" id="542">542</a>
-<a href="#543" id="543">543</a>
 </pre></div><pre class="rust"><code><span class="doccomment">//! Este módulo contiene las funciones y estructuras para procesar el archivo de configuración del juego.
 
 </span><span class="kw">use </span><span class="kw">crate</span>::constantes;
 <span class="kw">use </span><span class="kw">crate</span>::estructuras_juego::bomba::TipoDeBomba;
 <span class="kw">use </span><span class="kw">crate</span>::estructuras_juego::coordenada::Coordenada;
 <span class="kw">use </span><span class="kw">crate</span>::juego::Juego;
-<span class="kw">use </span>std::fmt;
 <span class="kw">use </span>std::fs::File;
 <span class="kw">use </span>std::io::{<span class="self">self</span>, BufRead, Write};
 <span class="kw">use </span>std::path::{Path, PathBuf};
 
 <span class="attr">#[derive(Debug)]
 </span><span class="kw">struct </span>CustomError(String);
-
-<span class="kw">impl </span>fmt::Display <span class="kw">for </span>CustomError {
-    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>fmt::Formatter) -&gt; fmt::Result {
-        <span class="macro">write!</span>(f, <span class="string">&quot;Custom error: {}&quot;</span>, <span class="self">self</span>.<span class="number">0</span>)
-    }
-}
 
 <span class="doccomment">/// Procesa una bomba en el archivo de configuración.
 ///
@@ -589,13 +570,13 @@
         } <span class="kw">else </span>{
             <span class="kw">return </span><span class="prelude-val">Err</span>(io::Error::new(
                 io::ErrorKind::InvalidData,
-                <span class="string">&quot;Error al intentar inicializar la bomba con el número de alcance dado.&quot;</span>,
+                <span class="string">&quot;ERROR: Error al intentar inicializar la bomba con el número de alcance dado.\n&quot;</span>,
             ));
         }
     } <span class="kw">else </span>{
         <span class="kw">return </span><span class="prelude-val">Err</span>(io::Error::new(
             io::ErrorKind::InvalidInput,
-            <span class="string">&quot;No se pudo determinar el alcance de la bomba.&quot;</span>,
+            <span class="string">&quot;ERROR: No se pudo determinar el alcance de la bomba.\n&quot;</span>,
         ));
     }
     <span class="prelude-val">Ok</span>(())
@@ -617,20 +598,7 @@
 ///
 /// Esta función devuelve un error si no se puede determinar la vida del enemigo o si hay un problema al inicializarlo.
 ///
-/// # Ejemplo
-///
-</span><span class="comment">/*/// ```rust
-/// use tu_modulo::procesar_enemigo;
-/// use tu_modulo::Coordenada;
-/// use tu_modulo::Juego;
-///
-/// let mut juego = Juego::new();
-/// let palabra = &quot;F3&quot;; // Representa un enemigo con 3 puntos de vida.
-/// let punto = Coordenada::new(0, 0);
-/// let resultado = procesar_enemigo(palabra, punto, &amp;mut juego);
-///
-/// assert!(resultado.is_ok());
-/// ```*/
+
 </span><span class="kw">pub fn </span>procesar_enemigo(palabra: <span class="kw-2">&amp;</span>str, punto: Coordenada, juego: <span class="kw-2">&amp;mut </span>Juego) -&gt; io::Result&lt;()&gt; {
     <span class="kw">if let </span><span class="prelude-val">Some</span>(segundo_caracter) = palabra.chars().nth(<span class="number">1</span>) {
         <span class="kw">if let </span><span class="prelude-val">Some</span>(digito) = segundo_caracter.to_digit(<span class="number">10</span>) {
@@ -639,13 +607,13 @@
         } <span class="kw">else </span>{
             <span class="kw">return </span><span class="prelude-val">Err</span>(io::Error::new(
                 io::ErrorKind::InvalidData,
-                <span class="string">&quot;Error al intentar inicializar el enemigo con el puntaje de vida dado.&quot;</span>,
+                <span class="string">&quot;ERROR: Error al intentar inicializar el enemigo con el puntaje de vida dado.\n&quot;</span>,
             ));
         }
     } <span class="kw">else </span>{
         <span class="kw">return </span><span class="prelude-val">Err</span>(io::Error::new(
             io::ErrorKind::InvalidInput,
-            <span class="string">&quot;No se pudo determinar la vida del enemigo.&quot;</span>,
+            <span class="string">&quot;ERROR: No se pudo determinar la vida del enemigo.\n&quot;</span>,
         ));
     }
     <span class="prelude-val">Ok</span>(())
@@ -667,20 +635,7 @@
 ///
 /// Esta función devuelve un error si no se puede determinar la dirección del desvío o si hay un problema al inicializarlo.
 ///
-/// # Ejemplo
-</span><span class="comment">/*///
-/// ```rust
-/// use tu_modulo::procesar_desvio;
-/// use tu_modulo::Coordenada;
-/// use tu_modulo::Juego;
-///
-/// let mut juego = Juego::new();
-/// let palabra = &quot;Dn&quot;; // Representa un desvío en la dirección &#39;n&#39;.
-/// let punto = Coordenada::new(0, 0);
-/// let resultado = procesar_desvio(palabra, punto, &amp;mut juego);
-///
-/// assert!(resultado.is_ok());
-/// ```*/
+
 </span><span class="kw">fn </span>procesar_desvio(palabra: <span class="kw-2">&amp;</span>str, punto: Coordenada, juego: <span class="kw-2">&amp;mut </span>Juego) -&gt; io::Result&lt;()&gt; {
     <span class="kw">if let </span><span class="prelude-val">Some</span>(segundo_caracter) = palabra.chars().nth(<span class="number">1</span>) {
         <span class="kw">let </span>direccion = segundo_caracter;
@@ -688,7 +643,7 @@
     } <span class="kw">else </span>{
         <span class="kw">return </span><span class="prelude-val">Err</span>(io::Error::new(
             io::ErrorKind::InvalidData,
-            <span class="string">&quot;Error al intentar inicializar el desvío en la dirección dada.&quot;</span>,
+            <span class="string">&quot;ERROR: error al intentar inicializar el desvío en la dirección dada.\n&quot;</span>,
         ));
     }
     <span class="prelude-val">Ok</span>(())
@@ -710,24 +665,8 @@
 /// Esta función devuelve un error si hay problemas al inicializar el elemento, como la detección
 /// de un formato incorrecto o la incapacidad de inicializar un tipo específico.
 ///
-</span><span class="comment">/*/// # Ejemplo
-///
-/// ```rust
-///
-/// let mut juego = Juego::new();
-/// juego.inicializar_dimension(7);
-/// let pared = &quot;W&quot;; // Representa una pared.
-/// let coordenada_pared = Coordenada::new(0, 0);
-/// let resultado = inicializar_juego(punto, palabra, &amp;mut juego)
-/// resultado?;
-///
-/// ```*/
-</span><span class="kw">pub fn </span>inicializar_juego(
-    punto: Coordenada,
-    palabra: <span class="kw-2">&amp;</span>str,
-    juego: <span class="kw-2">&amp;mut </span>Juego,
-    output_file: <span class="kw-2">&amp;mut </span>File,
-) -&gt; io::Result&lt;()&gt; {
+
+</span><span class="kw">pub fn </span>inicializar_juego(punto: Coordenada, palabra: <span class="kw-2">&amp;</span>str, juego: <span class="kw-2">&amp;mut </span>Juego) -&gt; io::Result&lt;()&gt; {
     <span class="kw">if </span>palabra == constantes::PARED {
         juego.inicializar_pared(punto);
     } <span class="kw">else if </span>palabra == constantes::ROCA {
@@ -746,13 +685,9 @@
     } <span class="kw">else if </span>palabra == constantes::VACIO {
         <span class="kw">return </span><span class="prelude-val">Ok</span>(());
     } <span class="kw">else </span>{
-        <span class="kw">let </span>texto = <span class="string">&quot;Se encontraron caracteres inválidos en el archivo de entrada.&quot;</span>;
-
-        output_file.write_all(texto.as_bytes())<span class="question-mark">?</span>;
-
         <span class="kw">return </span><span class="prelude-val">Err</span>(io::Error::new(
             io::ErrorKind::InvalidData,
-            <span class="string">&quot;Se encontraron caracteres inválidos en el archivo de entrada.&quot;</span>,
+            <span class="string">&quot;ERROR: se encontraron caracteres inválidos en el archivo de entrada.\n&quot;</span>,
         ));
     }
     <span class="prelude-val">Ok</span>(())
@@ -775,32 +710,17 @@
 /// Esta función devuelve un error si hay problemas al procesar la línea, como la detección de un formato
 /// incorrecto o la incapacidad de inicializar elementos.
 ///
-</span><span class="comment">/*/// # Ejemplo
-///
-/// ```rust
-/// use tu_modulo::procesar_linea_de_configuracion;
-/// use tu_modulo::Coordenada;
-/// use tu_modulo::Juego;
-///
-/// let mut juego = Juego::new();
-/// let linea = &quot;W B2 F3&quot;; // Representa una fila con una pared, una bomba y un enemigo.
-/// let mut filas = 0;
-/// let mut coordenada_y = 0;
-/// let resultado = procesar_linea_de_configuracion(linea, &amp;mut filas, &amp;mut coordenada_y, &amp;mut juego);
-///
-/// assert!(resultado.is_ok());
-/// ```*/
+
 </span><span class="kw">fn </span>procesar_linea_de_configuracion(
     l: <span class="kw-2">&amp;</span>str,
     filas: <span class="kw-2">&amp;mut </span>i8,
     coordenada_y: <span class="kw-2">&amp;mut </span>i8,
     juego: <span class="kw-2">&amp;mut </span>Juego,
-    output_file: <span class="kw-2">&amp;mut </span>File,
 ) -&gt; io::Result&lt;()&gt; {
     <span class="kw">let </span>palabras: Vec&lt;<span class="kw-2">&amp;</span>str&gt; = l.split_whitespace().collect();
     <span class="kw">for </span>palabra <span class="kw">in </span>palabras {
         <span class="kw">let </span>punto = Coordenada::new(<span class="kw-2">*</span>filas, <span class="kw-2">*</span>coordenada_y);
-        <span class="kw">let </span>resultado = inicializar_juego(punto, palabra, juego, output_file);
+        <span class="kw">let </span>resultado = inicializar_juego(punto, palabra, juego);
         <span class="kw">match </span>resultado {
             <span class="prelude-val">Ok</span>(()) =&gt; {}
             <span class="prelude-val">Err</span>(e) =&gt; {
@@ -829,20 +749,7 @@
 /// Esta función devuelve un error si hay problemas al inicializar las coordenadas, como la detección
 /// de un formato incorrecto o la incapacidad de convertir las cadenas en valores numéricos.
 ///
-</span><span class="comment">/*/// # Ejemplo
-///
-/// ```rust
-/// use tu_modulo::inicializar_coordenada_de_la_bomba;
-/// use tu_modulo::Coordenada;
-///
-/// let args = vec![&quot;programa&quot;, &quot;archivo.txt&quot;, &quot;salida.txt&quot;, &quot;2&quot;, &quot;3&quot;];
-/// let resultado = inicializar_coordenada_de_la_bomba(&amp;args);
-///
-/// assert!(resultado.is_ok());
-/// let coordenada = resultado.unwrap();
-/// assert_eq!(coordenada.x, 2);
-/// assert_eq!(coordenada.y, 3);
-/// ```*/
+
 </span><span class="kw">pub fn </span>inicializar_coordenada_de_la_bomba(args: <span class="kw-2">&amp;</span>[String]) -&gt; io::Result&lt;Coordenada&gt; {
     <span class="kw">let </span>x: i8;
     <span class="kw">let </span>y: i8;
@@ -852,7 +759,7 @@
     } <span class="kw">else </span>{
         <span class="kw">return </span><span class="prelude-val">Err</span>(io::Error::new(
             io::ErrorKind::InvalidData,
-            <span class="string">&quot;Error en coordenada correspondiente a la columna.&quot;</span>,
+            <span class="string">&quot;ERROR: Error en coordenada correspondiente a la fila.\n&quot;</span>,
         ));
     }
     <span class="kw">if let </span><span class="prelude-val">Ok</span>(arg) = args[<span class="number">4</span>].parse::&lt;i8&gt;() {
@@ -860,7 +767,7 @@
     } <span class="kw">else </span>{
         <span class="kw">return </span><span class="prelude-val">Err</span>(io::Error::new(
             io::ErrorKind::InvalidData,
-            <span class="string">&quot;Error en coordenada a la fila.&quot;</span>,
+            <span class="string">&quot;ERROR: Error en coordenada correspondiente a la columna.\n&quot;</span>,
         ));
     }
 
@@ -881,18 +788,6 @@
 ///
 /// Esta función devuelve un error si no se puede crear el archivo en la ruta especificada.
 ///
-</span><span class="comment">/*/// # Ejemplo
-///
-/// ```rust
-/// use tu_modulo::crear_archivo_en_ruta;
-/// use std::fs::File;
-///
-/// let resultado = crear_archivo_en_ruta(&quot;salida.txt&quot;);
-///
-/// assert!(resultado.is_ok());
-/// let archivo = resultado.unwrap();
-/// assert!(archivo.is_file());
-/// ```*/
 </span><span class="kw">fn </span>crear_archivo_en_ruta(ruta_entrada: <span class="kw-2">&amp;</span>str) -&gt; io::Result&lt;File&gt; {
     <span class="kw">let </span>ruta = Path::new(ruta_entrada);
 
@@ -906,38 +801,83 @@
     }
 }
 
-<span class="doccomment">/// Ejecuta el programa principal.
-///
-/// Esta función es la entrada principal del programa. Toma un vector de argumentos de línea de comandos y
-/// realiza la ejecución principal del programa, que incluye la carga del juego, la inicialización de la coordenada
-/// de la bomba, y la realización de una jugada en el juego. El resultado se guarda en el archivo de salida especificado.
+<span class="doccomment">/// Verifica si la coordenada de la bomba está dentro del rango válido del juego.
 ///
 /// # Argumentos
 ///
-/// * `args`: Vector de cadenas que contiene los argumentos de línea de comandos.
+/// * `coordenada_bomba`: Coordenada de la bomba a verificar.
+/// * `dimension_juego`: Dimensión del juego (tamaño del tablero).
+/// * `output_file`: Archivo de salida donde se escribirán mensajes de error si es necesario.
 ///
-/// # Errores
+/// # Devuelve
 ///
-/// Esta función devuelve un error si no se proporcionan exactamente 4 argumentos en la línea de comandos
-/// o si hay problemas durante la ejecución del programa.
+/// Retorna un `Result` que indica si la coordenada de la bomba es válida o no.
 ///
-</span><span class="comment">/*/// # Ejemplo
-///
-/// ```rust
-/// use tu_modulo::run;
-///
-/// let args = vec![&quot;programa&quot;, &quot;archivo.txt&quot;, &quot;salida.txt&quot;, &quot;2&quot;, &quot;3&quot;];
-/// let resultado = run(args);
-///
-/// assert!(resultado.is_ok());
-/// ```*/
-</span><span class="kw">pub fn </span>run(args: Vec&lt;String&gt;) -&gt; io::Result&lt;()&gt; {
-    <span class="kw">if </span>args.len() != <span class="number">5 </span>{
+/// Si la coordenada de la bomba está fuera de rango, se escribirá un mensaje de error en `output_file`
+/// y se devolverá un error de tipo `io::ErrorKind::InvalidInput`. En caso contrario, se devuelve `Ok(())`.
+</span><span class="kw">pub fn </span>el_rango_de_la_bomba_es_valido(
+    coordenada_bomba: Coordenada,
+    dimension_juego: i8,
+    output_file: <span class="kw-2">&amp;mut </span>File,
+) -&gt; io::Result&lt;()&gt; {
+    <span class="kw">if </span>coordenada_bomba.x &gt;= dimension_juego || coordenada_bomba.y &gt;= dimension_juego {
+        <span class="kw">let </span>mensaje_error = <span class="string">&quot;ERROR: La bomba no puede estar fuera de rango.\n&quot;</span>;
+        output_file.write_all(mensaje_error.as_bytes())<span class="question-mark">?</span>;
         <span class="kw">return </span><span class="prelude-val">Err</span>(io::Error::new(
             io::ErrorKind::InvalidInput,
-            <span class="string">&quot;Se esperaban exactamente 4 argumentos.&quot;</span>,
+            <span class="string">&quot;ERROR: La bomba no puede estar fuera de rango.\n&quot;</span>,
         ));
     }
+    <span class="prelude-val">Ok</span>(())
+}
+
+<span class="doccomment">/// Verifica si la cantidad de argumentos proporcionados es válida.
+///
+/// # Argumentos
+///
+/// * `len`: Cantidad de argumentos proporcionados.
+///
+/// # Devuelve
+///
+/// Retorna un `Result` que indica si la cantidad de argumentos es válida o no.
+///
+/// Si la cantidad de argumentos no es igual a 5, se devuelve un error de tipo `io::ErrorKind::InvalidInput`.
+/// En caso contrario, se devuelve `Ok(())`.
+</span><span class="kw">pub fn </span>la_cantidad_de_argumentos_es_valida(len: usize) -&gt; io::Result&lt;()&gt; {
+    <span class="kw">if </span>len != <span class="number">5 </span>{
+        <span class="kw">return </span><span class="prelude-val">Err</span>(io::Error::new(
+            io::ErrorKind::InvalidInput,
+            <span class="string">&quot;ERROR: Se esperaban exactamente 4 argumentos.\n&quot;</span>,
+        ));
+    }
+    <span class="prelude-val">Ok</span>(())
+}
+
+<span class="doccomment">/// Función principal que ejecuta el juego.
+///
+/// # Argumentos
+///
+/// * `args`: Vector de cadenas de texto que contiene los argumentos de la línea de comandos.
+/// En particular: el nombre del archivo de input (debe estar en la carpeta src),
+/// el path del archivo de output (relativo, absoluto o nombre del archivo),
+/// y las coordenadas de la bomba a explotar, que se recibirán en el formato columna fila.
+///
+/// # Devuelve
+///
+/// Retorna un `Result` que indica si la ejecución del juego fue exitosa o si hubo errores.
+///
+/// Esta función realiza las siguientes acciones:
+/// 1. Verifica la cantidad de argumentos.
+/// 2. Lee el nombre del archivo de laberinto y el archivo de salida de `args`.
+/// 3. Carga el juego desde el archivo de laberinto.
+/// 4. Inicializa la coordenada de la bomba.
+/// 5. Verifica si la coordenada de la bomba está dentro del rango válido.
+/// 6. Realiza una jugada en el juego.
+///
+/// Si en alguna etapa se encuentra un error, se escribirá un mensaje en el archivo de salida y se
+/// devolverá un error correspondiente. En caso de éxito, se devuelve `Ok(())`.
+</span><span class="kw">pub fn </span>run(args: Vec&lt;String&gt;) -&gt; io::Result&lt;()&gt; {
+    la_cantidad_de_argumentos_es_valida(args.len())<span class="question-mark">?</span>;
 
     <span class="kw">let </span>maze_file_name = <span class="kw-2">&amp;</span>args[<span class="number">1</span>];
     <span class="kw">let </span>output_file_name = <span class="kw-2">&amp;</span>args[<span class="number">2</span>];
@@ -958,74 +898,93 @@
         }
     };
 
-    <span class="kw">if </span>coordenada_bomba.x &gt;= juego.dimension || coordenada_bomba.y &gt;= juego.dimension {
-        <span class="kw">let </span>mensaje_error = <span class="string">&quot;La bomba no puede estar fuera de rango.&quot;</span>;
-        output_file.write_all(mensaje_error.as_bytes())<span class="question-mark">?</span>;
-        <span class="kw">return </span><span class="prelude-val">Err</span>(io::Error::new(
-            io::ErrorKind::InvalidInput,
-            <span class="string">&quot;La bomba no puede estar fuera de rango.&quot;</span>,
-        ));
-    }
+    el_rango_de_la_bomba_es_valido(coordenada_bomba, juego.dimension, <span class="kw-2">&amp;mut </span>output_file)<span class="question-mark">?</span>;
 
     juego.realizar_jugada(<span class="kw-2">&amp;mut </span>output_file, coordenada_bomba)<span class="question-mark">?</span>;
 
     <span class="prelude-val">Ok</span>(())
 }
 
-<span class="doccomment">/// Carga el juego desde un archivo de configuración.
-///
-/// Esta función toma el nombre de un archivo de configuración como entrada y carga el juego
-/// a partir de dicho archivo. El juego se inicializa con elementos según la configuración
-/// del archivo.
+<span class="doccomment">/// Verifica si el tablero ingresado en el archivo de laberinto es cuadrado.
 ///
 /// # Argumentos
 ///
-/// * `maze_file_name`: El nombre del archivo de configuración del juego.
+/// * `cantidad_cadenas`: La cantidad total de cadenas procesadas del archivo de laberinto.
+/// * `filas`: El número de filas procesadas del archivo de laberinto.
+/// * `output_file`: Archivo de salida donde se escribirán mensajes de error si es necesario.
 ///
-/// # Errores
+/// # Devuelve
 ///
-/// Esta función devuelve un error si no se puede abrir o leer el archivo de configuración,
-/// o si hay problemas al procesar su contenido.
+/// Retorna un `Result` que indica si el tablero es cuadrado o no.
 ///
-</span><span class="comment">/*/// # Ejemplo
+/// Si la cantidad de cadenas procesadas no coincide con el número de filas al cuadrado, se escribirá un mensaje de error
+/// en `output_file` y se devolverá un error de tipo `io::ErrorKind::InvalidInput`. En caso contrario, se devuelve `Ok(())`.
+</span><span class="kw">pub fn </span>el_tablero_ingresado_es_cuadrado(
+    cantidad_cadenas: usize,
+    filas: i8,
+    output_file: <span class="kw-2">&amp;mut </span>File,
+) -&gt; io::Result&lt;()&gt; {
+    <span class="kw">let </span>cadenas_esperadas: usize = (filas * filas) <span class="kw">as </span>usize;
+    <span class="kw">if </span>cantidad_cadenas != cadenas_esperadas {
+        <span class="kw">let </span>mensaje_error = <span class="string">&quot;ERROR: el tablero debe ser cuadrado.\n&quot;</span>;
+        output_file.write_all(mensaje_error.as_bytes())<span class="question-mark">?</span>;
+        <span class="kw">return </span><span class="prelude-val">Err</span>(io::Error::new(
+            io::ErrorKind::InvalidInput,
+            <span class="string">&quot;ERROR: el tablero debe ser cuadrado.\n&quot;</span>,
+        ));
+    }
+    <span class="prelude-val">Ok</span>(())
+}
+
+<span class="doccomment">/// Carga el estado del juego desde un archivo de laberinto especificado y lo inicializa.
 ///
-/// ```rust
-/// use tu_modulo::cargar_juego;
+/// # Argumentos
 ///
-/// let maze_file_name = &quot;archivo.txt&quot;;
-/// let resultado = cargar_juego(maze_file_name);
+/// * `maze_file_name`: El nombre del archivo de laberinto desde el cual se cargará el juego.
+/// * `output_file`: Archivo de salida donde se escribirán mensajes de error si es necesario.
 ///
-/// assert!(resultado.is_ok());
-/// ```*/
+/// # Devuelve
+///
+/// Retorna un `Result` que contiene el objeto `Juego` inicializado si la carga y procesamiento del archivo
+/// fueron exitosos, o un error en caso contrario.
+///
+/// Esta función realiza las siguientes acciones:
+/// 1. Abre el archivo de laberinto especificado.
+/// 2. Lee cada línea del archivo, procesando la configuración del juego y actualizando el estado de `juego`.
+/// 3. Maneja los errores de lectura y procesamiento, escribiendo mensajes en `output_file` y devolviendo errores apropiados.
+/// 4. Verifica si el tablero ingresado es cuadrado.
+/// 5. Inicializa la dimensión del juego en base al número de filas procesadas.
+///
+/// Si todo se realiza correctamente, devuelve `Ok(juego)`. En caso de errores, se devuelve un error `io::Result`.
 </span><span class="kw">pub fn </span>cargar_juego(maze_file_name: <span class="kw-2">&amp;</span>str, output_file: <span class="kw-2">&amp;mut </span>File) -&gt; io::Result&lt;Juego&gt; {
     <span class="kw">let </span>maze_file = File::open(maze_file_name)<span class="question-mark">?</span>;
     <span class="kw">let </span>reader = io::BufReader::new(maze_file);
     <span class="kw">let </span><span class="kw-2">mut </span>juego: Juego = Juego::new();
     <span class="kw">let </span><span class="kw-2">mut </span>filas: i8 = <span class="number">0</span>;
     <span class="kw">let </span><span class="kw-2">mut </span>coordenada_y: i8 = <span class="number">0</span>;
-
+    <span class="kw">let </span><span class="kw-2">mut </span>cantidad_cadenas = <span class="number">0</span>;
     <span class="kw">for </span>linea <span class="kw">in </span>reader.lines() {
         <span class="kw">match </span>linea {
             <span class="prelude-val">Ok</span>(l) =&gt; {
-                <span class="kw">if let </span><span class="prelude-val">Err</span>(err) = procesar_linea_de_configuracion(
-                    <span class="kw-2">&amp;</span>l,
-                    <span class="kw-2">&amp;mut </span>filas,
-                    <span class="kw-2">&amp;mut </span>coordenada_y,
-                    <span class="kw-2">&amp;mut </span>juego,
-                    output_file,
-                ) {
+                <span class="kw">if let </span><span class="prelude-val">Err</span>(err) =
+                    procesar_linea_de_configuracion(<span class="kw-2">&amp;</span>l, <span class="kw-2">&amp;mut </span>filas, <span class="kw-2">&amp;mut </span>coordenada_y, <span class="kw-2">&amp;mut </span>juego)
+                {
+                    output_file.write_all(err.to_string().as_bytes())<span class="question-mark">?</span>;
                     <span class="kw">return </span><span class="prelude-val">Err</span>(io::Error::new(io::ErrorKind::Other, err.to_string()));
                 }
+                <span class="kw">let </span>cadenas = l.split_whitespace().collect::&lt;Vec&lt;<span class="kw-2">&amp;</span>str&gt;&gt;();
+                cantidad_cadenas += cadenas.len();
             }
-            <span class="prelude-val">Err</span>(_e) =&gt; {
+            <span class="prelude-val">Err</span>(e) =&gt; {
+                output_file.write_all(e.to_string().as_bytes())<span class="question-mark">?</span>;
                 <span class="kw">return </span><span class="prelude-val">Err</span>(io::Error::new(
                     io::ErrorKind::UnexpectedEof,
-                    <span class="string">&quot;Error al leer línea:&quot;</span>,
+                    <span class="string">&quot;ERROR: se han presentado inconvenientes en la lectura del archivo.\n&quot;</span>,
                 ));
             }
         }
     }
-
+    el_tablero_ingresado_es_cuadrado(cantidad_cadenas, filas, output_file)<span class="question-mark">?</span>;
     juego.inicializar_dimension(filas);
     <span class="prelude-val">Ok</span>(juego)
 }
@@ -1058,6 +1017,23 @@
         ];
         <span class="kw">let </span>resultado = inicializar_coordenada_de_la_bomba(<span class="kw-2">&amp;</span>args);
         <span class="macro">assert!</span>(resultado.is_ok())
+    }
+
+    <span class="attr">#[test]
+    </span><span class="kw">pub fn </span>inicializar_juego_con_enemigo_invalido_devuelve_error() {
+        <span class="kw">let </span><span class="kw-2">mut </span>juego: Juego = Juego::new();
+        <span class="kw">let </span>coordenada_enemigo: Coordenada = Coordenada::new(<span class="number">3</span>, <span class="number">5</span>);
+        <span class="kw">let </span>resultado = inicializar_juego(coordenada_enemigo, <span class="string">&quot;FB&quot;</span>, <span class="kw-2">&amp;mut </span>juego);
+
+        <span class="macro">assert!</span>(resultado.is_err());
+    }
+
+    <span class="attr">#[test]
+    </span><span class="kw">pub fn </span>inicializar_juego_con_enemigo_correcto_devuelve_ok() {
+        <span class="kw">let </span><span class="kw-2">mut </span>juego: Juego = Juego::new();
+        <span class="kw">let </span>coordenada_enemigo: Coordenada = Coordenada::new(<span class="number">3</span>, <span class="number">5</span>);
+        <span class="kw">let </span>resultado = inicializar_juego(coordenada_enemigo, <span class="string">&quot;F6&quot;</span>, <span class="kw-2">&amp;mut </span>juego);
+        <span class="macro">assert!</span>(resultado.is_ok());
     }
 
     <span class="attr">#[test]

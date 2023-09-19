@@ -327,6 +327,9 @@ pub fn la_cantidad_de_argumentos_es_valida(len: usize) -> io::Result<()> {
 /// # Argumentos
 ///
 /// * `args`: Vector de cadenas de texto que contiene los argumentos de la línea de comandos.
+/// En particular: el nombre del archivo de input (debe estar en la carpeta src),
+/// el path del archivo de output (relativo, absoluto o nombre del archivo),
+/// y las coordenadas de la bomba a explotar, que se recibirán en el formato columna fila.
 ///
 /// # Devuelve
 ///

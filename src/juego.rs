@@ -374,6 +374,15 @@ impl Juego {
         }
     }
 
+    /// Chequea si la coordenada actual está dentro del tablero.
+    ///
+    /// # Argumentos
+    /// * `coordenada`: la coordenada actual a evaluar en el tablero.
+    /// * `dimension`: la dimensión actual del tablero.
+    ///
+    /// # Devolución
+    /// Devuelve true si está dentro del tablero, false en caso contrario.
+    ///
     fn dentro_del_tablero(coordenada: &Coordenada, dimension: i8) -> bool {
         coordenada.x >= 0
             && coordenada.y >= 0
@@ -381,11 +390,23 @@ impl Juego {
             && coordenada.y < dimension
     }
 
+    /// Invalida las coordenadas para que no se sigan evaluando.
+    ///
+    /// # Argumentos
+    /// * `coordenada`: la coordenada a invalidar.
+    ///
     fn invalidar_coordenadas(coordenada: &mut Coordenada) {
         coordenada.x = -1;
         coordenada.y = -1;
     }
 
+    /// Evalúa si el objeto encontrado es ROCA o PARED. Si lo es, se fija si corresponde invalidar o no las coordenadas.
+    ///
+    /// # Argumentos:
+    /// * `d`: el string del casillero.
+    /// * `coordenada`: la coordenada a invalidar, si corresponde.
+    /// * `bomba`: la bomba que fue explotada.
+    ///
     fn evaluar_obstaculos(d: &str, coordenada: &mut Coordenada, bomba: &Bomba) {
         if d.starts_with(constantes::ROCA) && bomba.tipo == TipoDeBomba::Normal {
             Juego::invalidar_coordenadas(coordenada);

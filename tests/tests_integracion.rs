@@ -21,7 +21,7 @@ pub fn el_juego_crea_los_archivos_correctamente() -> io::Result<()> {
 }
 
 #[test]
-pub fn test_maze_0() -> io::Result<()> {
+pub fn test_sucesion_de_bombas_eliminan_al_enemigo_esperado() -> io::Result<()> {
     let comando: Vec<String> = vec![
         "".to_string(),
         "src/maze.txt".to_string(),
@@ -62,7 +62,7 @@ pub fn test_maze_0() -> io::Result<()> {
 }
 
 #[test]
-pub fn test_maze_2() -> io::Result<()> {
+pub fn test_una_bomba_solo_explota_a_las_que_estan_a_su_alcance() -> io::Result<()> {
     let comando: Vec<String> = vec![
         "".to_string(),
         "src/maze2.txt".to_string(),
@@ -104,7 +104,7 @@ pub fn test_maze_2() -> io::Result<()> {
 }
 
 #[test]
-pub fn test_maze_2_bomba_explota_pero_no_ataca() -> io::Result<()> {
+pub fn test_bomba_explota_pero_no_logra_atacar_un_enemigo() -> io::Result<()> {
     let comando: Vec<String> = vec![
         "".to_string(),
         "src/maze2.txt".to_string(),
@@ -146,7 +146,7 @@ pub fn test_maze_2_bomba_explota_pero_no_ataca() -> io::Result<()> {
 }
 
 #[test]
-pub fn test_maze_3() -> io::Result<()> {
+pub fn test_desvio_genera_el_resultado_correcto() -> io::Result<()> {
     let comando: Vec<String> = vec![
         "".to_string(),
         "src/maze3.txt".to_string(),
@@ -188,7 +188,7 @@ pub fn test_maze_3() -> io::Result<()> {
 }
 
 #[test]
-pub fn test_maze_4() -> io::Result<()> {
+pub fn test_se_actualiza_la_vida_del_enemigo_en_el_archivo_cuando_es_atacado_pero_no_muere() -> io::Result<()> {
     let comando: Vec<String> = vec![
         "".to_string(),
         "src/maze4.txt".to_string(),
@@ -230,13 +230,13 @@ pub fn test_maze_4() -> io::Result<()> {
 }
 
 #[test]
-pub fn test_maze_5() -> io::Result<()> {
+pub fn test_super_bomba_atraviesa_super_roca_y_logra_atacar_al_enemigo() -> io::Result<()> {
     let comando: Vec<String> = vec![
         "".to_string(),
         "src/maze5.txt".to_string(),
         "tests/test_files/output_del_test/maze_5_output.txt".to_string(),
-        "2".to_string(),
-        "0".to_string(),
+        "3".to_string(),
+        "5".to_string(),
     ];
     let _result = inicializar::run(comando);
 
@@ -272,7 +272,7 @@ pub fn test_maze_5() -> io::Result<()> {
 }
 
 #[test]
-pub fn test_maze_6() -> io::Result<()> {
+pub fn test_bomba_vuelve_en_desvio_pero_solo_se_resta_un_punto_de_vida() -> io::Result<()> {
     let comando: Vec<String> = vec![
         "".to_string(),
         "src/maze6.txt".to_string(),

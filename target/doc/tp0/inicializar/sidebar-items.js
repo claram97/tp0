@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"fn":["cargar_juego","inicializar_coordenada_de_la_bomba","inicializar_juego","procesar_enemigo","run"]};
+window.SIDEBAR_ITEMS = {"fn":["cargar_juego","el_rango_de_la_bomba_es_valido","el_tablero_ingresado_es_cuadrado","inicializar_coordenada_de_la_bomba","inicializar_juego","la_cantidad_de_argumentos_es_valida","procesar_enemigo","run"]};
