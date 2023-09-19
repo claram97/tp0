@@ -235,7 +235,7 @@ impl Juego {
     ///
     /// Esta función devuelve un error si no se puede escribir en el archivo.
     ///
-    pub fn imprimir_tablero_en_archivo(
+    fn imprimir_tablero_en_archivo(
         &self,
         output_file: &mut File,
         tablero: &Vec<Vec<String>>,
@@ -294,7 +294,7 @@ impl Juego {
     /// `Some(usize)` que contiene la posición del enemigo en el vector de enemigos.
     /// Si no se encuentra ningún enemigo con las coordenadas dadas, se devuelve `None`.
     ///
-    pub fn buscar_enemigo(&self, coordenada: Coordenada) -> Option<usize> {
+    fn buscar_enemigo(&self, coordenada: Coordenada) -> Option<usize> {
         self.enemigos
             .iter()
             .position(|enemigo| enemigo.coordenada.is_equal_to(&coordenada))
@@ -311,7 +311,7 @@ impl Juego {
     /// * `coordenada`: La coordenada en la que se busca al enemigo.
     /// * `coordenada_bomba`: La coordenada de la bomba.
     ///
-    pub fn eliminar_enemigo(&mut self, coordenada: Coordenada, coordenada_bomba: Coordenada) {
+    fn eliminar_enemigo(&mut self, coordenada: Coordenada, coordenada_bomba: Coordenada) {
         if let Some(i) = self.buscar_enemigo(coordenada) {
             if let Some(_bomba_index) = self.enemigos[i]
                 .bombas_que_lo_impactaron
@@ -327,50 +327,6 @@ impl Juego {
                     self.enemigos.swap_remove(i);
                 }
             }
-        }
-    }
-
-    pub fn matchear_casillero(
-        &mut self,
-        coordenada: &mut Coordenada,
-        tablero: &mut Vec<Vec<String>>,
-        mut i: i8,
-        bomba: &Bomba,
-        coordenada_original: Coordenada,
-        casillero: &str,
-    ) {
-        match casillero {
-            a if a.starts_with(constantes::ENEMIGO) => {
-                self.eliminar_enemigo(*coordenada, coordenada_original);
-            }
-            b if b.starts_with(constantes::BOMBA_DE_TRANSPASO)
-                || b.starts_with(constantes::BOMBA_NORMAL) =>
-            {
-                self.detonar_bomba(tablero, *coordenada);
-            }
-            c if c.starts_with(constantes::DESVIO) => {
-                i += 1;
-                if c == constantes::DESVIO_ARRIBA {
-                    self.evaluar_arriba(coordenada, tablero, i, bomba);
-                } else if c == constantes::DESVIO_ABAJO {
-                    self.evaluar_abajo(coordenada, tablero, i, bomba);
-                } else if c == constantes::DESVIO_DERECHA {
-                    self.evaluar_izquierda(coordenada, tablero, i, bomba);
-                } else if c == constantes::DESVIO_IZQUIERDA {
-                    self.evaluar_derecha(coordenada, tablero, i, bomba);
-                }
-            }
-            d if d.starts_with(constantes::ROCA) => {
-                if bomba.tipo == TipoDeBomba::Normal {
-                    coordenada.x = -1;
-                    coordenada.y = -1;
-                }
-            }
-            e if e.starts_with(constantes::PARED) => {
-                coordenada.x = -1;
-                coordenada.y = -1;
-            }
-            _ => {}
         }
     }
 
@@ -434,7 +390,7 @@ impl Juego {
     /// * `bomba`: Una referencia a la bomba actual que está siendo evaluada.
     /// * `coordenada_original`: La coordenada original de la bomba antes de comenzar su trayectoria.
     ///
-    pub fn evaluar_casillero(
+    fn evaluar_casillero(
         &mut self,
         coordenada: &mut Coordenada,
         tablero: &mut Vec<Vec<String>>,
@@ -483,7 +439,7 @@ impl Juego {
     /// * `i`: Un contador que representa el alcance actual de la explosión de una bomba.
     /// * `bomba`: Una referencia a la bomba actual que está siendo evaluada.
     ///
-    pub fn evaluar_arriba(
+    fn evaluar_arriba(
         &mut self,
         coordenada: &Coordenada,
         tablero: &mut Vec<Vec<String>>,
@@ -631,7 +587,7 @@ impl Juego {
     /// - `coordenada`: La coordenada en la que se busca y detona la bomba.
     ///
 
-    pub fn detonar_bomba(&mut self, tablero: &mut Vec<Vec<String>>, coordenada: Coordenada) {
+    fn detonar_bomba(&mut self, tablero: &mut Vec<Vec<String>>, coordenada: Coordenada) {
         let mut bomba_index: Option<usize> = None;
 
         for (i, bomba) in self.bombas.iter().enumerate().rev() {

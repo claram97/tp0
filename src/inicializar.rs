@@ -68,7 +68,7 @@ fn procesar_bomba(palabra: &str, punto: Coordenada, juego: &mut Juego) -> io::Re
 /// Esta función devuelve un error si no se puede determinar la vida del enemigo o si hay un problema al inicializarlo.
 ///
 
-pub fn procesar_enemigo(palabra: &str, punto: Coordenada, juego: &mut Juego) -> io::Result<()> {
+fn procesar_enemigo(palabra: &str, punto: Coordenada, juego: &mut Juego) -> io::Result<()> {
     if let Some(segundo_caracter) = palabra.chars().nth(1) {
         if let Some(digito) = segundo_caracter.to_digit(10) {
             let vida = digito as i8;
@@ -135,7 +135,7 @@ fn procesar_desvio(palabra: &str, punto: Coordenada, juego: &mut Juego) -> io::R
 /// de un formato incorrecto o la incapacidad de inicializar un tipo específico.
 ///
 
-pub fn inicializar_juego(punto: Coordenada, palabra: &str, juego: &mut Juego) -> io::Result<()> {
+fn inicializar_juego(punto: Coordenada, palabra: &str, juego: &mut Juego) -> io::Result<()> {
     if palabra == constantes::PARED {
         juego.inicializar_pared(punto);
     } else if palabra == constantes::ROCA {
@@ -219,7 +219,7 @@ fn procesar_linea_de_configuracion(
 /// de un formato incorrecto o la incapacidad de convertir las cadenas en valores numéricos.
 ///
 
-pub fn inicializar_coordenada_de_la_bomba(args: &[String]) -> io::Result<Coordenada> {
+fn inicializar_coordenada_de_la_bomba(args: &[String]) -> io::Result<Coordenada> {
     let x: i8;
     let y: i8;
 
@@ -284,7 +284,7 @@ fn crear_archivo_en_ruta(ruta_entrada: &str) -> io::Result<File> {
 ///
 /// Si la coordenada de la bomba está fuera de rango, se escribirá un mensaje de error en `output_file`
 /// y se devolverá un error de tipo `io::ErrorKind::InvalidInput`. En caso contrario, se devuelve `Ok(())`.
-pub fn el_rango_de_la_bomba_es_valido(
+fn el_rango_de_la_bomba_es_valido(
     coordenada_bomba: Coordenada,
     dimension_juego: i8,
     output_file: &mut File,
@@ -312,7 +312,7 @@ pub fn el_rango_de_la_bomba_es_valido(
 ///
 /// Si la cantidad de argumentos no es igual a 5, se devuelve un error de tipo `io::ErrorKind::InvalidInput`.
 /// En caso contrario, se devuelve `Ok(())`.
-pub fn la_cantidad_de_argumentos_es_valida(len: usize) -> io::Result<()> {
+fn la_cantidad_de_argumentos_es_valida(len: usize) -> io::Result<()> {
     if len != 5 {
         return Err(io::Error::new(
             io::ErrorKind::InvalidInput,
@@ -388,7 +388,7 @@ pub fn run(args: Vec<String>) -> io::Result<()> {
 ///
 /// Si la cantidad de cadenas procesadas no coincide con el número de filas al cuadrado, se escribirá un mensaje de error
 /// en `output_file` y se devolverá un error de tipo `io::ErrorKind::InvalidInput`. En caso contrario, se devuelve `Ok(())`.
-pub fn el_tablero_ingresado_es_cuadrado(
+fn el_tablero_ingresado_es_cuadrado(
     cantidad_cadenas: usize,
     filas: i8,
     output_file: &mut File,
@@ -425,7 +425,7 @@ pub fn el_tablero_ingresado_es_cuadrado(
 /// 5. Inicializa la dimensión del juego en base al número de filas procesadas.
 ///
 /// Si todo se realiza correctamente, devuelve `Ok(juego)`. En caso de errores, se devuelve un error `io::Result`.
-pub fn cargar_juego(maze_file_name: &str, output_file: &mut File) -> io::Result<Juego> {
+fn cargar_juego(maze_file_name: &str, output_file: &mut File) -> io::Result<Juego> {
     let maze_file = File::open(maze_file_name)?;
     let reader = io::BufReader::new(maze_file);
     let mut juego: Juego = Juego::new();
