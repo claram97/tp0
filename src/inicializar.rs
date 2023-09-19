@@ -257,7 +257,6 @@ pub fn inicializar_coordenada_de_la_bomba(args: &[String]) -> io::Result<Coorden
 ///
 /// Esta función devuelve un error si no se puede crear el archivo en la ruta especificada.
 ///
-
 fn crear_archivo_en_ruta(ruta_entrada: &str) -> io::Result<File> {
     let ruta = Path::new(ruta_entrada);
 
@@ -271,29 +270,80 @@ fn crear_archivo_en_ruta(ruta_entrada: &str) -> io::Result<File> {
     }
 }
 
-/// Ejecuta el programa principal.
-///
-/// Esta función es la entrada principal del programa. Toma un vector de argumentos de línea de comandos y
-/// realiza la ejecución principal del programa, que incluye la carga del juego, la inicialización de la coordenada
-/// de la bomba, y la realización de una jugada en el juego. El resultado se guarda en el archivo de salida especificado.
+/// Verifica si la coordenada de la bomba está dentro del rango válido del juego.
 ///
 /// # Argumentos
 ///
-/// * `args`: Vector de cadenas que contiene los argumentos de línea de comandos.
+/// * `coordenada_bomba`: Coordenada de la bomba a verificar.
+/// * `dimension_juego`: Dimensión del juego (tamaño del tablero).
+/// * `output_file`: Archivo de salida donde se escribirán mensajes de error si es necesario.
 ///
-/// # Errores
+/// # Devuelve
 ///
-/// Esta función devuelve un error si no se proporcionan exactamente 4 argumentos en la línea de comandos
-/// o si hay problemas durante la ejecución del programa.
+/// Retorna un `Result` que indica si la coordenada de la bomba es válida o no.
 ///
+/// Si la coordenada de la bomba está fuera de rango, se escribirá un mensaje de error en `output_file`
+/// y se devolverá un error de tipo `io::ErrorKind::InvalidInput`. En caso contrario, se devuelve `Ok(())`.
+pub fn el_rango_de_la_bomba_es_valido(
+    coordenada_bomba: Coordenada,
+    dimension_juego: i8,
+    output_file: &mut File,
+) -> io::Result<()> {
+    if coordenada_bomba.x >= dimension_juego || coordenada_bomba.y >= dimension_juego {
+        let mensaje_error = "ERROR: La bomba no puede estar fuera de rango.\n";
+        output_file.write_all(mensaje_error.as_bytes())?;
+        return Err(io::Error::new(
+            io::ErrorKind::InvalidInput,
+            "ERROR: La bomba no puede estar fuera de rango.\n",
+        ));
+    }
+    Ok(())
+}
 
-pub fn run(args: Vec<String>) -> io::Result<()> {
-    if args.len() != 5 {
+/// Verifica si la cantidad de argumentos proporcionados es válida.
+///
+/// # Argumentos
+///
+/// * `len`: Cantidad de argumentos proporcionados.
+///
+/// # Devuelve
+///
+/// Retorna un `Result` que indica si la cantidad de argumentos es válida o no.
+///
+/// Si la cantidad de argumentos no es igual a 5, se devuelve un error de tipo `io::ErrorKind::InvalidInput`.
+/// En caso contrario, se devuelve `Ok(())`.
+pub fn la_cantidad_de_argumentos_es_valida(len: usize) -> io::Result<()> {
+    if len != 5 {
         return Err(io::Error::new(
             io::ErrorKind::InvalidInput,
             "ERROR: Se esperaban exactamente 4 argumentos.\n",
         ));
     }
+    Ok(())
+}
+
+/// Función principal que ejecuta el juego.
+///
+/// # Argumentos
+///
+/// * `args`: Vector de cadenas de texto que contiene los argumentos de la línea de comandos.
+///
+/// # Devuelve
+///
+/// Retorna un `Result` que indica si la ejecución del juego fue exitosa o si hubo errores.
+///
+/// Esta función realiza las siguientes acciones:
+/// 1. Verifica la cantidad de argumentos.
+/// 2. Lee el nombre del archivo de laberinto y el archivo de salida de `args`.
+/// 3. Carga el juego desde el archivo de laberinto.
+/// 4. Inicializa la coordenada de la bomba.
+/// 5. Verifica si la coordenada de la bomba está dentro del rango válido.
+/// 6. Realiza una jugada en el juego.
+///
+/// Si en alguna etapa se encuentra un error, se escribirá un mensaje en el archivo de salida y se
+/// devolverá un error correspondiente. En caso de éxito, se devuelve `Ok(())`.
+pub fn run(args: Vec<String>) -> io::Result<()> {
+    la_cantidad_de_argumentos_es_valida(args.len())?;
 
     let maze_file_name = &args[1];
     let output_file_name = &args[2];
@@ -314,36 +364,65 @@ pub fn run(args: Vec<String>) -> io::Result<()> {
         }
     };
 
-    if coordenada_bomba.x >= juego.dimension || coordenada_bomba.y >= juego.dimension {
-        let mensaje_error = "ERROR: La bomba no puede estar fuera de rango.\n";
-        output_file.write_all(mensaje_error.as_bytes())?;
-        return Err(io::Error::new(
-            io::ErrorKind::InvalidInput,
-            "ERROR: La bomba no puede estar fuera de rango.\n",
-        ));
-    }
+    el_rango_de_la_bomba_es_valido(coordenada_bomba, juego.dimension, &mut output_file)?;
 
     juego.realizar_jugada(&mut output_file, coordenada_bomba)?;
 
     Ok(())
 }
 
-/// Carga el juego desde un archivo de configuración.
-///
-/// Esta función toma el nombre de un archivo de configuración como entrada y carga el juego
-/// a partir de dicho archivo. El juego se inicializa con elementos según la configuración
-/// del archivo.
+/// Verifica si el tablero ingresado en el archivo de laberinto es cuadrado.
 ///
 /// # Argumentos
 ///
-/// * `maze_file_name`: El nombre del archivo de configuración del juego.
+/// * `cantidad_cadenas`: La cantidad total de cadenas procesadas del archivo de laberinto.
+/// * `filas`: El número de filas procesadas del archivo de laberinto.
+/// * `output_file`: Archivo de salida donde se escribirán mensajes de error si es necesario.
 ///
-/// # Errores
+/// # Devuelve
 ///
-/// Esta función devuelve un error si no se puede abrir o leer el archivo de configuración,
-/// o si hay problemas al procesar su contenido.
+/// Retorna un `Result` que indica si el tablero es cuadrado o no.
 ///
+/// Si la cantidad de cadenas procesadas no coincide con el número de filas al cuadrado, se escribirá un mensaje de error
+/// en `output_file` y se devolverá un error de tipo `io::ErrorKind::InvalidInput`. En caso contrario, se devuelve `Ok(())`.
+pub fn el_tablero_ingresado_es_cuadrado(
+    cantidad_cadenas: usize,
+    filas: i8,
+    output_file: &mut File,
+) -> io::Result<()> {
+    let cadenas_esperadas: usize = (filas * filas) as usize;
+    if cantidad_cadenas != cadenas_esperadas {
+        let mensaje_error = "ERROR: el tablero debe ser cuadrado.\n";
+        output_file.write_all(mensaje_error.as_bytes())?;
+        return Err(io::Error::new(
+            io::ErrorKind::InvalidInput,
+            "ERROR: el tablero debe ser cuadrado.\n",
+        ));
+    }
+    Ok(())
+}
 
+
+/// Carga el estado del juego desde un archivo de laberinto especificado y lo inicializa.
+///
+/// # Argumentos
+///
+/// * `maze_file_name`: El nombre del archivo de laberinto desde el cual se cargará el juego.
+/// * `output_file`: Archivo de salida donde se escribirán mensajes de error si es necesario.
+///
+/// # Devuelve
+///
+/// Retorna un `Result` que contiene el objeto `Juego` inicializado si la carga y procesamiento del archivo
+/// fueron exitosos, o un error en caso contrario.
+///
+/// Esta función realiza las siguientes acciones:
+/// 1. Abre el archivo de laberinto especificado.
+/// 2. Lee cada línea del archivo, procesando la configuración del juego y actualizando el estado de `juego`.
+/// 3. Maneja los errores de lectura y procesamiento, escribiendo mensajes en `output_file` y devolviendo errores apropiados.
+/// 4. Verifica si el tablero ingresado es cuadrado.
+/// 5. Inicializa la dimensión del juego en base al número de filas procesadas.
+///
+/// Si todo se realiza correctamente, devuelve `Ok(juego)`. En caso de errores, se devuelve un error `io::Result`.
 pub fn cargar_juego(maze_file_name: &str, output_file: &mut File) -> io::Result<Juego> {
     let maze_file = File::open(maze_file_name)?;
     let reader = io::BufReader::new(maze_file);
@@ -357,17 +436,14 @@ pub fn cargar_juego(maze_file_name: &str, output_file: &mut File) -> io::Result<
                 if let Err(err) =
                     procesar_linea_de_configuracion(&l, &mut filas, &mut coordenada_y, &mut juego)
                 {
-                    let mensaje_error = err.to_string();
-                    output_file.write_all(mensaje_error.as_bytes())?;
-                    return Err(io::Error::new(io::ErrorKind::Other, mensaje_error));
+                    output_file.write_all(err.to_string().as_bytes())?;
+                    return Err(io::Error::new(io::ErrorKind::Other, err.to_string()));
                 }
                 let cadenas = l.split_whitespace().collect::<Vec<&str>>();
                 cantidad_cadenas += cadenas.len();
             }
-            Err(_e) => {
-                let mensaje_error =
-                    "ERROR: se han presentado inconvenientes en la lectura del archivo.\n";
-                output_file.write_all(mensaje_error.as_bytes())?;
+            Err(e) => {
+                output_file.write_all(e.to_string().as_bytes())?;
                 return Err(io::Error::new(
                     io::ErrorKind::UnexpectedEof,
                     "ERROR: se han presentado inconvenientes en la lectura del archivo.\n",
@@ -375,16 +451,7 @@ pub fn cargar_juego(maze_file_name: &str, output_file: &mut File) -> io::Result<
             }
         }
     }
-
-    let cadenas_esperadas: usize = (filas * filas) as usize;
-    if cantidad_cadenas != cadenas_esperadas {
-        let mensaje_error = "ERROR: el tablero debe ser cuadrado.\n";
-        output_file.write_all(mensaje_error.as_bytes())?;
-        return Err(io::Error::new(
-            io::ErrorKind::InvalidInput,
-            "ERROR: el tablero debe ser cuadrado.\n",
-        ));
-    }
+    el_tablero_ingresado_es_cuadrado(cantidad_cadenas, filas, output_file)?;
     juego.inicializar_dimension(filas);
     Ok(juego)
 }

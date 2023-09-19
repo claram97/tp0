@@ -11,13 +11,24 @@ use std::{
 
 use crate::constantes;
 
+/// Representa el estado actual del juego.
 pub struct Juego {
+    /// La dimensión del juego, que indica el tamaño del tablero cuadrado.
     pub dimension: i8,
+    
+    /// Una colección de enemigos presentes en el juego.
     pub enemigos: Vec<Enemigo>,
+    
+    /// Una colección de obstáculos presentes en el juego.
     obstaculos: Vec<Obstaculo>,
+    
+    /// Una colección de bombas presentes en el juego.
     bombas: Vec<Bomba>,
+    
+    /// Una colección de desvíos presentes en el juego.
     desvios: Vec<Desvio>,
 }
+
 
 impl Default for Juego {
     fn default() -> Self {
